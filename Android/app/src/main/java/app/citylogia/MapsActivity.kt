@@ -9,6 +9,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.maps.android.ktx.addMarker
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -36,8 +37,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap = googleMap
 
         // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
+        val sydney = LatLng(-33.852, 151.211)
+        val marker = googleMap.addMarker {
+            position(sydney)
+            title("Marker in Sydney")
+        }
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
     }
 }
