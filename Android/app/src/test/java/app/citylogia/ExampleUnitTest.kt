@@ -1,4 +1,4 @@
-package citylogia.android
+package app.citylogia
 
 import org.junit.Test
 
