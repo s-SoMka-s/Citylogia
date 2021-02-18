@@ -3,17 +3,19 @@
 
     <item
         android:id="@+id/nav_home"
-        android:icon="@drawable/ic_baseline_home_24"
-        android:title="Home" />
-
-    <item
-        android:id="@+id/nav_favorites"
-        android:icon="@drawable/ic_baseline_favorite_24"
-        android:title="Favorites" />
+        android:icon="@drawable/home_selector"
+        android:title="@string/home_title" />
 
     <item
         android:id="@+id/nav_map"
-        android:icon="@drawable/ic_baseline_map_24"
-        android:title="Map" />
+        android:icon="@drawable/gps_selector"
+        android:title="@string/map_title" />
+
+    <item
+        android:id="@+id/nav_profile"
+        android:icon="@drawable/profile_selector"
+        android:title="@string/profile_title" />
+
+
 
 </menu>

@@ -19,6 +19,8 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
 
+        bottomNav.setItemIconTintList(null); // it needs for correct replacing active and non-active icons in the bottom menu
+
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                 new HomeFragment()).commit();
     }
@@ -33,11 +35,11 @@ public class MainActivity extends AppCompatActivity {
                         case R.id.nav_home:
                             selectedFragment = new HomeFragment();
                             break;
-                        case R.id.nav_favorites:
-                            selectedFragment = new FavoritesFragment();
-                            break;
                         case R.id.nav_map:
                             selectedFragment = new MapFragment();
+                            break;
+                        case R.id.nav_profile:
+                            selectedFragment = new ProfileFragment();
                             break;
                     }
 
