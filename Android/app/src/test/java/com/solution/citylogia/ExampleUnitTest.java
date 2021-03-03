@@ -1,4 +1,4 @@
-package com.example.citylogia;
+package com.solution.citylogia;
 
 import org.junit.Test;
 
