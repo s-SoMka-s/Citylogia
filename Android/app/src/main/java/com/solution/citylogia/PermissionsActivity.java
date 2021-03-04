@@ -50,6 +50,7 @@ public class PermissionsActivity extends AppCompatActivity {
                         finish();
                     }
 
+
                     @Override
                     public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
                         if (permissionDeniedResponse.isPermanentlyDenied()) {
