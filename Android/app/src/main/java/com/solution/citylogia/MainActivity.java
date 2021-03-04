@@ -87,7 +87,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         this, R.raw.mapstyle));
 
       //  mMap.setOnMapLongClickListener(this);
-      //  mMap.setOnMarkerDragListener(this);
+        //      //  mMap.setOnMarkerDragListener(this);
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             enableUserLocation();
