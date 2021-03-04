@@ -2,18 +2,25 @@ package com.solution.citylogia;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationListener;
 import android.os.Bundle;
+import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -21,6 +28,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -33,79 +41,32 @@ import java.util.Locale;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
 
+    private static final String Tag = "MainActivity";
     private GoogleMap mMap;
-    private FusedLocationProviderClient mFusedLocationProviderClient;
-    private PlacesClient placesClient;
-    private List<AutocompletePrediction> predictionList;
+    private Geocoder geocoder;
+    private int ACCESS_LOCATION_REQUEST_CODE = 10001;
+    FusedLocationProviderClient fusedLocationProviderClient;
+    LocationRequest locationRequest;
 
-    private Location mLastKnowLocation;
-    private LocationCallback locationCallback;
-
-    private MaterialSearchBar materialSearchBar;
-    private View mapView;
-
-    private FusedLocationProviderClient client;
-    private SupportMapFragment mapFragment;
-
-    private final float DEFAULT_ZOOM = 18;
+    Marker userLocationMarker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         String languageToLoad = "ru";
-        Locale locale = new Locale(languageToLoad);
-        Locale.setDefault(locale);
-        Configuration config = new Configuration();
-        config.locale = locale;
-        getBaseContext().getResources().updateConfiguration(config,
-                getBaseContext().getResources().getDisplayMetrics());
 
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        geocoder = new Geocoder(this);
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
-        client = LocationServices.getFusedLocationProviderClient(this);
-
-        if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            getCurrentLocation();
-        } else {
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
-        }
-    }
-
-    private void getCurrentLocation() {
-        @SuppressLint("MissingPermission") Task<Location> task = client.getLastLocation();
-        task.addOnSuccessListener(new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(final Location location) {
-                if (location != null) {
-                    mapFragment.getMapAsync(new OnMapReadyCallback() {
-                        @Override
-                        public void onMapReady(GoogleMap googleMap) {
-                            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-
-                            MarkerOptions options = new MarkerOptions().position(latLng).title("Ya tut");
-
-                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM));
-
-                            googleMap.addMarker(options);
-                        }
-                    });
-                }
-            }
-        });
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == 44) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getCurrentLocation();
-            }
-        }
+        locationRequest = LocationRequest.create();
+        locationRequest.setInterval(500);
+        locationRequest.setFastestInterval(500);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
     /**
@@ -124,11 +85,92 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         googleMap.setMapStyle(
                 MapStyleOptions.loadRawResourceStyle(
                         this, R.raw.mapstyle));
+
+      //  mMap.setOnMapLongClickListener(this);
+        //      //  mMap.setOnMarkerDragListener(this);
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            enableUserLocation();
+ //           zoomToUserLocation();
+        } else {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.ACCESS_FINE_LOCATION)) {
+                ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, ACCESS_LOCATION_REQUEST_CODE);
+            } else {
+                ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, ACCESS_LOCATION_REQUEST_CODE);
+            }
+        }
+    }
+
+    LocationCallback locationCallback = new LocationCallback() {
+        @Override
+        public void onLocationResult(@NonNull LocationResult locationResult) {
+            super.onLocationResult(locationResult);
+            Log.d(Tag, "onLocationResult: " + locationResult.getLastLocation());
+            if (mMap != null) {
+                setUserLocationMarker(locationResult.getLastLocation());
+            }
+        }
+    };
+
+    private void setUserLocationMarker(Location location) {
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        if (userLocationMarker == null) {
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(latLng);
+            userLocationMarker = mMap.addMarker(markerOptions);
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
+        } else {
+            userLocationMarker.setPosition(latLng);
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private void startLocationUpdates() {
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+    }
+
+    private void stopLocationUpdates() {
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            startLocationUpdates();
+        } else {
+
+        }
+     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        stopLocationUpdates();
+    }
+
+    @SuppressLint("MissingPermission")
+    private void enableUserLocation() {
+        mMap.setMyLocationEnabled(true);
+    }
+
+    private void zoomToUserLocation() {
+        @SuppressLint("MissingPermission") Task<Location> locationTask = fusedLocationProviderClient.getLastLocation();
+        locationTask.addOnSuccessListener(new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 20));
+            }
+        });
+    }
+
     //    mMap.setMyLocationEnabled(true); // нужно гарантировать это разрешение!!!! Пока я пропустил это и отключил ворнинг
     //    mMap.getUiSettings().setMyLocationButtonEnabled(true);
         // Add a marker in Sydney and move the camera
         LatLng sydney = new LatLng(55, 83);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Novosibirsk"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-    }
+    //    mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Novosibirsk"));
+    //    mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
 }
