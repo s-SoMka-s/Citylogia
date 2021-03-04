@@ -41,6 +41,7 @@ import java.util.Locale;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
 
+    static boolean refresh = true;
     private static final String Tag = "MainActivity";
     private GoogleMap mMap;
     private Geocoder geocoder;
@@ -90,7 +91,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         //      //  mMap.setOnMarkerDragListener(this);
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            enableUserLocation();
+ //           enableUserLocation();
  //           zoomToUserLocation();
         } else {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.ACCESS_FINE_LOCATION)) {
@@ -118,10 +119,16 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(latLng);
             userLocationMarker = mMap.addMarker(markerOptions);
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
+            if (refresh) {
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
+                    refresh = false;
+            }
         } else {
             userLocationMarker.setPosition(latLng);
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
+            if (refresh) {
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
+                refresh = false;
+            }
         }
     }
 
