@@ -45,8 +45,16 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.mancj.materialsearchbar.MaterialSearchBar;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -87,7 +95,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
              * @param id   айди типа места
              * @param name имя типа места
              */
-            private Type(int id, String name) {
+            Type(int id, String name) {
                 this.id = id;
                 this.name = name;
             }
@@ -116,9 +124,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
              * @param flat     Квартира
              * @param postcode Почтовый индекс
              */
-            private Address(Double latitude, Double longitude, String country, String province,
-                            String city, String district, String street, String house, String flat,
-                            int postcode) {
+            Address(Double latitude, Double longitude, String country, String province,
+                    String city, String district, String street, String house, String flat,
+                    int postcode) {
                 this.latitude = latitude;
                 this.longitude = longitude;
                 this.country = country;
@@ -136,75 +144,64 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             int id;
             String link;
 
-            private Photos(int id, String link) {
+            Photos(int id, String link) {
                 this.id = id;
                 this.link = link;
             }
         }
 
-        static class Reviews {
-            int id;
-            String body;
-            double mark;
-            Date published_at;
+        static class Reviews implements Serializable {
 
-            static class Author  {
+            static class Author implements Serializable {
                 int id;
                 String name;
                 String surname;
-                int mark;
 
                 /**
                  * @param id      айди автора
                  * @param name    имя автора
                  * @param surname фамилия автора
-                 * @param mark    оценка автора
                  */
-                private Author(int id, String name, String surname, int mark) {
+                private Author(int id, String name, String surname) {
                     this.id = id;
                     this.name = name;
                     this.surname = surname;
-                    this.mark = mark;
                 }
             }
 
+            int id;
+            String body;
+            Author author;
+            int mark;
+            String publishedAt;
+
             /**
-             * @param id           айди обзора
-             * @param body         текст обзора
-             * @param mark         оценка обзора
-             * @param published_at дата публикации
+             * @param id          айди обзора
+             * @param body        текст обзора
+             * @param author      автор обзора
+             * @param mark        оценка места
+             * @param publishedAt дата публикации обзора
              */
-            private Reviews(int id, String body, double mark, Date published_at) {
+            Reviews(int id, String body, Author author, int mark, String publishedAt) {
                 this.id = id;
                 this.body = body;
+                this.author = author;
                 this.mark = mark;
-                this.published_at = published_at;
+                this.publishedAt = publishedAt;
             }
-
-            ArrayList<Author> author = new ArrayList<>();
         }
 
         int id; //id места
         String name; // имя места
+        double mark; // общая оценка места
         Type type;
         Address address;
         String description;
         ArrayList<Photos> photos = new ArrayList<>();
-        int ReviewsCount;
+        int reviewsCount;
         ArrayList<Reviews> reviews = new ArrayList<>();
 
-        /**
-         * @param id      айди места
-         * @param type    тип места
-         * @param name    имя места
-         * @param address адрес места
-         */
-        private Place(int id, Type type, String name, Address address, String description) {
-            this.id = id;
-            this.type = type;
-            this.name = name;
-            this.address = address;
-            this.description = description;
+        Place() {
         }
     }
 
@@ -359,11 +356,55 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void parseInterestingPlaces() {
-        int count = 2; //поле в JSON, сколько мест в базе всего
+        int count = 0; //поле в JSON, сколько мест в базе всего
+        JSONObject data;
+        JSONArray elements;
+        try {
+            data = new JSONObject(JsonDataFromAsset("input.json")).getJSONObject("data");
+            count = data.getInt("count");
+            elements = data.getJSONArray("elements");
+            places = new Place[count];
 
-        places = new Place[count];
+            for (int i = 0; i < count; i++) {
+                places[i] = new Place();
+                places[i].id = elements.getJSONObject(i).getInt("id");
+                places[i].mark = elements.getJSONObject(i).getDouble("mark");
+                places[i].type = new Place.Type(elements.getJSONObject(i).getJSONObject("type").getInt("id"),
+                        elements.getJSONObject(i).getJSONObject("type").getString("name"));
+                places[i].name = elements.getJSONObject(i).getString("name");
+                places[i].address = new Place.Address(elements.getJSONObject(i).getJSONObject("address").getDouble("latitude"),
+                        elements.getJSONObject(i).getJSONObject("address").getDouble("longitude"),
+                        elements.getJSONObject(i).getJSONObject("address").getString("country"),
+                        elements.getJSONObject(i).getJSONObject("address").getString("province"),
+                        elements.getJSONObject(i).getJSONObject("address").getString("city"),
+                        elements.getJSONObject(i).getJSONObject("address").getString("district"),
+                        elements.getJSONObject(i).getJSONObject("address").getString("street"),
+                        elements.getJSONObject(i).getJSONObject("address").getString("house"),
+                        elements.getJSONObject(i).getJSONObject("address").getString("flat"),
+                        elements.getJSONObject(i).getJSONObject("address").getInt("postcode"));
+                places[i].description = elements.getJSONObject(i).getString("description");
+                places[i].reviewsCount = elements.getJSONObject(i).getJSONObject("reviews").getInt("count");
+                for (int j = 0; j < places[i].reviewsCount; j++) {
+                    places[i].reviews.add(new Place.Reviews(elements.getJSONObject(i).getJSONObject("reviews").getJSONArray("elements").getJSONObject(j).getInt("id"),
+                            elements.getJSONObject(i).getJSONObject("reviews").getJSONArray("elements").getJSONObject(j).getString("body"),
+                            new Place.Reviews.Author(elements.getJSONObject(i).getJSONObject("reviews").getJSONArray("elements").getJSONObject(j).getJSONObject("author").getInt("id"),
+                                    elements.getJSONObject(i).getJSONObject("reviews").getJSONArray("elements").getJSONObject(j).getJSONObject("author").getString("name"),
+                                    elements.getJSONObject(i).getJSONObject("reviews").getJSONArray("elements").getJSONObject(j).getJSONObject("author").getString("surname")
+                                    //аватар идет пока в опу
+                            ),
+                            elements.getJSONObject(i).getJSONObject("reviews").getJSONArray("elements").getJSONObject(j).getInt("mark"),
+                            elements.getJSONObject(i).getJSONObject("reviews").getJSONArray("elements").getJSONObject(j).getString("published_at")));
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        //Gson gson = new Gson();
+        //Place a = gson.fromJson(places, new TypeToken<List<Place>>(){}.getType());
 
-        places[0] = new Place(1, new Place.Type(1, "Архитектура"), "Театр оперы и балета",
+        // places = new Place[count];
+
+        /*places[0] = new Place(1, new Place.Type(1, "Архитектура"), "Театр оперы и балета",
                 new Place.Address(55.030443, 82.925023, "Россия",
                         "Новосибирская область", "Новосибирск", "Центральный район",
                         "Красный проспект", "", "", 433333), "у мэрии");
@@ -371,12 +412,28 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         places[1] = new Place(2, new Place.Type(1, "Парки"), "Нарымский сквер",
                 new Place.Address(55.043548, 82.909349, "Россия",
                         "Новосибирская область", "Новосибирск", "Центральный район",
-                        "Челюскинцев", "", "", 630099), "у цирка");
+                        "Челюскинцев", "", "", 630099), "у цирка");*/
 
 
         List<Place> list = Arrays.asList(places);
 
         drawInterestingPlaces(list);
+    }
+
+    private String JsonDataFromAsset(String fileName) {
+        String json = null;
+        try {
+            InputStream inputStream = getAssets().open(fileName);
+            int sizeOfFile = inputStream.available();
+            byte[] bufferData = new byte[sizeOfFile];
+            inputStream.read(bufferData);
+            inputStream.close();
+            json = new String(bufferData, "UTF-8");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return json;
     }
 
     private void drawInterestingPlaces(List<Place> placesToDraw) { // placesFound и placesDraw - разные вещи, ибо нам мб нужно будет показать только парки или т.п.
@@ -385,7 +442,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         for (int i = 0; i < placesToDraw.size(); i++) {
             markerOptions.position(new LatLng(placesToDraw.get(i).address.latitude, placesToDraw.get(i).address.longitude));
             markerOptions.icon(bitmapDescriptorFromVector(getApplicationContext(), R.drawable.ic_baseline_place_36));
-            markerOptions.snippet(Integer.toString(placesToDraw.get(i).id-1)); // я в сниппет сую АЙДИ этого места, чтобы инфу о нем можно было передавать в дургие активитис. Внимание -1, так id с 1, массив с 0
+            markerOptions.snippet(Integer.toString(placesToDraw.get(i).id - 1)); // я в сниппет сую АЙДИ этого места, чтобы инфу о нем можно было передавать в дургие активитис. Внимание -1, так id с 1, массив с 0
             mMap.addMarker(markerOptions);
         }
 

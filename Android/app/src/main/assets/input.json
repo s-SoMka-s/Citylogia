@@ -4,6 +4,7 @@
     "elements": [
       {
         "id": 1,
+        "mark": 5,
         "type": {
           "id": 1,
           "name": "Архитектура"
@@ -22,6 +23,7 @@
           "postcode": 630099
         },
         "description": "Сердце культуры",
+        "photos_amount": 1,
         "photos": [
           {
             "id": 1,
@@ -41,8 +43,7 @@
                 "avatar": {
                   "id": 1,
                   "link": "тут будет ссылочка"
-                },
-                "mark": 5
+                }
               },
               "mark": 5,
               "published_at": 131313
@@ -52,6 +53,7 @@
       },
       {
         "id": 2,
+        "mark": 3,
         "type": {
           "id": 2,
           "name": "Парки"
@@ -70,6 +72,7 @@
           "postcode": 630099
         },
         "description": "Рядом цирк",
+        "photos_amount": 1,
         "photos": [
           {
             "id": 1,
@@ -89,10 +92,9 @@
                 "avatar": {
                   "id": 1,
                   "link": "тут будет ссылочка"
-                },
-                "mark": 5
+                }
               },
-              "mark": 5,
+              "mark": 3,
               "published_at": 131313
             }
           ]
