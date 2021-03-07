@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Citylogia</string>
+    <string name="title_activity_maps">Citylogia</string>
+    <string name="google_maps_key">AIzaSyBQMPNXpWKJwYJhdFCjZ6P7668EXNPJVLg</string>
+</resources>
