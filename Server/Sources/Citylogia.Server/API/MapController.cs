@@ -1,28 +1,39 @@
-﻿using Citylogia.Server.Models;
+﻿using Citylogia.Server.Entityes;
+using Citylogia.Server.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace Citylogia.Server.API
 {
     [ApiController]
-    [Route("/api/map")]
+    [Route("/api/Map/Places")]
     public class MapController : Controller
     {
         public MapController()
         {
         }
 
-        [HttpGet]
-        public IEnumerable<Coord> Get()
+        [HttpGet("")]
+        public IEnumerable<Place> Get()
         {
-            var coords = new List<Coord>();
-            for (int i = 0; i < 10; i++)
-            {
-                var coord = new Coord(i, i * 2);
-                coords.Add(coord);
-            }
+            using var db = new ApplicationContext();
+            var places = db.Places.ToList();
 
-            return coords;
+            return places;
+        }
+
+        [HttpPost("")]
+        public bool Add([FromBody] PlaceInputParameters placeInputParameters)
+        {
+            using var db = new ApplicationContext();
+
+            var place = new Place { Name = placeInputParameters.Name, Description = placeInputParameters.Description, Mark = placeInputParameters.Mark, TypeId = 1 };
+
+            db.Places.Add(place);
+            db.SaveChanges();
+
+            return true;
         }
     }
 }
