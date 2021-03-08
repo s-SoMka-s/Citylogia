@@ -4,15 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Test">
+    tools:context=".PlaceInside">
 
-    <com.mancj.materialsearchbar.MaterialSearchBar
-        style="@style/MaterialSearchBarLight"
-        app:mt_speechMode="true"
-        app:mt_hint="Custom hint"
-        app:mt_maxSuggestionsCount="10"
+
+    <fragment
+        android:id="@+id/fragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/searchBar" />
-
+        android:layout_height="match_parent"
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/nav_place_inside"
+        tools:layout_editor_absoluteX="203dp"
+        tools:layout_editor_absoluteY="389dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

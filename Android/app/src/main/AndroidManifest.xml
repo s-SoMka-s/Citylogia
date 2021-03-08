@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.solution.citylogia">
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -17,13 +18,21 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".PermissionsActivity">
+            <!--<intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>-->
+        </activity>
+        <activity
+            android:name=".PlaceInside"
+
+            tools:ignore="DuplicateActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
-        <activity android:name=".Test" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -38,9 +47,8 @@
 
         <activity
             android:name=".MainActivity"
-            android:label="@string/title_activity_maps">
+            android:label="@string/title_activity_maps"></activity>
 
-        </activity>
     </application>
 
 </manifest>

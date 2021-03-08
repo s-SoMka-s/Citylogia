@@ -7,7 +7,6 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -17,15 +16,10 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationListener;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -43,11 +37,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.libraries.places.api.model.AutocompletePrediction;
-import com.google.android.libraries.places.api.net.PlacesClient;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.mancj.materialsearchbar.MaterialSearchBar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -58,11 +47,8 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-import dagger.Lazy;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -266,7 +252,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             public boolean onMarkerClick(Marker marker) {
                 String PlaceID = marker.getSnippet();
 
-                Intent i = new Intent(MainActivity.this, Test.class); // АНДРЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЙ 2й параметр
+                Intent i = new Intent(MainActivity.this, PlaceInside.class); // АНДРЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЙ 2й параметр
                 i.putExtra("places element", places[Integer.parseInt(PlaceID)]); // контекст - вся инфа о месте - изу структуру!
             /*    i.putExtra("id", places[Integer.parseInt(PlaceID)].id);
                 i.putExtra("name", places[Integer.parseInt(PlaceID)].name);

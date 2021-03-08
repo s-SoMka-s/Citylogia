@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_place_inside"
+    app:startDestination="@id/activity_place_inside">
+
+    <fragment
+        android:id="@+id/activity_place_inside"
+        android:name="com.solution.citylogia.activity_place_inside"
+        android:label="fragment_activity_place_inside"
+        tools:layout="@layout/fragment_place_inside" >
+        <action
+            android:id="@+id/action_activity_place_inside_to_place_info"
+            app:destination="@id/place_info" />
+    </fragment>
+    <fragment
+        android:id="@+id/place_info"
+        android:name="com.solution.citylogia.place_info"
+        android:label="fragment_place_info"
+        tools:layout="@layout/fragment_place_info" >
+        <action
+            android:id="@+id/action_place_info_to_place_reviews"
+            app:destination="@id/place_reviews" />
+        <action
+            android:id="@+id/action_place_info_to_activity_place_inside"
+            app:destination="@id/activity_place_inside" />
+    </fragment>
+    <fragment
+        android:id="@+id/place_reviews"
+        android:name="com.solution.citylogia.place_reviews"
+        android:label="fragment_place_reviews"
+        tools:layout="@layout/fragment_place_reviews" >
+        <action
+            android:id="@+id/action_place_reviews_to_place_info"
+            app:destination="@id/place_info" />
+    </fragment>
+</navigation>
