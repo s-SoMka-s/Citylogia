@@ -24,8 +24,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -45,7 +43,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.android.libraries.places.api.net.PlacesClient;
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.mancj.materialsearchbar.MaterialSearchBar;
 
@@ -399,10 +396,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        //Gson gson = new Gson();
-        //Place a = gson.fromJson(places, new TypeToken<List<Place>>(){}.getType());
 
-        // places = new Place[count];
 
         /*places[0] = new Place(1, new Place.Type(1, "Архитектура"), "Театр оперы и балета",
                 new Place.Address(55.030443, 82.925023, "Россия",
