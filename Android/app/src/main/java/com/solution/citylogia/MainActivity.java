@@ -263,7 +263,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             public boolean onMarkerClick(Marker marker) {
                 String PlaceID = marker.getSnippet();
 
-                Intent i = new Intent(MainActivity.this, Test.class); // АНДРЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЙ 2й параметр
+                Intent i = new Intent(MainActivity.this, PlaceInside.class); // АНДРЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЙ 2й параметр
+
                 i.putExtra("places element", places[Integer.parseInt(PlaceID)]); // контекст - вся инфа о месте - изу структуру!
             /*    i.putExtra("id", places[Integer.parseInt(PlaceID)].id);
                 i.putExtra("name", places[Integer.parseInt(PlaceID)].name);
@@ -396,7 +397,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        //Gson gson = new Gson();
+        //Place a = gson.fromJson(places, new TypeToken<List<Place>>(){}.getType());
 
+        // places = new Place[count];
 
         /*places[0] = new Place(1, new Place.Type(1, "Архитектура"), "Театр оперы и балета",
                 new Place.Address(55.030443, 82.925023, "Россия",
