@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".activity_place_inside"
     android:background="@drawable/place1"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:theme="@style/Theme.AppCompat.NoActionBar">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
