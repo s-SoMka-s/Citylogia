@@ -1,13 +1,7 @@
 package com.solution.citylogia;
 
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentActivity;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -17,12 +11,14 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationListener;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -41,9 +37,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.Marker;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,11 +47,8 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-import dagger.Lazy;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -239,6 +229,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        PlacesService ps = new PlacesService();
+        ps.getPlaces();
         mMap = googleMap;
         googleMap.setMapStyle(
                 MapStyleOptions.loadRawResourceStyle(
@@ -357,6 +349,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         JSONObject data;
         JSONArray elements;
         try {
+            PlacesService bs = new PlacesService();
+
             data = new JSONObject(JsonDataFromAsset("input.json")).getJSONObject("data");
             count = data.getInt("count");
             elements = data.getJSONArray("elements");
