@@ -1,7 +1,11 @@
 package com.solution.citylogia
 
-import kotlinx.serialization.decodeFromString
+import com.google.gson.Gson
+import com.google.gson.stream.JsonToken
+import kotlinx.serialization.*;
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
+
 import okhttp3.*
 import java.io.IOException
 
@@ -16,7 +20,8 @@ class PlacesService {
         val call = client.newCall(request)
         val response = call.execute();
         val content = response.body!!.string()
-        val data = Json.decodeFromString<Place>(content);
-        println(data);
+        val gs = Gson();
+        val data = gs.fromJson(content, Places::class.java);
+
     }
 }
