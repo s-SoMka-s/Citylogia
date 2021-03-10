@@ -1,0 +1,105 @@
+{
+  "data": {
+    "count": 2,
+    "elements": [
+      {
+        "id": 1,
+        "mark": 5,
+        "type": {
+          "id": 1,
+          "name": "Архитектура"
+        },
+        "name": "Театр оперы и балета",
+        "address": {
+          "latitude": 55.030443,
+          "longitude": 82.925023,
+          "country": "Россия",
+          "province": "Новосибирская область",
+          "city": "Новосибирск",
+          "district": "Центральный район",
+          "street": "Красный проспект",
+          "house": "",
+          "flat": "",
+          "postcode": 630099
+        },
+        "description": "Сердце культуры",
+        "photos_amount": 1,
+        "photos": [
+          {
+            "id": 1,
+            "link": "тут будет ссылочка"
+          }
+        ],
+        "reviews": {
+          "count": 1,
+          "elements": [
+            {
+              "id": 1,
+              "body": "какое красивое место",
+              "author": {
+                "id": 1,
+                "name": "Иван",
+                "surname" : "Титков",
+                "avatar": {
+                  "id": 1,
+                  "link": "тут будет ссылочка"
+                }
+              },
+              "mark": 5,
+              "published_at": 131313
+            }
+          ]
+        }
+      },
+      {
+        "id": 2,
+        "mark": 3,
+        "type": {
+          "id": 2,
+          "name": "Парки"
+        },
+        "name": "Нарымский сквер",
+        "address": {
+          "latitude": 55.043548,
+          "longitude": 82.909349,
+          "country": "Россия",
+          "province": "Новосибирская область",
+          "city": "Новосибирск",
+          "district": "Центральный район",
+          "street": "Челюскинцев",
+          "house": "",
+          "flat": "",
+          "postcode": 630099
+        },
+        "description": "Рядом цирк",
+        "photos_amount": 1,
+        "photos": [
+          {
+            "id": 1,
+            "link": "тут будет ссылочка"
+          }
+        ],
+        "reviews": {
+          "count": 1,
+          "elements": [
+            {
+              "id": 1,
+              "body": "какое красивое место",
+              "author": {
+                "id": 1,
+                "name": "Иван",
+                "surname" : "Титков",
+                "avatar": {
+                  "id": 1,
+                  "link": "тут будет ссылочка"
+                }
+              },
+              "mark": 3,
+              "published_at": 131313
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
