@@ -15,12 +15,14 @@ namespace Citylogia.Server.API
         }
 
         [HttpGet("")]
-        public IEnumerable<Place> Get()
+        public PlacesSummary Get()
         {
             using var db = new ApplicationContext();
             var places = db.Places.ToList();
 
-            return places;
+            var result = new PlacesSummary(places);
+
+            return result;
         }
 
         [HttpPost("")]
