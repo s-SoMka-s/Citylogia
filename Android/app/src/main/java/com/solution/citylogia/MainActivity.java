@@ -51,7 +51,6 @@ import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
-
     private Place[] places;
     private static boolean refresh = true;
     private static boolean requestToGetPlaces = true; //временное
@@ -195,6 +194,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Configurator c = new Configurator();
+        c.configureRetrofit();
+
         String languageToLoad = "ru";
         Locale locale = new Locale(languageToLoad);
         Locale.setDefault(locale);
@@ -229,8 +232,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        PlacesService ps = new PlacesService();
-        ps.getPlaces();
         mMap = googleMap;
         googleMap.setMapStyle(
                 MapStyleOptions.loadRawResourceStyle(

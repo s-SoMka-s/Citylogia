@@ -7,7 +7,7 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS build
 WORKDIR /src
-COPY ["Citylogia.Server/Citylogia.Server.csproj", "Citylogia.Server/"]
+COPY ["Citylogia.Server.csproj", "Citylogia.Server/"]
 RUN dotnet restore "Citylogia.Server/Citylogia.Server.csproj"
 COPY . .
 WORKDIR "/src/Citylogia.Server"
