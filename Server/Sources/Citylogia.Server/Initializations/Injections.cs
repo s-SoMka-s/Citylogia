@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Citylogia.Server.Core.Api.Tools;
 using Citylogia.Server.Core.Db;
 using Citylogia.Server.Core.Tools;
 using Citylogia.Server.Core.Tools.Interfaces.AppSettings;
@@ -11,7 +12,8 @@ namespace Citylogia.Server.Initializations
         public static void AddServices(IServiceCollection services, IAppSettings settings)
         {
             services.AddDb(settings.ConnectionStrings)
-                    .AddTools(settings);
+                    .AddTools(settings)
+                    .AddApi(settings);
         }
 
         public static void AddServices(ContainerBuilder builder,
