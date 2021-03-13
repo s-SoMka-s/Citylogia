@@ -2,13 +2,8 @@ package com.solution.citylogia;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
@@ -29,29 +24,23 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.solution.citylogia.models.Place;
+import com.solution.citylogia.utils.Descriptor;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
     private Place[] places;
+    private Descriptor descriptor;
     private static boolean refresh = true;
     private static boolean requestToGetPlaces = true; //временное
     private static final String Tag = "MainActivity";
@@ -70,139 +59,16 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
      * не отображается. Т.о. я могу передать Place[i] в активитис с оценками и отзывами
      */
 
-    private static class Place implements Serializable {
-
-        static class Type implements Serializable {
-            int id;
-            String name;
-
-            /**
-             * @param id   айди типа места
-             * @param name имя типа места
-             */
-            Type(int id, String name) {
-                this.id = id;
-                this.name = name;
-            }
-        }
-
-        static class Address implements Serializable {
-            Double latitude;
-            Double longitude;
-            //LatLng latLng;
-            String country;
-            String province;
-            String city;
-            String district;
-            String street;
-            String house;
-            String flat;
-            int postcode;
-
-            /**
-             * @param country  Страна
-             * @param province Регион
-             * @param city     Город
-             * @param district Район
-             * @param street   Улица
-             * @param house    Дом
-             * @param flat     Квартира
-             * @param postcode Почтовый индекс
-             */
-            Address(Double latitude, Double longitude, String country, String province,
-                    String city, String district, String street, String house, String flat,
-                    int postcode) {
-                this.latitude = latitude;
-                this.longitude = longitude;
-                this.country = country;
-                this.province = province;
-                this.city = city;
-                this.district = district;
-                this.street = street;
-                this.house = house;
-                this.flat = flat;
-                this.postcode = postcode;
-            }
-        }
-
-        static class Photos {
-            int id;
-            String link;
-
-            Photos(int id, String link) {
-                this.id = id;
-                this.link = link;
-            }
-        }
-
-        static class Reviews implements Serializable {
-
-            static class Author implements Serializable {
-                int id;
-                String name;
-                String surname;
-
-                /**
-                 * @param id      айди автора
-                 * @param name    имя автора
-                 * @param surname фамилия автора
-                 */
-                private Author(int id, String name, String surname) {
-                    this.id = id;
-                    this.name = name;
-                    this.surname = surname;
-                }
-            }
-
-            int id;
-            String body;
-            Author author;
-            int mark;
-            String publishedAt;
-
-            /**
-             * @param id          айди обзора
-             * @param body        текст обзора
-             * @param author      автор обзора
-             * @param mark        оценка места
-             * @param publishedAt дата публикации обзора
-             */
-            Reviews(int id, String body, Author author, int mark, String publishedAt) {
-                this.id = id;
-                this.body = body;
-                this.author = author;
-                this.mark = mark;
-                this.publishedAt = publishedAt;
-            }
-        }
-
-        int id; //id места
-        String name; // имя места
-        double mark; // общая оценка места
-        Type type;
-        Address address;
-        String description;
-        ArrayList<Photos> photos = new ArrayList<>();
-        int reviewsCount;
-        ArrayList<Reviews> reviews = new ArrayList<>();
-
-        Place() {
-        }
-    }
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Configurator c = new Configurator();
-        c.configureRetrofit();
-
         String languageToLoad = "ru";
         Locale locale = new Locale(languageToLoad);
         Locale.setDefault(locale);
+
         Configuration config = new Configuration();
-        config.locale = locale;
+        config.setLocale(locale);
         getBaseContext().getResources().updateConfiguration(config,
                 getBaseContext().getResources().getDisplayMetrics());
 
@@ -233,6 +99,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
         googleMap.setMapStyle(
                 MapStyleOptions.loadRawResourceStyle(
                         this, R.raw.mapstyle));
@@ -245,8 +112,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, ACCESS_LOCATION_REQUEST_CODE);
         }
 
-        parseInterestingPlaces();
-
         /*
          * Я тут при клике на маркер перехожу на активити с его описанием.
          */
@@ -254,19 +119,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public boolean onMarkerClick(Marker marker) {
                 String PlaceID = marker.getSnippet();
-
-                Intent i = new Intent(MainActivity.this, PlaceInside.class); // АНДРЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЙ 2й параметр
-
-                i.putExtra("places element", places[Integer.parseInt(PlaceID)]); // контекст - вся инфа о месте - изу структуру!
-            /*    i.putExtra("id", places[Integer.parseInt(PlaceID)].id);
-                i.putExtra("name", places[Integer.parseInt(PlaceID)].name);
-                i.putExtra("type", places[Integer.parseInt(PlaceID)].type);
-                i.putExtra("photos", places[Integer.parseInt(PlaceID)].photos);
-                i.putExtra("description", places[Integer.parseInt(PlaceID)].description);
-                i.putExtra("reviews count", places[Integer.parseInt(PlaceID)].ReviewsCount);
-                i.putExtra("reviews", places[Integer.parseInt(PlaceID)].reviews);
-                i.putExtra("address", places[Integer.parseInt(PlaceID)].address);*/
-                startActivity(i);
+                System.out.println(PlaceID);
+                //Intent i = new Intent(MainActivity.this, PlaceInside.class);
+                //startActivity(i);
 
                 return false;
             }
@@ -289,7 +144,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         if (userLocationMarker == null) {
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(latLng);
-            markerOptions.icon(bitmapDescriptorFromVector(getApplicationContext(), R.drawable.ic_baseline_my_location_24));
+            markerOptions.icon(this.descriptor.bitmapDescriptorFromVector(getApplicationContext(), R.drawable.ic_baseline_my_location_24));
             userLocationMarker = mMap.addMarker(markerOptions);
             if (refresh) {
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
@@ -345,73 +200,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-    private void parseInterestingPlaces() {
-        int count = 0; //поле в JSON, сколько мест в базе всего
-        JSONObject data;
-        JSONArray elements;
-        try {
-            PlacesService bs = new PlacesService();
-
-            data = new JSONObject(JsonDataFromAsset("input.json")).getJSONObject("data");
-            count = data.getInt("count");
-            elements = data.getJSONArray("elements");
-            places = new Place[count];
-
-            for (int i = 0; i < count; i++) {
-                places[i] = new Place();
-                places[i].id = elements.getJSONObject(i).getInt("id");
-                places[i].mark = elements.getJSONObject(i).getDouble("mark");
-                places[i].type = new Place.Type(elements.getJSONObject(i).getJSONObject("type").getInt("id"),
-                        elements.getJSONObject(i).getJSONObject("type").getString("name"));
-                places[i].name = elements.getJSONObject(i).getString("name");
-                places[i].address = new Place.Address(elements.getJSONObject(i).getJSONObject("address").getDouble("latitude"),
-                        elements.getJSONObject(i).getJSONObject("address").getDouble("longitude"),
-                        elements.getJSONObject(i).getJSONObject("address").getString("country"),
-                        elements.getJSONObject(i).getJSONObject("address").getString("province"),
-                        elements.getJSONObject(i).getJSONObject("address").getString("city"),
-                        elements.getJSONObject(i).getJSONObject("address").getString("district"),
-                        elements.getJSONObject(i).getJSONObject("address").getString("street"),
-                        elements.getJSONObject(i).getJSONObject("address").getString("house"),
-                        elements.getJSONObject(i).getJSONObject("address").getString("flat"),
-                        elements.getJSONObject(i).getJSONObject("address").getInt("postcode"));
-                places[i].description = elements.getJSONObject(i).getString("description");
-                places[i].reviewsCount = elements.getJSONObject(i).getJSONObject("reviews").getInt("count");
-                for (int j = 0; j < places[i].reviewsCount; j++) {
-                    places[i].reviews.add(new Place.Reviews(elements.getJSONObject(i).getJSONObject("reviews").getJSONArray("elements").getJSONObject(j).getInt("id"),
-                            elements.getJSONObject(i).getJSONObject("reviews").getJSONArray("elements").getJSONObject(j).getString("body"),
-                            new Place.Reviews.Author(elements.getJSONObject(i).getJSONObject("reviews").getJSONArray("elements").getJSONObject(j).getJSONObject("author").getInt("id"),
-                                    elements.getJSONObject(i).getJSONObject("reviews").getJSONArray("elements").getJSONObject(j).getJSONObject("author").getString("name"),
-                                    elements.getJSONObject(i).getJSONObject("reviews").getJSONArray("elements").getJSONObject(j).getJSONObject("author").getString("surname")
-                                    //аватар идет пока в опу
-                            ),
-                            elements.getJSONObject(i).getJSONObject("reviews").getJSONArray("elements").getJSONObject(j).getInt("mark"),
-                            elements.getJSONObject(i).getJSONObject("reviews").getJSONArray("elements").getJSONObject(j).getString("published_at")));
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        //Gson gson = new Gson();
-        //Place a = gson.fromJson(places, new TypeToken<List<Place>>(){}.getType());
-
-        // places = new Place[count];
-
-        /*places[0] = new Place(1, new Place.Type(1, "Архитектура"), "Театр оперы и балета",
-                new Place.Address(55.030443, 82.925023, "Россия",
-                        "Новосибирская область", "Новосибирск", "Центральный район",
-                        "Красный проспект", "", "", 433333), "у мэрии");
-
-        places[1] = new Place(2, new Place.Type(1, "Парки"), "Нарымский сквер",
-                new Place.Address(55.043548, 82.909349, "Россия",
-                        "Новосибирская область", "Новосибирск", "Центральный район",
-                        "Челюскинцев", "", "", 630099), "у цирка");*/
-
-
-        List<Place> list = Arrays.asList(places);
-
-        drawInterestingPlaces(list);
-    }
-
     private String JsonDataFromAsset(String fileName) {
         String json = null;
         try {
@@ -428,26 +216,20 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         return json;
     }
 
-    private void drawInterestingPlaces(List<Place> placesToDraw) { // placesFound и placesDraw - разные вещи, ибо нам мб нужно будет показать только парки или т.п.
+    public void drawInterestingPlaces(List<Place> places) {
         MarkerOptions markerOptions = new MarkerOptions();
 
-        for (int i = 0; i < placesToDraw.size(); i++) {
-            markerOptions.position(new LatLng(placesToDraw.get(i).address.latitude, placesToDraw.get(i).address.longitude));
-            markerOptions.icon(bitmapDescriptorFromVector(getApplicationContext(), R.drawable.ic_baseline_place_36));
-            markerOptions.snippet(Integer.toString(placesToDraw.get(i).id - 1)); // я в сниппет сую АЙДИ этого места, чтобы инфу о нем можно было передавать в дургие активитис. Внимание -1, так id с 1, массив с 0
-            mMap.addMarker(markerOptions);
-        }
-
+        places.stream().forEach(place -> {
+            long id = place.getId();
+            LatLng coords = new LatLng(place.getAddress().getLatitude(), place.getAddress().getLongitude());
+            putMarker(markerOptions, coords, id);
+        });
     }
 
-    private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
-        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
-        vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
-        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        vectorDrawable.draw(canvas);
-        return BitmapDescriptorFactory.fromBitmap(bitmap);
+    public void putMarker(MarkerOptions markerOptions, LatLng coords, long placeId) {
+        markerOptions.position(coords);
+        markerOptions.icon(descriptor.bitmapDescriptorFromVector(getApplicationContext(), R.drawable.ic_baseline_place_36));
+        markerOptions.snippet(java.lang.Long.toString(placeId));
+        mMap.addMarker(markerOptions);
     }
-
-
 }
