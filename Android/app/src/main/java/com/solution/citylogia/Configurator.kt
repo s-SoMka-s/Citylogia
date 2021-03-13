@@ -1,6 +1,7 @@
 package com.solution.citylogia
 import com.solution.citylogia.data.remote.place.PlaceApi
 import okhttp3.OkHttpClient
+
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -11,7 +12,7 @@ class Configurator {
 
     fun configureRetrofit() {
         val interceptor = HttpLoggingInterceptor()
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        interceptor.level = HttpLoggingInterceptor.Level.BODY
 
         val client = OkHttpClient.Builder()
                                  .addInterceptor(interceptor)

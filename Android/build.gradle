@@ -1,6 +1,6 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    ext.kotlin_version = '{{ site.data.releases.latest.version }}'
+    ext.kotlin_version = '1.4.31'
     repositories {
         google()
         jcenter()
@@ -14,10 +14,7 @@ buildscript {
         // in the individual module build.gradle files
     }
 }
-plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.4.0'
-    id 'org.jetbrains.kotlin.plugin.serialization' version '1.4.31'
-}
+
 allprojects {
     repositories {
         google()
@@ -26,20 +23,6 @@ allprojects {
     }
 }
 
-repositories {
-    mavenCentral()
-}
-dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib"
-}
-compileKotlin {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-}
-compileTestKotlin {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
+task clean(type: Delete) {
+    delete rootProject.buildDir
 }
