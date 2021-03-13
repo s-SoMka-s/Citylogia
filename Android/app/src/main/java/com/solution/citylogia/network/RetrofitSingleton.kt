@@ -18,7 +18,7 @@ object RetrofitSingleton {
                                  .build();
 
         return Retrofit.Builder()
-                       .baseUrl("http://84.201.147.252:8080/api")
+                       .baseUrl("http://84.201.147.252:7070/api/")
                        .client(client)
                        .addConverterFactory(GsonConverterFactory.create())
                        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())

@@ -9,12 +9,12 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface IPlaceApi {
-    @GET("/Map/Places")
+    @GET("Map/Places")
     fun getAllPlaces(): Single<BaseCollectionResponse<Place>>
 
-    @GET("/Map/Places/{id}")
+    @GET("Map/Places/{id}")
     fun getPlaceInfo(@Path("id") placeId: Long): Single<BaseObjectResponse<Place>>
 
-    @GET("/Map/Places/Near")
+    @GET("Map/Places/Near")
     fun getPlacesNear(@Query("latitude") latitude: Double, @Query("longitude") longitude: Double, @Query("radius") radius: Long): Single<BaseCollectionResponse<Place>>
 }
