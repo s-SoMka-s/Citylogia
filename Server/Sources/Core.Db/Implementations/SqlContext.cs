@@ -5,6 +5,15 @@ namespace Citylogia.Server.Core.Db.Implementations
 {
     public class SqlContext : DbContext
     {
+        public DbSet<Place> Places { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Review> Reviews { get; set; }
+        public DbSet<Photo> Photos { get; set; }
+        public DbSet<Address> Addresses { get; set; }
+        public DbSet<PlaceType> PlaceTypes { get; set; }
+
+
+
         public SqlContext() : base() { }
 
         public SqlContext(DbContextOptions<SqlContext> options) : base(options) { }

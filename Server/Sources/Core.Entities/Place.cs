@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Citylogia.Server.Core.Entityes
@@ -8,7 +9,6 @@ namespace Citylogia.Server.Core.Entityes
     {
         public Place()
         {
-            this.Id = 0;
             this.Mark = 0;
             this.Name = string.Empty;
             this.Description = string.Empty;
@@ -18,34 +18,27 @@ namespace Citylogia.Server.Core.Entityes
             this.Reviews = default;
         }
 
-        [JsonProperty("id")]
-        public long Id { get; set; }    
+        [Key]
+        public long Id { get; set; }
 
-        [JsonProperty("mark")]
         public long Mark { get; set; }
 
-        [JsonProperty("name")]
         public string Name { get; set; }
         
-        [JsonProperty("description")]
         public string Description { get; set; }
 
 
         [ForeignKey(nameof(PlaceType))]
         public long TypeId { get; set; }
 
-        [JsonProperty("type")]
         public PlaceType Type { get; set; }
 
         [ForeignKey(nameof(Address))]
         public long AddressId { get; set; }
-        [JsonProperty("address")]
         public Address Address { get; set; }
 
-        [JsonProperty("photo")]
         public Photo[] Photos { get; set; }
 
-        [JsonProperty("reviews")]
         public Review[] Reviews { get; set; }
     }
 }

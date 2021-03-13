@@ -1,4 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Citylogia.Server.Core.Db.Implementations;
+using Citylogia.Server.Core.Entityes;
+using Core.Api.Models;
+using Core.Api.Models.Input;
+using Core.Api.Models.Output;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Citylogia.Server.Core.Api
 {
@@ -6,16 +14,95 @@ namespace Citylogia.Server.Core.Api
     [Route("/api/Map/Places")]
     public class MapController : Controller
     {
-        public MapController()
+        private readonly SqlContext context;
+        public MapController(SqlContext context)
         {
+            this.context = context;
         }
 
         [HttpGet("")]
-        public bool Get()
+        public BaseApiResponse<BaseCollectionResponse<PlaceSummary>> Get()
         {
-            return true;
+            var places = this.context.Places.ToList();
+
+            var summaries = new List<PlaceSummary>();
+
+            foreach (var place in places)
+            {
+                var summary = new PlaceSummary(place);
+                summaries.Add(summary);
+            }
+
+            var baseCollectionResponse = new BaseCollectionResponse<PlaceSummary>(summaries);
+
+            return new BaseApiResponse<BaseCollectionResponse<PlaceSummary>>(200, baseCollectionResponse);
         }
 
+        [HttpPost("")]
+        public BaseApiResponse<bool> AddPlace([FromBody] PlaceInputParameters parameters)
+        {
+            var addr = new Address()
+            {
+                Latitude = parameters.Address.Latitude,
+                Longitude = parameters.Address.Longitude,
+                Country = parameters.Address.Country,
+                Province = parameters.Address.Province,
+                District = parameters.Address.District,
+                Street = parameters.Address.Street,
+                House = parameters.Address.House,
+                Flat = parameters.Address.Flat,
+                Postcode = parameters.Address.Postcode
+            };
+
+            var entity = this.context.Addresses.Add(addr).Entity;
+            this.context.SaveChanges();
+
+            var addrId = entity.Id;
+
+            var place = new Place()
+            {
+                Mark = parameters.Mark,
+                Name = parameters.Name,
+                Description = parameters.Description,
+                TypeId = parameters.TypeId,
+                AddressId = addrId
+            };
+
+            this.context.Places.Add(place);
+            this.context.SaveChanges();
+
+            return new BaseApiResponse<bool>(200, true);
+        }
         
+        [HttpGet("Types")]
+        public BaseApiResponse<BaseCollectionResponse<PlaceTypeSummary>> GetPlaceTypes()
+        {
+            var types = this.context.PlaceTypes.ToList();
+
+            var typeSummaries = new List<PlaceTypeSummary>();
+            foreach(var type in types)
+            {
+                var summary = new PlaceTypeSummary(type);
+                typeSummaries.Add(summary);
+            }
+
+            var collectionResponse = new BaseCollectionResponse<PlaceTypeSummary>(typeSummaries);
+
+            return new BaseApiResponse<BaseCollectionResponse<PlaceTypeSummary>>(200, collectionResponse);
+        }
+
+        [HttpPost("Types")]
+        public BaseApiResponse<bool> AddPlaceType([FromBody] TypeInputParameters parameters)
+        {
+            var type = new PlaceType()
+            {
+                Name = parameters.Name
+            };
+
+            this.context.PlaceTypes.Add(type);
+            this.context.SaveChanges();
+
+            return new BaseApiResponse<bool>(200, true);
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Citylogia.Server.Core.Entityes
@@ -8,15 +9,11 @@ namespace Citylogia.Server.Core.Entityes
     {
         public Photo()
         {
-            this.Id = 0;
             this.Link = string.Empty;
         }
 
-
-        [JsonProperty("id")]
+        [Key]
         public long Id { get; set; }
-
-        [JsonProperty("link")]
         public string Link { get; set; }
     }
 }

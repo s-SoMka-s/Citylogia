@@ -1,20 +1,21 @@
 ﻿using Newtonsoft.Json;
 
-namespace Citylogia.Server.Models
+
+namespace Core.Api.Models
 {
     public class BaseApiResponse<T>
     {
-        public BaseApiResponse(long statusCode, T data)
+        public BaseApiResponse(long code, T data)
         {
-            this.StatusCode = statusCode;
+            this.StatusCode = code;
             this.Data = data;
         }
 
 
-        [JsonProperty("data")]
-        public T Data { get; set; }
-
         [JsonProperty("status_code")]
         public long StatusCode { get; set; }
+
+        [JsonProperty("data")]
+        public T Data { get; set; }
     }
 }

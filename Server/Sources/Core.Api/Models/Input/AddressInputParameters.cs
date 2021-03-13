@@ -1,27 +1,10 @@
 ﻿using Newtonsoft.Json;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Citylogia.Server.Entityes
+
+namespace Core.Api.Models.Input
 {
-    [Table("Address")]
-    public class Address
+    public class AddressInputParameters
     {
-        public Address()
-        {
-            this.Id = 0;
-            this.Latitude = 0d;
-            this.Longitude = 0d;
-            this.Country = string.Empty;
-            this.Province = string.Empty;
-            this.City = string.Empty;
-            this.District = string.Empty;
-            this.House = 0;
-            this.Flat = null;
-            this.Postcode = 0;
-        }
-
-        public long Id { get; set; }
-
         [JsonProperty("latitude")]
         public double Latitude { get; set; }
 
