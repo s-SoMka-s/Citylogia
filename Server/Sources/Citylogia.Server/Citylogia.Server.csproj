@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Core.Api\Core.Api.csproj" />
     <ProjectReference Include="..\Core.Db\Core.Db.csproj" />
     <ProjectReference Include="..\Core.Entities\Core.Entities.csproj" />
     <ProjectReference Include="..\Core.Tools\Core.Tools.csproj" />

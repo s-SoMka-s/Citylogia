@@ -1,5 +1,6 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Citylogia.Server.Core.Api.Tools;
 using Citylogia.Server.Core.Db;
 using Citylogia.Server.Core.Tools.Implementations.AppSettings;
 using Citylogia.Server.Core.Tools.Interfaces.AppSettings;
@@ -25,7 +26,6 @@ namespace Citylogia.Server
         public void ConfigureServices(IServiceCollection services)
         {
             Injections.AddServices(services, appSettings);
-            services.AddControllers();
         }
 
         public void ConfigureContainer(ContainerBuilder builder)
@@ -37,6 +37,7 @@ namespace Citylogia.Server
         public void Configure(IApplicationBuilder app, IHostApplicationLifetime appLifetime)
         {
             app.MigrateDb();
+            app.UseApi();
 
 
             var applicationContainer = app.ApplicationServices.GetAutofacRoot();
