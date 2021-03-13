@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Citylogia.Server.Core.Entityes
@@ -8,7 +9,6 @@ namespace Citylogia.Server.Core.Entityes
     {
         public Address()
         {
-            this.Id = 0;
             this.Latitude = 0d;
             this.Longitude = 0d;
             this.Country = string.Empty;
@@ -20,36 +20,26 @@ namespace Citylogia.Server.Core.Entityes
             this.Postcode = 0;
         }
 
+        [Key]
         public long Id { get; set; }
-
-        [JsonProperty("latitude")]
         public double Latitude { get; set; }
 
-        [JsonProperty("longitude")]
         public double Longitude { get; set; }
 
-        [JsonProperty("country")]
         public string Country { get; set; }
 
-        [JsonProperty("province")]
         public string Province { get; set; }
 
-        [JsonProperty("city")]
         public string City { get; set; }
 
-        [JsonProperty("district")]
         public string District { get; set; }
 
-        [JsonProperty("street")]
         public string Street { get; set; }
 
-        [JsonProperty("house")]
         public long House { get; set; }
 
-        [JsonProperty("flat")]
         public long? Flat { get; set; }
 
-        [JsonProperty("postcode")]
-        public long Postcode { get; set; }
+        public long Postcode { get; set; } 
     }
 }
