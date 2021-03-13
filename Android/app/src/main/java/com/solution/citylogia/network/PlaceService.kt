@@ -15,7 +15,7 @@ class PlaceService() {
         this.placeApi.getAllPlaces()
                 .subscribeOn(Schedulers.newThread())
                 .subscribe({ places ->
-                    println(places)
+                    println(places.data.elements)
                 }, {
                     // OnError
                 })
@@ -25,7 +25,7 @@ class PlaceService() {
         this.placeApi.getPlacesNear(latitude, longitude, radius)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe({ places ->
-
+                    println(places.data.elements)
                 }, {
                     // OnError
                 })

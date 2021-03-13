@@ -31,7 +31,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.solution.citylogia.models.Place;
-import com.solution.citylogia.network.PlaceService;
 import com.solution.citylogia.utils.Descriptor;
 
 import java.io.IOException;
@@ -63,10 +62,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.parseInterestingPlaces();
+
         String languageToLoad = "ru";
         Locale locale = new Locale(languageToLoad);
         Locale.setDefault(locale);
+
         Configuration config = new Configuration();
         config.setLocale(locale);
         getBaseContext().getResources().updateConfiguration(config,
@@ -111,8 +111,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         } else {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, ACCESS_LOCATION_REQUEST_CODE);
         }
-
-        parseInterestingPlaces();
 
         /*
          * Я тут при клике на маркер перехожу на активити с его описанием.
@@ -200,75 +198,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 20));
             }
         });
-    }
-
-    private void parseInterestingPlaces() {
-        PlaceService ps = new PlaceService();
-        ps.drawAllPlaces();
-        /*
-        int count = 0; //поле в JSON, сколько мест в базе всего
-        JSONObject data;
-        JSONArray elements;
-        try {
-
-            data = new JSONObject(JsonDataFromAsset("input.json")).getJSONObject("data");
-            count = data.getInt("count");
-            elements = data.getJSONArray("elements");
-            places = new Place[count];
-
-            for (int i = 0; i < count; i++) {
-                places[i] = new Place();
-                places[i].id = elements.getJSONObject(i).getInt("id");
-                places[i].mark = elements.getJSONObject(i).getDouble("mark");
-                places[i].type = new Place.Type(elements.getJSONObject(i).getJSONObject("type").getInt("id"),
-                        elements.getJSONObject(i).getJSONObject("type").getString("name"));
-                places[i].name = elements.getJSONObject(i).getString("name");
-                places[i].address = new Place.Address(elements.getJSONObject(i).getJSONObject("address").getDouble("latitude"),
-                        elements.getJSONObject(i).getJSONObject("address").getDouble("longitude"),
-                        elements.getJSONObject(i).getJSONObject("address").getString("country"),
-                        elements.getJSONObject(i).getJSONObject("address").getString("province"),
-                        elements.getJSONObject(i).getJSONObject("address").getString("city"),
-                        elements.getJSONObject(i).getJSONObject("address").getString("district"),
-                        elements.getJSONObject(i).getJSONObject("address").getString("street"),
-                        elements.getJSONObject(i).getJSONObject("address").getString("house"),
-                        elements.getJSONObject(i).getJSONObject("address").getString("flat"),
-                        elements.getJSONObject(i).getJSONObject("address").getInt("postcode"));
-                places[i].description = elements.getJSONObject(i).getString("description");
-                places[i].reviewsCount = elements.getJSONObject(i).getJSONObject("reviews").getInt("count");
-                for (int j = 0; j < places[i].reviewsCount; j++) {
-                    places[i].reviews.add(new Place.Reviews(elements.getJSONObject(i).getJSONObject("reviews").getJSONArray("elements").getJSONObject(j).getInt("id"),
-                            elements.getJSONObject(i).getJSONObject("reviews").getJSONArray("elements").getJSONObject(j).getString("body"),
-                            new Place.Reviews.Author(elements.getJSONObject(i).getJSONObject("reviews").getJSONArray("elements").getJSONObject(j).getJSONObject("author").getInt("id"),
-                                    elements.getJSONObject(i).getJSONObject("reviews").getJSONArray("elements").getJSONObject(j).getJSONObject("author").getString("name"),
-                                    elements.getJSONObject(i).getJSONObject("reviews").getJSONArray("elements").getJSONObject(j).getJSONObject("author").getString("surname")
-                                    //аватар идет пока в опу
-                            ),
-                            elements.getJSONObject(i).getJSONObject("reviews").getJSONArray("elements").getJSONObject(j).getInt("mark"),
-                            elements.getJSONObject(i).getJSONObject("reviews").getJSONArray("elements").getJSONObject(j).getString("published_at")));
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        //Gson gson = new Gson();
-        //Place a = gson.fromJson(places, new TypeToken<List<Place>>(){}.getType());
-
-        // places = new Place[count];
-
-        /*places[0] = new Place(1, new Place.Type(1, "Архитектура"), "Театр оперы и балета",
-                new Place.Address(55.030443, 82.925023, "Россия",
-                        "Новосибирская область", "Новосибирск", "Центральный район",
-                        "Красный проспект", "", "", 433333), "у мэрии");
-
-        places[1] = new Place(2, new Place.Type(1, "Парки"), "Нарымский сквер",
-                new Place.Address(55.043548, 82.909349, "Россия",
-                        "Новосибирская область", "Новосибирск", "Центральный район",
-                        "Челюскинцев", "", "", 630099), "у цирка");
-
-
-        List<Place> list = Arrays.asList(places);
-
-        drawInterestingPlaces(list); */
     }
 
     private String JsonDataFromAsset(String fileName) {

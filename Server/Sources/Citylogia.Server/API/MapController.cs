@@ -1,8 +1,8 @@
-﻿using Citylogia.Server.Entityes;
-using Citylogia.Server.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Collections.Generic;
+using Citylogia.Server.Core.Entityes;
+using Citylogia.Server.Core.Db.Implementations;
 
 namespace Citylogia.Server.API
 {
@@ -17,23 +17,11 @@ namespace Citylogia.Server.API
         [HttpGet("")]
         public IEnumerable<Place> Get()
         {
-            using var db = new ApplicationContext();
-            var places = db.Places.ToList();
+            var places = new List<Place>();
 
             return places;
         }
 
-        [HttpPost("")]
-        public bool Add([FromBody] PlaceInputParameters placeInputParameters)
-        {
-            using var db = new ApplicationContext();
-
-            var place = new Place { Name = placeInputParameters.Name, Description = placeInputParameters.Description, Mark = placeInputParameters.Mark, TypeId = 1 };
-
-            db.Places.Add(place);
-            db.SaveChanges();
-
-            return true;
-        }
+        
     }
 }
