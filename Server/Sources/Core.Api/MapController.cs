@@ -4,7 +4,6 @@ using Core.Api.Models;
 using Core.Api.Models.Input;
 using Core.Api.Models.Output;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -41,32 +40,14 @@ namespace Citylogia.Server.Core.Api
         [HttpPost("")]
         public BaseApiResponse<bool> AddPlace([FromBody] PlaceInputParameters parameters)
         {
-            var addr = new Address()
-            {
-                Latitude = parameters.Address.Latitude,
-                Longitude = parameters.Address.Longitude,
-                Country = parameters.Address.Country,
-                Province = parameters.Address.Province,
-                District = parameters.Address.District,
-                Street = parameters.Address.Street,
-                House = parameters.Address.House,
-                Flat = parameters.Address.Flat,
-                Postcode = parameters.Address.Postcode
-            };
+            var addr = parameters.BuildAddress();
 
             var entity = this.context.Addresses.Add(addr).Entity;
             this.context.SaveChanges();
 
             var addrId = entity.Id;
 
-            var place = new Place()
-            {
-                Mark = parameters.Mark,
-                Name = parameters.Name,
-                Description = parameters.Description,
-                TypeId = parameters.TypeId,
-                AddressId = addrId
-            };
+            var place = parameters.BuildPlace(addrId);
 
             this.context.Places.Add(place);
             this.context.SaveChanges();

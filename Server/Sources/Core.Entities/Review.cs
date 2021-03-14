@@ -1,14 +1,13 @@
-﻿using Newtonsoft.Json;
+﻿using Libraries.Db.Base;
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Citylogia.Server.Core.Entityes
 {
     [Table("Reviews")]
-    public class Review
+    public class Review : BaseDataType
     {
-        public Review()
+        public Review() : base()
         {
             this.Body = string.Empty;
             this.Mark = 0;
@@ -16,8 +15,7 @@ namespace Citylogia.Server.Core.Entityes
             this.Author = default;
         }
 
-        [Key]
-        public long Id { get; set; }
+        
         public string Body { get; set; }
         
         public long Mark { get; set; }

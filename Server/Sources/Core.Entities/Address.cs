@@ -1,13 +1,12 @@
-﻿using Newtonsoft.Json;
-using System.ComponentModel.DataAnnotations;
+﻿using Libraries.Db.Base;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Citylogia.Server.Core.Entityes
 {
     [Table("Address")]
-    public class Address
+    public class Address : BaseDataType
     {
-        public Address()
+        public Address() : base()
         {
             this.Latitude = 0d;
             this.Longitude = 0d;
@@ -20,8 +19,6 @@ namespace Citylogia.Server.Core.Entityes
             this.Postcode = 0;
         }
 
-        [Key]
-        public long Id { get; set; }
         public double Latitude { get; set; }
 
         public double Longitude { get; set; }
