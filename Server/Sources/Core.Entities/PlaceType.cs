@@ -1,19 +1,17 @@
-﻿using Newtonsoft.Json;
-using System.ComponentModel.DataAnnotations;
+﻿using Libraries.Db.Base;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Citylogia.Server.Core.Entityes
 {
     [Table("Places-Types")]
-    public class PlaceType
+    public class PlaceType : BaseDataType
     {
         public PlaceType()
         {
             this.Name = string.Empty;
         }
 
-        [Key]
-        public long Id { get; set; }
+
         public string Name { get; set; }
     }
 }

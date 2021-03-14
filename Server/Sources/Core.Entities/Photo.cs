@@ -1,19 +1,17 @@
-﻿using Newtonsoft.Json;
-using System.ComponentModel.DataAnnotations;
+﻿using Libraries.Db.Base;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Citylogia.Server.Core.Entityes
 {
     [Table("Photos")]
-    public class Photo
+    public class Photo : BaseDataType
     {
-        public Photo()
+        public Photo() : base()
         {
             this.Link = string.Empty;
         }
 
-        [Key]
-        public long Id { get; set; }
+
         public string Link { get; set; }
     }
 }
