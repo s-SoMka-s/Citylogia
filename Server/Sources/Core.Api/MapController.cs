@@ -22,6 +22,7 @@ namespace Citylogia.Server.Core.Api
         [HttpGet("")]
         public BaseApiResponse<BaseCollectionResponse<PlaceSummary>> Get()
         {
+            
             var places = this.context.Places.ToList();
 
             var summaries = new List<PlaceSummary>();
