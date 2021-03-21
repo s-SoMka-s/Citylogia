@@ -12,6 +12,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.solution.citylogia.models.BaseCollectionClass;
+import com.solution.citylogia.models.Photo;
+import com.solution.citylogia.models.Place;
+import com.solution.citylogia.models.Review;
+import com.squareup.picasso.Picasso;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -63,8 +71,33 @@ public class place_reviews extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_place_reviews, container, false);
+        View view = inflater.inflate(R.layout.fragment_place_reviews, container, false);
+
+        TextView name_v3_1_replace = view.findViewById(R.id.name_v3_1);
+        TextView comment_v3_1_replace = view.findViewById(R.id.comment_v3_1);
+        TextView date_v3_1_replace = view.findViewById(R.id.date_v3_1);
+        ImageView image_v3_1_replace = view.findViewById(R.id.image_v3_1);
+
+        Place place = new Place();
+        String name_v3_1 = place.getName();
+        BaseCollectionClass<Review> comment_v3_1 = place.getReviews();
+        BaseCollectionClass<Photo> image_v3_1 = place.getPhotos();
+        //String date_v3_1 = place.getName();
+
+        name_v3_1_replace.setText(name_v3_1);
+
+        String url = "https://sun9-15.userapi.com/impf/c631924/v631924846/245f1/0OxkD0nPXqY.jpg?size=762x1104&quality=96&sign=4ec3533e9b0e4edb1b058368ed04ec62&type=album";
+
+        Picasso.get().load(url)
+                .resize(150, 150)
+                .centerCrop()
+                .placeholder(R.drawable.ic_launcher_background)
+                .into(image_v3_1_replace);
+
+        //comment_v3_1_replace.setText(comment_v3_1); ?
+        //date_v3_1_replace.setText(date_v3_1);
+
+        return view;
     }
 
     @Override

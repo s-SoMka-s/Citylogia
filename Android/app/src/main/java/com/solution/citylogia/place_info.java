@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.solution.citylogia.models.Place;
+import com.solution.citylogia.models.PlaceAddress;
 
 import java.net.URL;
 
@@ -74,12 +75,18 @@ public class place_info extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_place_info, container, false);
 
-        TextView text_replace = view.findViewById(R.id.title_v2);
+        TextView title_v2_replace = view.findViewById(R.id.title_v2);
+        TextView address_v2_replace = view.findViewById(R.id.address_v2);
+        TextView text_v2_replace = view.findViewById(R.id.text_v2);
 
         Place place = new Place();
-        String textt = place.getName();
+        String title_v2 = place.getName();
+        PlaceAddress address_v2 = place.getAddress();
+        String text_v2 = place.getDescription();
 
-        text_replace.setText(textt);
+        title_v2_replace.setText(title_v2);
+        //address_v2_replace.setText(address_v2); ?
+        text_v2_replace.setText(text_v2);
 
         return view;
     }

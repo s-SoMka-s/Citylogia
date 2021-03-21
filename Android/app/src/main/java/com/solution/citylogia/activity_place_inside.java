@@ -12,6 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
+
+import com.solution.citylogia.models.Place;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -63,8 +66,19 @@ public class activity_place_inside extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_place_inside, container, false);
+        View view = inflater.inflate(R.layout.fragment_place_inside, container, false);
+
+        TextView title_v1_replace = view.findViewById(R.id.title_v1);
+        TextView text_v1_replace = view.findViewById(R.id.text_v1);
+
+        Place place = new Place();
+        String title_v1 = place.getName();
+        String text_v1 = place.getDescription();
+
+        title_v1_replace.setText(title_v1);
+        text_v1_replace.setText(text_v1);
+
+        return view;
     }
 
     @Override
