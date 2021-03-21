@@ -49,7 +49,7 @@ jobs:
         # Path to the Dockerfile
         file: ./Server/Docker/.dockerfile
         # List of tags
-        tags: somka4docker/intelpos:latest
+        tags: somka4docker/citylogia-server:latest
         # Push is a shorthand for --output=type=registry
         push: true
   
