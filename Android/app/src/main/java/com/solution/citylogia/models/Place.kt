@@ -5,6 +5,7 @@ data class Place(
         val mark: Long = 0,
         val name: String = "Имя из структуры Place",
         val description: String? = null,
+        val short_description: String? = null,
         val type: PlaceType = PlaceType(),
         val address: PlaceAddress = PlaceAddress(),
         val photos: BaseCollectionClass<Photo> = BaseCollectionClass(),

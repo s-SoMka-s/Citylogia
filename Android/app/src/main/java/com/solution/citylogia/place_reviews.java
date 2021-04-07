@@ -73,6 +73,16 @@ public class place_reviews extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_place_reviews, container, false);
 
+        ImageView open_review_v3_1 = view.findViewById(R.id.openReview);
+
+        open_review_v3_1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDialog();
+            }
+        });
+
+
         TextView name_v3_1_replace = view.findViewById(R.id.name_v3_1);
         TextView comment_v3_1_replace = view.findViewById(R.id.comment_v3_1);
         TextView date_v3_1_replace = view.findViewById(R.id.date_v3_1);
@@ -113,5 +123,10 @@ public class place_reviews extends Fragment {
                 navController.navigate(R.id.action_place_reviews_to_place_info);
             }
         });
+    }
+
+    public void openDialog() {
+        ExampleDialog exampleDialog = new ExampleDialog();
+        exampleDialog.show(getChildFragmentManager(), "text");
     }
 }
