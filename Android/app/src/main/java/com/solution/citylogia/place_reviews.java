@@ -1,5 +1,6 @@
 package com.solution.citylogia;
 
+import android.icu.text.DateFormat;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,7 +20,13 @@ import com.solution.citylogia.models.BaseCollectionClass;
 import com.solution.citylogia.models.Photo;
 import com.solution.citylogia.models.Place;
 import com.solution.citylogia.models.Review;
+import com.solution.citylogia.models.User;
 import com.squareup.picasso.Picasso;
+
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -89,24 +96,32 @@ public class place_reviews extends Fragment {
         ImageView image_v3_1_replace = view.findViewById(R.id.image_v3_1);
 
         Place place = new Place();
-        String name_v3_1 = place.getName();
-        BaseCollectionClass<Review> comment_v3_1 = place.getReviews();
-        BaseCollectionClass<Photo> image_v3_1 = place.getPhotos();
-        //String date_v3_1 = place.getName();
+        Review review = new Review();
+        User user = new User();
+        user = review.getAuthor();
+        String name_v3_1 = user.getName();
+        String comment_v3_1 = review.getBody();
 
-        name_v3_1_replace.setText(name_v3_1);
 
-        String url = "https://sun9-15.userapi.com/impf/c631924/v631924846/245f1/0OxkD0nPXqY.jpg?size=762x1104&quality=96&sign=4ec3533e9b0e4edb1b058368ed04ec62&type=album";
+        // так как нет в коллекции фото выкидываем с нулл поинтером
+        //Photo image_v3_1 = place.getPhotos().getElements().get(1);
+        //String url_image = image_v3_1.getLink();;
 
-        Picasso.get().load(url)
+        String url_image = "https://sun9-15.userapi.com/impf/c631924/v631924846/245f1/0OxkD0nPXqY.jpg?size=762x1104&quality=96&sign=4ec3533e9b0e4edb1b058368ed04ec62&type=album";
+
+        Picasso.get().load(url_image)
                 .resize(150, 150)
                 .centerCrop()
                 .placeholder(R.drawable.ic_launcher_background)
                 .into(image_v3_1_replace);
 
-        //comment_v3_1_replace.setText(comment_v3_1); ?
-        //date_v3_1_replace.setText(date_v3_1);
+        String date_review_v3_1 = review.getPublished_at().format(DateTimeFormatter.ISO_LOCAL_DATE);
 
+        name_v3_1_replace.setText(name_v3_1);
+
+        comment_v3_1_replace.setText(comment_v3_1);
+        date_v3_1_replace.setText(date_review_v3_1);
+        
         return view;
     }
 

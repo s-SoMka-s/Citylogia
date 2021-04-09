@@ -85,7 +85,7 @@ public class place_info extends Fragment {
         String text_v2 = place.getDescription();
 
         title_v2_replace.setText(title_v2);
-        //address_v2_replace.setText(address_v2); ?
+        address_v2_replace.setText(address_v2.getStreet());
         text_v2_replace.setText(text_v2);
 
         return view;
