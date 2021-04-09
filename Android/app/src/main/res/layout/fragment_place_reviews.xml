@@ -70,6 +70,7 @@
             android:padding="16dp">
 
             <ImageView
+                       
                 android:id="@+id/image_v3_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -78,6 +79,7 @@
                 app:srcCompat="@drawable/photo_pers1" />
 
             <TextView
+
                 android:id="@+id/name_v3_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -87,6 +89,7 @@
                 android:textColor="@color/blackPrimary"
                 android:textSize="12sp"
                 android:textStyle="bold"
+
                 app:layout_constraintStart_toEndOf="@+id/image_v3_1"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -95,11 +98,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
+
                 app:layout_constraintStart_toEndOf="@+id/name_v3_1"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/stars" />
 
             <TextView
+                      
                 android:id="@+id/date_v3_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -113,6 +118,7 @@
                 android:textStyle="normal"/>
 
             <TextView
+                      
                 android:id="@+id/comment_v3_1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -125,6 +131,7 @@
                 android:textSize="14sp"
                 android:textStyle="normal"
                 app:layout_constraintEnd_toEndOf="parent"
+
                 app:layout_constraintStart_toEndOf="@+id/image_v3_1"
                 app:layout_constraintTop_toBottomOf="@+id/name_v3_1" />
         </androidx.constraintlayout.widget.ConstraintLayout>
