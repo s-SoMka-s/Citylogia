@@ -14,6 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.solution.citylogia.models.Place;
+import com.solution.citylogia.models.PlaceAddress;
 
 /**
  * A simple {@link Fragment} subclass.
