@@ -1,5 +1,6 @@
 package com.solution.citylogia;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,6 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.solution.citylogia.models.Place;
+import com.solution.citylogia.models.PlaceAddress;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -65,7 +70,22 @@ public class place_info extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_place_info, container, false);
+        View view = inflater.inflate(R.layout.fragment_place_info, container, false);
+
+        TextView title_v2_replace = view.findViewById(R.id.title_v2);
+        TextView address_v2_replace = view.findViewById(R.id.address_v2);
+        TextView text_v2_replace = view.findViewById(R.id.text_v2);
+
+        Place place = new Place();
+        String title_v2 = place.getName();
+        PlaceAddress address_v2 = place.getAddress();
+        String text_v2 = place.getDescription();
+
+        title_v2_replace.setText(title_v2);
+        address_v2_replace.setText(address_v2.getStreet());
+        text_v2_replace.setText(text_v2);
+
+        return view;
     }
 
     @Override

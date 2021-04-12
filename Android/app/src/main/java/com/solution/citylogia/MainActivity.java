@@ -31,7 +31,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.solution.citylogia.models.Place;
-import com.solution.citylogia.utils.Descriptor;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,7 +39,6 @@ import java.util.Locale;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
     private Place[] places;
-    private Descriptor descriptor;
     private static boolean refresh = true;
     private static boolean requestToGetPlaces = true; //временное
     private static final String Tag = "MainActivity";
@@ -144,7 +142,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         if (userLocationMarker == null) {
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(latLng);
-            markerOptions.icon(this.descriptor.bitmapDescriptorFromVector(getApplicationContext(), R.drawable.ic_baseline_my_location_24));
+            //markerOptions.icon(this.descriptor.bitmapDescriptorFromVector(getApplicationContext(), R.drawable.ic_baseline_my_location_24));
             userLocationMarker = mMap.addMarker(markerOptions);
             if (refresh) {
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
@@ -228,7 +226,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void putMarker(MarkerOptions markerOptions, LatLng coords, long placeId) {
         markerOptions.position(coords);
-        markerOptions.icon(descriptor.bitmapDescriptorFromVector(getApplicationContext(), R.drawable.ic_baseline_place_36));
+        //markerOptions.icon(descriptor.bitmapDescriptorFromVector(getApplicationContext(), R.drawable.ic_baseline_place_36));
         markerOptions.snippet(java.lang.Long.toString(placeId));
         mMap.addMarker(markerOptions);
     }

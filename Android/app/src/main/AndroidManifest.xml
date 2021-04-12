@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.solution.citylogia">
+    <uses-permission android:name="android.permission.INTERNET"/>
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -19,16 +20,22 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".PermissionsActivity">
+
+            <!--<intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>-->
+        </activity>
+        <activity
+            android:name=".PlaceInside"
+            tools:ignore="DuplicateActivity">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name=".PlaceInside"
-
-            tools:ignore="DuplicateActivity">
 
         </activity>
         <!--
