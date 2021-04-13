@@ -20,7 +20,7 @@
       "launchBrowser": false,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "POSTGRES_CONNECTION": "Host=84.201.147.252;Port=5432;Database=citylogia;User ID=postgres;Password=12345;"
+        "POSTGRES_CONNECTION": "Host=178.154.212.96;Port=5432;Database=citylogia;User ID=citylogia;Password=citylogia;"
       },
       "dotnetRunMessages": "true",
       "applicationUrl": "https://localhost:5001;http://localhost:5000"
