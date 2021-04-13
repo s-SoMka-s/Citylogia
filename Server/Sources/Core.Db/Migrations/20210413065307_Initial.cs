@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Core.Db.Migrations
 {
-    public partial class Second : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -27,7 +27,8 @@ namespace Core.Db.Migrations
                     Street = table.Column<string>(type: "text", nullable: true),
                     House = table.Column<long>(type: "bigint", nullable: false),
                     Flat = table.Column<long>(type: "bigint", nullable: true),
-                    Postcode = table.Column<long>(type: "bigint", nullable: false)
+                    Postcode = table.Column<long>(type: "bigint", nullable: false),
+                    Deleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -41,7 +42,8 @@ namespace Core.Db.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: true)
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    Deleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -59,7 +61,8 @@ namespace Core.Db.Migrations
                     Name = table.Column<string>(type: "text", nullable: true),
                     Description = table.Column<string>(type: "text", nullable: true),
                     TypeId = table.Column<long>(type: "bigint", nullable: false),
-                    AddressId = table.Column<long>(type: "bigint", nullable: false)
+                    AddressId = table.Column<long>(type: "bigint", nullable: false),
+                    Deleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -88,7 +91,8 @@ namespace Core.Db.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Link = table.Column<string>(type: "text", nullable: true),
-                    PlaceId = table.Column<long>(type: "bigint", nullable: true)
+                    PlaceId = table.Column<long>(type: "bigint", nullable: true),
+                    Deleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -111,7 +115,10 @@ namespace Core.Db.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: true),
                     Surname = table.Column<string>(type: "text", nullable: true),
-                    PhotoId = table.Column<long>(type: "bigint", nullable: false)
+                    Email = table.Column<string>(type: "text", nullable: true),
+                    Password = table.Column<string>(type: "text", nullable: true),
+                    PhotoId = table.Column<long>(type: "bigint", nullable: false),
+                    Deleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -136,7 +143,8 @@ namespace Core.Db.Migrations
                     Mark = table.Column<long>(type: "bigint", nullable: false),
                     PublishedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     UserId = table.Column<long>(type: "bigint", nullable: false),
-                    PlaceId = table.Column<long>(type: "bigint", nullable: true)
+                    PlaceId = table.Column<long>(type: "bigint", nullable: true),
+                    Deleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
