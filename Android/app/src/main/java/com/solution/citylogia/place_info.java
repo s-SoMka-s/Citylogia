@@ -98,12 +98,7 @@ public class place_info extends Fragment {
         final NavController navController = Navigation.findNavController(view);
 
         Button but_reviews = view.findViewById(R.id.but_reviews);
-        but_reviews.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navController.navigate(R.id.action_place_info_to_place_reviews);
-            }
-        });
+        but_reviews.setOnClickListener(v -> navController.navigate(R.id.action_place_info_to_place_reviews));
 
 
         ImageView but_back = view.findViewById(R.id.icon_back);
