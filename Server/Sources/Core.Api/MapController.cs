@@ -49,9 +49,9 @@ namespace Citylogia.Server.Core.Api
         }
         
         [HttpGet("{id}")]
-        public BaseApiResponse<PlaceSummary> GetPlace([FromQuery] long placeId)
+        public BaseApiResponse<PlaceSummary> GetPlace(long id)
         {
-            var place = this.context.Places.Find(placeId);
+            var place = this.context.Places.Find(id);
             var res = new PlaceSummary(place);
 
             return new BaseApiResponse<PlaceSummary>(200, res);
