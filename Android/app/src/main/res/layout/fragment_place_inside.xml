@@ -7,6 +7,7 @@
     tools:context=".activity_place_inside"
     android:background="@drawable/place1"
     android:padding="16dp"
+    android:name="@+id/dick"
     android:theme="@style/Theme.AppCompat.NoActionBar">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -46,6 +47,7 @@
             android:id="@+id/but_more"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/custom_button_filter_2"
 
             android:textSize="14sp"
             android:layout_marginTop="20dp"
@@ -54,8 +56,19 @@
 
             android:text="Подробнее"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_v1" />
 
+            app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+        <Button
+            android:id="@+id/set_route"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/custom_button_filter"
+
+            android:layout_marginTop="80dp"
+            android:text="Установить маршрут"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView2" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>
