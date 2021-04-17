@@ -1,10 +1,5 @@
 package com.solution.citylogia;
 
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentActivity;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -14,12 +9,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationListener;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.Parcel;
@@ -33,6 +24,11 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
+
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -42,8 +38,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
@@ -53,6 +47,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.Marker;
@@ -77,14 +72,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-import dagger.Lazy;
-
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
-
     private Place[] places;
     private ArrayList<Place> allPlaces;
     private ArrayList<Place> placesToShow; //new
@@ -116,7 +109,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
      * Костыль - айдишник места (элемент массива) вписывается как snippet, который на карте без title
      * не отображается. Т.о. я могу передать Place[i] в активитис с оценками и отзывами
      */
-
     public static class Place implements Parcelable {
 
         protected Place(Parcel in) {
@@ -354,11 +346,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         String languageToLoad = "ru";
         Locale locale = new Locale(languageToLoad);
         Locale.setDefault(locale);
+
         Configuration config = new Configuration();
-        config.locale = locale;
+        config.setLocale(locale);
         getBaseContext().getResources().updateConfiguration(config,
                 getBaseContext().getResources().getDisplayMetrics());
 
@@ -530,6 +524,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
         googleMap.setMapStyle(
                 MapStyleOptions.loadRawResourceStyle(
                         this, R.raw.mapstyle));
@@ -541,8 +536,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         } else {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, ACCESS_LOCATION_REQUEST_CODE);
         }
-
-        parseInterestingPlaces();
 
         /*
          * Я тут при клике на маркер перехожу на активити с его описанием.
@@ -587,7 +580,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         if (userLocationMarker == null) {
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(latLng);
-            markerOptions.icon(bitmapDescriptorFromVector(getApplicationContext(), R.drawable.ic_baseline_my_location_24));
+            //markerOptions.icon(this.descriptor.bitmapDescriptorFromVector(getApplicationContext(), R.drawable.ic_baseline_my_location_24));
             userLocationMarker = mMap.addMarker(markerOptions);
             if (refresh) {
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
@@ -707,7 +700,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         createInterestingPlaces();
     }
-
     private String JsonDataFromAsset(String fileName) {
         String json = null;
         try {
@@ -781,13 +773,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
-        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
-        vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
-        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        vectorDrawable.draw(canvas);
-        return BitmapDescriptorFactory.fromBitmap(bitmap);
+    public void putMarker(MarkerOptions markerOptions, LatLng coords, long placeId) {
+        markerOptions.position(coords);
+        //markerOptions.icon(descriptor.bitmapDescriptorFromVector(getApplicationContext(), R.drawable.ic_baseline_place_36));
+        markerOptions.snippet(java.lang.Long.toString(placeId));
+        mMap.addMarker(markerOptions);
     }
 
     @Override

@@ -13,6 +13,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
+
+import com.solution.citylogia.models.BaseCollectionResponse;
+import com.solution.citylogia.models.BaseObjectResponse;
+import com.solution.citylogia.models.Place;
+import com.solution.citylogia.network.PlaceService;
+import com.solution.citylogia.network.RetrofitSingleton;
+import com.solution.citylogia.network.api.IPlaceApi;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,13 +33,16 @@ public class activity_place_inside extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    private static final Place placeInfo = null;
+    private IPlaceApi placeApi;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
     public activity_place_inside() {
         // Required empty public constructor
+        ;
+        this.placeApi = RetrofitSingleton.INSTANCE.create(IPlaceApi.class);
     }
 
     /**
@@ -64,9 +75,21 @@ public class activity_place_inside extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_place_inside, container, false);
 
-        return inflater.inflate(R.layout.fragment_place_inside, container, false);
+        BaseObjectResponse<BaseCollectionResponse<Place>> places = placeService.drawAllPlaces().;
+
+        TextView title_v1_replace = view.findViewById(R.id.title_v1);
+        TextView text_v1_replace = view.findViewById(R.id.text_v1);
+
+        Place place = new Place();
+        String title_v1 = place.getName();
+        String text_v1 = place.getDescription();
+
+        title_v1_replace.setText(title_v1);
+        text_v1_replace.setText(text_v1);
+
+        return view;
     }
 
     @Override

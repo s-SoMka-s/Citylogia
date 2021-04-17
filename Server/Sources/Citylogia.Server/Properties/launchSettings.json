@@ -17,9 +17,10 @@
     },
     "Citylogia.Server": {
       "commandName": "Project",
-      "launchBrowser": true,
+      "launchBrowser": false,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "POSTGRES_CONNECTION": "Host=178.154.212.96;Port=5432;Database=citylogia;User ID=citylogia;Password=citylogia;"
       },
       "dotnetRunMessages": "true",
       "applicationUrl": "https://localhost:5001;http://localhost:5000"
@@ -29,7 +30,11 @@
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
       "publishAllPorts": true,
-      "useSSL": true
+      "useSSL": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "POSTGRES_CONNECTION": "Host=178.154.212.96;Port=5432;Database=citylogia;User ID=citylogia;Password=citylogia;"
+      }
     }
   }
 }

@@ -66,67 +66,358 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp">
+            android:layout_height="match_parent">
 
-            <ImageView
-                android:id="@+id/imageView5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/photo_pers1" />
+                app:layout_constraintTop_toTopOf="parent">
+              
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/textView10"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="Игооорь"
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="16dp">
 
-                android:textColor="@color/blackPrimary"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@+id/imageView5"
-                app:layout_constraintTop_toTopOf="parent" />
+                        <ImageView
+                            android:id="@+id/image_v3_1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:srcCompat="@drawable/photo_pers1" />
+
+                        <TextView
+                            android:id="@+id/name_v3_1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="Игооорь"
+
+                            android:textColor="@color/blackPrimary"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toEndOf="@+id/image_v3_1"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/rate_v3_1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            app:layout_constraintStart_toEndOf="@+id/name_v3_1"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:srcCompat="@drawable/rate_5" />
+
+                        <TextView
+                            android:id="@+id/date_v3_1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="29.11.2020"
+                            android:textColor="@color/graySecondary"
+                            android:textSize="10sp"
+
+                            android:textStyle="normal"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/comment_v3_1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="5dp"
+                            android:lineSpacingExtra="4dp"
+
+                            android:text="@string/pl1_text1"
+                            android:textColor="@color/blackPrimary"
+                            android:textSize="14sp"
+                            android:textStyle="normal"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/image_v3_1"
+                            app:layout_constraintTop_toBottomOf="@+id/name_v3_1" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:id="@+id/image_v3_2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:srcCompat="@drawable/photo_pers1" />
+
+                        <TextView
+                            android:id="@+id/name_v3_2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="Игооорь"
+
+                            android:textColor="@color/blackPrimary"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toEndOf="@+id/image_v3_2"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/rate_v3_2"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            app:layout_constraintStart_toEndOf="@+id/name_v3_2"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:srcCompat="@drawable/rate_5" />
+
+                        <TextView
+                            android:id="@+id/date_v3_2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="29.11.2020"
+                            android:textColor="@color/graySecondary"
+                            android:textSize="10sp"
+
+
+                            android:textStyle="normal"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/comment_v3_2"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="5dp"
+                            android:lineSpacingExtra="4dp"
+
+                            android:text="@string/pl1_text1"
+                            android:textColor="@color/blackPrimary"
+                            android:textSize="14sp"
+                            android:textStyle="normal"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/image_v3_2"
+                            app:layout_constraintTop_toBottomOf="@+id/name_v3_2" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:id="@+id/image_v3_3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:srcCompat="@drawable/photo_pers1" />
+
+                        <TextView
+                            android:id="@+id/name_v3_3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="Игооорь"
+
+                            android:textColor="@color/blackPrimary"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toEndOf="@+id/image_v3_3"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/rate_v3_3"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            app:layout_constraintStart_toEndOf="@+id/name_v3_3"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:srcCompat="@drawable/rate_5" />
+
+                        <TextView
+                            android:id="@+id/date_v3_3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="29.11.2020"
+                            android:textColor="@color/graySecondary"
+                            android:textSize="10sp"
+
+
+                            android:textStyle="normal"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/comment_v3_3"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="5dp"
+                            android:lineSpacingExtra="4dp"
+
+                            android:text="@string/pl1_text1"
+                            android:textColor="@color/blackPrimary"
+                            android:textSize="14sp"
+                            android:textStyle="normal"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/image_v3_3"
+                            app:layout_constraintTop_toBottomOf="@+id/name_v3_3" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:id="@+id/image_v3_4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:srcCompat="@drawable/photo_pers1" />
+
+                        <TextView
+                            android:id="@+id/name_v3_4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="Игооорь"
+
+                            android:textColor="@color/blackPrimary"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toEndOf="@+id/image_v3_4"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/rate_v3_4"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            app:layout_constraintStart_toEndOf="@+id/name_v3_4"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:srcCompat="@drawable/rate_5" />
+
+                        <TextView
+                            android:id="@+id/date_v3_4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="29.11.2020"
+                            android:textColor="@color/graySecondary"
+                            android:textSize="10sp"
+
+
+                            android:textStyle="normal"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/comment_v3_4"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="5dp"
+                            android:lineSpacingExtra="4dp"
+
+                            android:text="@string/pl1_text1"
+                            android:textColor="@color/blackPrimary"
+                            android:textSize="14sp"
+                            android:textStyle="normal"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/image_v3_4"
+                            app:layout_constraintTop_toBottomOf="@+id/name_v3_4" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:id="@+id/image_v3_5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:srcCompat="@drawable/photo_pers1" />
+
+                        <TextView
+                            android:id="@+id/name_v3_5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="Игооорь"
+
+                            android:textColor="@color/blackPrimary"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toEndOf="@+id/image_v3_5"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/rate_v3_5"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            app:layout_constraintStart_toEndOf="@+id/name_v3_5"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:srcCompat="@drawable/rate_5" />
+
+                        <TextView
+                            android:id="@+id/date_v3_5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="29.11.2020"
+                            android:textColor="@color/graySecondary"
+                            android:textSize="10sp"
+
+
+                            android:textStyle="normal"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/comment_v3_5"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="5dp"
+                            android:lineSpacingExtra="4dp"
+
+                            android:text="@string/pl1_text1"
+                            android:textColor="@color/blackPrimary"
+                            android:textSize="14sp"
+                            android:textStyle="normal"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/image_v3_5"
+                            app:layout_constraintTop_toBottomOf="@+id/name_v3_5" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
+            </ScrollView>
 
             <ImageView
-                android:id="@+id/imageView7"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                app:layout_constraintStart_toEndOf="@+id/textView10"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/stars" />
-
-            <TextView
-                android:id="@+id/textView12"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="29.11.2020"
+                android:id="@+id/openReview"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="bottom"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="15dp"
+                android:src="@drawable/send_review"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                android:clickable="true"/>
 
-
-                android:textColor="@color/graySecondary"
-                android:textSize="10sp"
-                android:textStyle="normal"/>
-
-            <TextView
-                android:id="@+id/textView13"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="5dp"
-                android:lineSpacingExtra="4dp"
-
-                android:text="@string/pl1_text1"
-                android:textColor="@color/blackPrimary"
-                android:textSize="14sp"
-                android:textStyle="normal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imageView5"
-                app:layout_constraintTop_toBottomOf="@+id/textView10" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>

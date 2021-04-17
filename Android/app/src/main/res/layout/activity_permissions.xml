@@ -28,7 +28,7 @@
 
             android:text="Добро пожаловать"
             android:textColor="#ffff"
-            android:textSize="32dp"
+            android:textSize="32sp"
             android:textStyle="bold" />
 
         <TextView
@@ -38,7 +38,7 @@
             android:fontFamily="sans-serif-light"
             android:text="Citylogia необходим доступ к местоположению устройства для корреткной работы"
             android:textColor="#ffff"
-            android:textSize="18dp"
+            android:textSize="18sp"
             android:textStyle="normal" />
 
     </LinearLayout>
@@ -53,7 +53,7 @@
         android:background="@drawable/custom_button"
         android:fontFamily="sans-serif-light"
         android:text="Предоставить разрешение"
-        android:textSize="18dp"
+        android:textSize="18sp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColor="#ffff" />
 
