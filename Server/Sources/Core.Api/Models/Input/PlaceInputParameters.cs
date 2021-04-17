@@ -7,7 +7,7 @@ namespace Core.Api.Models.Input
     {
         [JsonProperty("name")]
         public string Name { get; set; }
-        
+
         [JsonProperty("mark")]
         public long Mark { get; set; }
 
@@ -18,25 +18,15 @@ namespace Core.Api.Models.Input
         public long TypeId { get; set; }
 
         [JsonProperty("address")]
-        public AddressInputParameters Address { get; set; }
+        public string Address { get; set; }
 
-        public Address BuildAddress()
-        {
-            return new Address()
-            {
-                Latitude = Address.Latitude,
-                Longitude = Address.Longitude,
-                Country = Address.Country,
-                Province = Address.Province,
-                District = Address.District,
-                Street = Address.Street,
-                House = Address.House,
-                Flat = Address.Flat,
-                Postcode = Address.Postcode
-            };
-        }
+        [JsonProperty("latitude")]
+        public double Latitude { get; set; }
 
-        public Place BuildPlace(long addressId)
+        [JsonProperty("longitude")]
+        public double Longtitude { get; set; }
+
+        public Place Build()
         {
             return new Place()
             {
@@ -44,7 +34,9 @@ namespace Core.Api.Models.Input
                 Name = Name,
                 Description = Description,
                 TypeId = TypeId,
-                AddressId = addressId
+                Address = Address,
+                Longitude = Longtitude,
+                Latitude = Latitude
             };
         }
 
