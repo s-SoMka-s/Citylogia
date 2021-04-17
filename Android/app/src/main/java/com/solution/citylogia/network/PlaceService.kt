@@ -21,6 +21,9 @@ class PlaceService() {
                 })
     }
 
+    fun getAllPlaces() {
+    }
+
     fun getPLacesNear(latitude: Double, longitude: Double, radius: Long) {
         this.placeApi.getPlacesNear(latitude, longitude, radius)
                 .subscribeOn(Schedulers.newThread())

@@ -9,7 +9,6 @@ namespace Citylogia.Server.Core.Db.Implementations
         public DbSet<User> Users { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Photo> Photos { get; set; }
-        public DbSet<Address> Addresses { get; set; }
         public DbSet<PlaceType> PlaceTypes { get; set; }
 
 
@@ -29,10 +28,6 @@ namespace Citylogia.Server.Core.Db.Implementations
             {
                 var place = builder.Entity<Place>();
 
-                place.HasOne(p => p.Address)
-                     .WithOne()
-                     .OnDelete(DeleteBehavior.Cascade);
-
                 place.HasMany(p => p.Photos)
                      .WithOne()
                      .OnDelete(DeleteBehavior.Cascade);
@@ -47,7 +42,6 @@ namespace Citylogia.Server.Core.Db.Implementations
             }
             #endregion Place
 
-            var address = builder.Entity<Address>();
 
             var review = builder.Entity<Review>();
 
