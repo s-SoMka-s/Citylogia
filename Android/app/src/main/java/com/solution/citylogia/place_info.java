@@ -65,7 +65,12 @@ public class place_info extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_place_info, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_place_info, container, false);
+
+        ImageView but_back = view.findViewById(R.id.icon_back);
+
+        return view;
     }
 
     @Override
@@ -82,13 +87,13 @@ public class place_info extends Fragment {
             }
         });
 
+
         ImageView but_back = view.findViewById(R.id.icon_back);
-        but_back.setOnClickListener(new View.OnClickListener() {
+        but_reviews.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navController.navigate(R.id.action_place_info_to_activity_place_inside);
+                //navController.navigate(R.id.action_place_info_to_place_reviews);
             }
         });
-
     }
 }

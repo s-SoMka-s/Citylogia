@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
@@ -64,6 +65,7 @@ public class activity_place_inside extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_place_inside, container, false);
     }
 
@@ -78,6 +80,14 @@ public class activity_place_inside extends Fragment {
             @Override
             public void onClick(View v) {
                 navController.navigate(R.id.action_activity_place_inside_to_place_info);
+            }
+        });
+
+        Button but_set_route = view.findViewById(R.id.set_route);
+        but_set_route.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().onBackPressed();
             }
         });
     }
