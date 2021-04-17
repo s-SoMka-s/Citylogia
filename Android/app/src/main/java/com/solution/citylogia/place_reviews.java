@@ -168,7 +168,7 @@ public class place_reviews extends Fragment {
             }
         });
     }
-
+  
     public void openDialog() {
         ExampleDialog exampleDialog = new ExampleDialog();
         exampleDialog.show(getChildFragmentManager(), "text");

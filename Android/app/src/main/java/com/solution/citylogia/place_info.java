@@ -19,8 +19,6 @@ import android.widget.TextView;
 import com.solution.citylogia.models.Place;
 import com.solution.citylogia.models.PlaceAddress;
 
-import java.net.URL;
-
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link place_info#newInstance} factory method to
@@ -62,7 +60,6 @@ public class place_info extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
