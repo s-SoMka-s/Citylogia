@@ -2,9 +2,7 @@ package com.solution.citylogia;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -13,16 +11,9 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.Spinner;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -42,21 +33,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
-import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
-import com.google.android.libraries.places.api.model.TypeFilter;
-import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
-import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
+import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.mancj.materialsearchbar.MaterialSearchBar;
 
@@ -66,13 +46,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -100,248 +75,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     //new
     private MaterialSearchBar materialSearchBar;
-    private PlacesClient placesClient;
     private List<AutocompletePrediction> predictionList;
-
-    /**
-     * Класс место, который содержит всё описание о нём: тип, отзывы, фото и т.п.
-     * Используется для отображения меток на карте и для перехода на страницу с отзывами/оценками.
-     * Костыль - айдишник места (элемент массива) вписывается как snippet, который на карте без title
-     * не отображается. Т.о. я могу передать Place[i] в активитис с оценками и отзывами
-     */
-    public static class Place implements Parcelable {
-
-        protected Place(Parcel in) {
-            id = in.readInt();
-            name = in.readString();
-            mark = in.readDouble();
-            description = in.readString();
-            reviewsCount = in.readInt();
-            isVisible = in.readByte() != 0;
-            type = in.readParcelable(Type.class.getClassLoader());
-            address = in.readParcelable(Address.class.getClassLoader());
-        }
-
-        public static final Creator<Place> CREATOR = new Creator<Place>() {
-            @Override
-            public Place createFromParcel(Parcel in) {
-                return new Place(in);
-            }
-
-            @Override
-            public Place[] newArray(int size) {
-                return new Place[size];
-            }
-        };
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(id);
-            dest.writeString(name);
-            dest.writeDouble(mark);
-            dest.writeString(description);
-            dest.writeInt(reviewsCount);
-            dest.writeByte((byte) (isVisible ? 1 : 0));
-            dest.writeParcelable(type, flags);
-            dest.writeParcelable(address, flags);
-        }
-
-        static class Type implements Parcelable {
-            int id;
-            String name;
-
-            /**
-             * @param id   айди типа места
-             * @param name имя типа места
-             */
-            Type(int id, String name) {
-                this.id = id;
-                this.name = name;
-            }
-
-            protected Type(Parcel in) {
-                id = in.readInt();
-                name = in.readString();
-            }
-
-            public static final Creator<Type> CREATOR = new Creator<Type>() {
-                @Override
-                public Type createFromParcel(Parcel in) {
-                    return new Type(in);
-                }
-
-                @Override
-                public Type[] newArray(int size) {
-                    return new Type[size];
-                }
-            };
-
-            @Override
-            public int describeContents() {
-                return 0;
-            }
-
-            @Override
-            public void writeToParcel(Parcel dest, int flags) {
-                dest.writeInt(id);
-                dest.writeString(name);
-            }
-        }
-
-        static class Address implements Parcelable {
-            Double latitude;
-            Double longitude;
-            //LatLng latLng;
-            String country;
-            String province;
-            String city;
-            String district;
-            String street;
-            String house;
-            String flat;
-            int postcode;
-
-            /**
-             * @param country  Страна
-             * @param province Регион
-             * @param city     Город
-             * @param district Район
-             * @param street   Улица
-             * @param house    Дом
-             * @param flat     Квартира
-             * @param postcode Почтовый индекс
-             */
-            Address(Double latitude, Double longitude, String country, String province,
-                    String city, String district, String street, String house, String flat,
-                    int postcode) {
-                this.latitude = latitude;
-                this.longitude = longitude;
-                this.country = country;
-                this.province = province;
-                this.city = city;
-                this.district = district;
-                this.street = street;
-                this.house = house;
-                this.flat = flat;
-                this.postcode = postcode;
-            }
-
-            protected Address(Parcel in) {
-                latitude = in.readDouble();
-                longitude = in.readDouble();
-                country = in.readString();
-                province = in.readString();
-                city = in.readString();
-                district = in.readString();
-                street = in.readString();
-                house = in.readString();
-                flat = in.readString();
-                postcode = in.readInt();
-            }
-
-            public static final Creator<Address> CREATOR = new Creator<Address>() {
-                @Override
-                public Address createFromParcel(Parcel in) {
-                    return new Address(in);
-                }
-
-                @Override
-                public Address[] newArray(int size) {
-                    return new Address[size];
-                }
-            };
-
-            @Override
-            public int describeContents() {
-                return 0;
-            }
-
-            @Override
-            public void writeToParcel(Parcel dest, int flags) {
-                dest.writeDouble(latitude);
-                dest.writeDouble(longitude);
-                dest.writeString(country);
-                dest.writeString(province);
-                dest.writeString(city);
-                dest.writeString(district);
-                dest.writeString(street);
-                dest.writeString(house);
-                dest.writeString(flat);
-                dest.writeInt(postcode);
-            }
-        }
-
-        static class Photos {
-            int id;
-            String link;
-
-            Photos(int id, String link) {
-                this.id = id;
-                this.link = link;
-            }
-        }
-
-        static class Reviews implements Serializable {
-
-            static class Author implements Serializable {
-                int id;
-                String name;
-                String surname;
-
-                /**
-                 * @param id      айди автора
-                 * @param name    имя автора
-                 * @param surname фамилия автора
-                 */
-                private Author(int id, String name, String surname) {
-                    this.id = id;
-                    this.name = name;
-                    this.surname = surname;
-                }
-            }
-
-            int id;
-            String body;
-            Author author;
-            int mark;
-            String publishedAt;
-
-            /**
-             * @param id          айди обзора
-             * @param body        текст обзора
-             * @param author      автор обзора
-             * @param mark        оценка места
-             * @param publishedAt дата публикации обзора
-             */
-            Reviews(int id, String body, Author author, int mark, String publishedAt) {
-                this.id = id;
-                this.body = body;
-                this.author = author;
-                this.mark = mark;
-                this.publishedAt = publishedAt;
-            }
-        }
-
-        int id; //id места
-        String name; // имя места
-        double mark; // общая оценка места
-        Type type;
-        Address address;
-        String description;
-        ArrayList<Photos> photos = new ArrayList<>();
-        int reviewsCount;
-        ArrayList<Reviews> reviews = new ArrayList<>();
-        boolean isVisible = false; //new
-
-        Place() {
-        }
-    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -546,17 +280,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 String PlaceID = marker.getSnippet();
 
                 Intent i = new Intent(MainActivity.this, PlaceInside.class); // АНДРЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЙ 2й параметр
-
-                i.putExtra("places element", places[Integer.parseInt(PlaceID)]);
-                i.putExtra("places element", userLocationMarker.getPosition());// контекст - вся инфа о месте - изу структуру!
-            /*    i.putExtra("id", places[Integer.parseInt(PlaceID)].id);
-                i.putExtra("name", places[Integer.parseInt(PlaceID)].name);
-                i.putExtra("type", places[Integer.parseInt(PlaceID)].type);
-                i.putExtra("photos", places[Integer.parseInt(PlaceID)].photos);
-                i.putExtra("description", places[Integer.parseInt(PlaceID)].description);
-                i.putExtra("reviews count", places[Integer.parseInt(PlaceID)].ReviewsCount);
-                i.putExtra("reviews", places[Integer.parseInt(PlaceID)].reviews);
-                i.putExtra("address", places[Integer.parseInt(PlaceID)].address);*/
                 startActivity(i);
 
                 return false;
@@ -636,94 +359,14 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-    private void parseInterestingPlaces() {
-        int count = 0; //поле в JSON, сколько мест в базе всего
-        JSONObject data;
-        JSONArray elements;
-        try {
-            data = new JSONObject(Objects.requireNonNull(JsonDataFromAsset("input.json"))).getJSONObject("data");
-            count = data.getInt("count");
-            elements = data.getJSONArray("elements");
-            places = new Place[count];
-
-            for (int i = 0; i < count; i++) {
-                places[i] = new Place();
-                places[i].id = elements.getJSONObject(i).getInt("id");
-                places[i].mark = elements.getJSONObject(i).getDouble("mark");
-                places[i].type = new Place.Type(elements.getJSONObject(i).getJSONObject("type").getInt("id"),
-                        elements.getJSONObject(i).getJSONObject("type").getString("name"));
-                places[i].name = elements.getJSONObject(i).getString("name");
-                places[i].address = new Place.Address(elements.getJSONObject(i).getJSONObject("address").getDouble("latitude"),
-                        elements.getJSONObject(i).getJSONObject("address").getDouble("longitude"),
-                        elements.getJSONObject(i).getJSONObject("address").getString("country"),
-                        elements.getJSONObject(i).getJSONObject("address").getString("province"),
-                        elements.getJSONObject(i).getJSONObject("address").getString("city"),
-                        elements.getJSONObject(i).getJSONObject("address").getString("district"),
-                        elements.getJSONObject(i).getJSONObject("address").getString("street"),
-                        elements.getJSONObject(i).getJSONObject("address").getString("house"),
-                        elements.getJSONObject(i).getJSONObject("address").getString("flat"),
-                        elements.getJSONObject(i).getJSONObject("address").getInt("postcode"));
-                places[i].description = elements.getJSONObject(i).getString("description");
-                places[i].reviewsCount = elements.getJSONObject(i).getJSONObject("reviews").getInt("count");
-                for (int j = 0; j < places[i].reviewsCount; j++) {
-                    places[i].reviews.add(new Place.Reviews(elements.getJSONObject(i).getJSONObject("reviews").getJSONArray("elements").getJSONObject(j).getInt("id"),
-                            elements.getJSONObject(i).getJSONObject("reviews").getJSONArray("elements").getJSONObject(j).getString("body"),
-                            new Place.Reviews.Author(elements.getJSONObject(i).getJSONObject("reviews").getJSONArray("elements").getJSONObject(j).getJSONObject("author").getInt("id"),
-                                    elements.getJSONObject(i).getJSONObject("reviews").getJSONArray("elements").getJSONObject(j).getJSONObject("author").getString("name"),
-                                    elements.getJSONObject(i).getJSONObject("reviews").getJSONArray("elements").getJSONObject(j).getJSONObject("author").getString("surname")
-                                    //аватар идет пока в опу
-                            ),
-                            elements.getJSONObject(i).getJSONObject("reviews").getJSONArray("elements").getJSONObject(j).getInt("mark"),
-                            elements.getJSONObject(i).getJSONObject("reviews").getJSONArray("elements").getJSONObject(j).getString("published_at")));
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        //Gson gson = new Gson();
-        //Place a = gson.fromJson(places, new TypeToken<List<Place>>(){}.getType());
-
-        // places = new Place[count];
-
-        /*places[0] = new Place(1, new Place.Type(1, "Архитектура"), "Театр оперы и балета",
-                new Place.Address(55.030443, 82.925023, "Россия",
-                        "Новосибирская область", "Новосибирск", "Центральный район",
-                        "Красный проспект", "", "", 433333), "у мэрии");
-
-        places[1] = new Place(2, new Place.Type(1, "Парки"), "Нарымский сквер",
-                new Place.Address(55.043548, 82.909349, "Россия",
-                        "Новосибирская область", "Новосибирск", "Центральный район",
-                        "Челюскинцев", "", "", 630099), "у цирка");*/
-
-
-        allPlaces = new ArrayList<>(Arrays.asList(places));
-
-        createInterestingPlaces();
-    }
-    private String JsonDataFromAsset(String fileName) {
-        String json = null;
-        try {
-            InputStream inputStream = getAssets().open(fileName);
-            int sizeOfFile = inputStream.available();
-            byte[] bufferData = new byte[sizeOfFile];
-            inputStream.read(bufferData);
-            inputStream.close();
-            json = new String(bufferData, "UTF-8");
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return json;
-    }
-
     private void createInterestingPlaces() { // new placesFound и placesDraw - разные вещи, ибо нам мб нужно будет показать только парки или т.п.
         MarkerOptions markerOptions = new MarkerOptions();
         Marker newMarker;
 
         for (int i = 0; i < allPlaces.size(); i++) {
-            markerOptions.position(new LatLng(allPlaces.get(i).address.latitude, allPlaces.get(i).address.longitude));
-            markerOptions.icon(bitmapDescriptorFromVector(getApplicationContext(), R.drawable.ic_baseline_place_36));
-            markerOptions.snippet(Integer.toString(allPlaces.get(i).id - 1)); // я в сниппет сую АЙДИ этого места, чтобы инфу о нем можно было передавать в дургие активитис. Внимание -1, так id с 1, массив с 0
+            //markerOptions.position(new LatLng(allPlaces.get(i).getAddress().latitude, allPlaces.get(i).address.longitude));
+            //markerOptions.icon(bitmapDescriptorFromVector(getApplicationContext(), R.drawable.ic_baseline_place_36));
+            //markerOptions.snippet(Integer.toString(allPlaces.get(i).id - 1)); // я в сниппет сую АЙДИ этого места, чтобы инфу о нем можно было передавать в дургие активитис. Внимание -1, так id с 1, массив с 0
             newMarker = mMap.addMarker(markerOptions);
             markers.add(newMarker);
             newMarker.setVisible(false);
@@ -733,44 +376,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void refreshInterestingPlaces() { //new
-        for (int i = 0; i < allPlaces.size(); i++) {
-            Place place = allPlaces.get(i);
-            place.isVisible = false;
-            allPlaces.set(i, place);
-        }
-        for (int i = 0; i < allPlaces.size(); i++) {
-            for (int j = 0; j < typeArray.length; j++) {
-                if (allPlaces.get(i).type.name.equals(typeArray[j]) && !selectedType[j]) {
-                    markers.get(i).setVisible(false);
-                }
-                if (allPlaces.get(i).type.name.equals(typeArray[j]) && selectedType[j]) {
-                    markers.get(i).setVisible(true);
-                    Place place = allPlaces.get(i);
-                    place.isVisible = true;
-                    allPlaces.set(i, place);
-                }
-            }
-        }
-    }
 
-    private void deleteInterestingPlaces(List<Place> placesToDraw) {
-        for (int i = 0; i < placesToDraw.size(); i++) {
-            for (int j = 0; j < typeArray.length; j++) {
-                if (placesToDraw.get(i).type.name.equals(typeArray[j]) && !selectedType[j]) {
-                    markers.get(i).setVisible(false);
-                }
-            }
-        }
-    }
-
-    private void drawInterestingPlaces(List<Place> placesToDraw) {
-        for (int i = 0; i < placesToDraw.size(); i++) {
-            for (int j = 0; j < typeArray.length; j++) {
-                if (placesToDraw.get(i).type.name.equals(typeArray[j]) && selectedType[j]) {
-                    markers.get(i).setVisible(true);
-                }
-            }
-        }
     }
 
     public void putMarker(MarkerOptions markerOptions, LatLng coords, long placeId) {

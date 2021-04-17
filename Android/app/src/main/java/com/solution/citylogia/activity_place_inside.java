@@ -33,16 +33,12 @@ public class activity_place_inside extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private static final Place placeInfo = null;
-    private IPlaceApi placeApi;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
     public activity_place_inside() {
         // Required empty public constructor
-        ;
-        this.placeApi = RetrofitSingleton.INSTANCE.create(IPlaceApi.class);
     }
 
     /**
@@ -76,8 +72,6 @@ public class activity_place_inside extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_place_inside, container, false);
-
-        BaseObjectResponse<BaseCollectionResponse<Place>> places = placeService.drawAllPlaces().;
 
         TextView title_v1_replace = view.findViewById(R.id.title_v1);
         TextView text_v1_replace = view.findViewById(R.id.text_v1);

@@ -10,10 +10,6 @@ import java.net.URI
 object RetrofitSingleton {
     val retrofit = this.configureRetrofit()
 
-    fun getRetrofit(): Retrofit {
-        return this.retrofit;
-    }
-
     private fun configureRetrofit(): Retrofit {
         val interceptor = HttpLoggingInterceptor()
         interceptor.level = HttpLoggingInterceptor.Level.BODY

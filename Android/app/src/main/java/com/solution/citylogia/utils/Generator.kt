@@ -1,0 +1,24 @@
+package com.solution.citylogia.utils
+
+import com.solution.citylogia.models.Place
+import com.solution.citylogia.models.Review
+
+class Generator {
+    fun genPlaces(count: Long): ArrayList<Place> {
+        var res = ArrayList<Place>();
+        for (i in 1..count) {
+            res.add(Place.makePlace());
+        }
+
+        return res;
+    }
+
+    fun genReviews(count: Long): ArrayList<Review> {
+        var res = ArrayList<Review>()
+        for(i in 1..count) {
+            res.add(Review.makeReview());
+        }
+
+        return res;
+    }
+}
