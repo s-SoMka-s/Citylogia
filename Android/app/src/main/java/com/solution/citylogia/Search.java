@@ -1,59 +1,40 @@
 package com.solution.citylogia;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.AppComponentFactory;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.Filter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.solution.citylogia.models.Place;
+import com.solution.citylogia.utils.Generator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.Function;
 
 public class Search extends AppCompatActivity {
     ListView listView;
     SearchView searchView;
     ArrayList<String> stringArrayList = new ArrayList<>();
     MyAdapter adapter;
-    ArrayList<MainActivity.Place> places;
+    ArrayList<Place> places;
     ArrayList<String> names;
     ArrayList<String> types;
     ArrayList<Double> distances;
@@ -94,9 +75,10 @@ public class Search extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Generator generator = new Generator();
+        this.places = generator.genPlaces(10);
         setContentView(R.layout.activity_search);
         getSupportActionBar().hide();
-        places = getIntent().getParcelableArrayListExtra("all places");
         position = getIntent().getParcelableExtra("user position");
         selectedTypes = getIntent().getBooleanArrayExtra("selected types");
         listView = findViewById(R.id.search_list_view);
@@ -168,9 +150,7 @@ public class Search extends AppCompatActivity {
     private ArrayList<Item> getItems() {
         ArrayList<Item> res = new ArrayList<>();
         for (int i = 0; i < places.size(); i++) {
-            if (places.get(i).isVisible) {
-                res.add(new Item(getDistance(i), places.get(i).type.name, places.get(i).name, places.get(i).mark));
-            }
+                res.add(new Item(getDistance(i), places.get(i).getType().getName(), places.get(i).getName(), places.get(i).getMark()));
         }
         return res;
     }
@@ -362,7 +342,7 @@ public class Search extends AppCompatActivity {
         float[] results = new float[1];
 
         Location.distanceBetween(position.latitude, position.longitude,
-                places.get(i).address.latitude, places.get(i).address.longitude, results);
+                places.get(i).getLatitude(), places.get(i).getLongitude(), results);
 
         return results[0];
     }

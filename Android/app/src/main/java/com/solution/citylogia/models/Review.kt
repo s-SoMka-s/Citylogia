@@ -4,8 +4,18 @@ import java.time.OffsetDateTime
 
 data class Review(
         val id: Long = 0,
-        val body: String = "",
-        val mark: Float = 0.0F,
+        val body: String = "Здесь должно быть содержание отзыва",
+        val mark: Double = 0.0,
         val published_at: OffsetDateTime = OffsetDateTime.now(),
-        val author: User = User(),
-)
+        val author: User = User()
+) {
+    companion object Factory {
+        var lastId: Long = -1;
+
+        fun makeReview(): Review {
+            lastId++;
+
+            return Review(id = lastId);
+        }
+    }
+}

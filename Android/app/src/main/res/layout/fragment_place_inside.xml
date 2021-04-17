@@ -47,16 +47,16 @@
             android:id="@+id/but_more"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+
             android:background="@drawable/custom_button_filter_2"
+            android:text="Подробнее"
+            android:textAllCaps="false"
 
             android:textSize="14sp"
-            android:layout_marginTop="20dp"
-            android:textAllCaps="false"
-            android:background="@color/colorAccent"
+            app:layout_constraintBottom_toBottomOf="parent"
 
-            android:text="Подробнее"
             app:layout_constraintStart_toStartOf="parent"
-
             app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
         <Button
@@ -69,6 +69,7 @@
             android:text="Установить маршрут"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

@@ -81,11 +81,11 @@ public class place_info extends Fragment {
 
         Place place = new Place();
         String title_v2 = place.getName();
-        PlaceAddress address_v2 = place.getAddress();
+        String address_v2 = place.getAddress();
         String text_v2 = place.getDescription();
 
         title_v2_replace.setText(title_v2);
-        address_v2_replace.setText(address_v2.getStreet());
+        address_v2_replace.setText(address_v2);
         text_v2_replace.setText(text_v2);
 
         return view;
