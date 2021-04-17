@@ -40,14 +40,7 @@ namespace Citylogia.Server.Core.Api
         [HttpPost("")]
         public BaseApiResponse<bool> AddPlace([FromBody] PlaceInputParameters parameters)
         {
-            var addr = parameters.BuildAddress();
-
-            var entity = this.context.Addresses.Add(addr).Entity;
-            this.context.SaveChanges();
-
-            var addrId = entity.Id;
-
-            var place = parameters.BuildPlace(addrId);
+            var place = parameters.Build();
 
             this.context.Places.Add(place);
             this.context.SaveChanges();
@@ -55,6 +48,15 @@ namespace Citylogia.Server.Core.Api
             return new BaseApiResponse<bool>(200, true);
         }
         
+        [HttpGet("{id}")]
+        public BaseApiResponse<PlaceSummary> GetPlace([FromQuery] long placeId)
+        {
+            var place = this.context.Places.Find(placeId);
+            var res = new PlaceSummary(place);
+
+            return new BaseApiResponse<PlaceSummary>(200, res);
+        }
+
         [HttpGet("Types")]
         public BaseApiResponse<BaseCollectionResponse<PlaceTypeSummary>> GetPlaceTypes()
         {
