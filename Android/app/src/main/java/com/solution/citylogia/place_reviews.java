@@ -1,5 +1,7 @@
 package com.solution.citylogia;
 
+import android.annotation.SuppressLint;
+import android.graphics.drawable.Drawable;
 import android.icu.text.DateFormat;
 import android.os.Bundle;
 
@@ -75,6 +77,7 @@ public class place_reviews extends Fragment {
         }
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -94,6 +97,7 @@ public class place_reviews extends Fragment {
         TextView comment_v3_1_replace = view.findViewById(R.id.comment_v3_1);
         TextView date_v3_1_replace = view.findViewById(R.id.date_v3_1);
         ImageView image_v3_1_replace = view.findViewById(R.id.image_v3_1);
+        ImageView rate_v3_1_replace = view.findViewById(R.id.rate_v3_1);
 
         Place place = new Place();
         Review review = new Review();
@@ -101,6 +105,31 @@ public class place_reviews extends Fragment {
         user = review.getAuthor();
         String name_v3_1 = user.getName();
         String comment_v3_1 = review.getBody();
+
+        // rating
+        Drawable myDrawable;
+        switch ((int)review.getMark()) {
+            case 5:
+                myDrawable = getResources().getDrawable(R.drawable.rate_5);
+                rate_v3_1_replace.setImageDrawable(myDrawable);
+                break;
+            case 4:
+                myDrawable = getResources().getDrawable(R.drawable.rate_4);
+                rate_v3_1_replace.setImageDrawable(myDrawable);
+                break;
+            case 3:
+                myDrawable = getResources().getDrawable(R.drawable.rate_3);
+                rate_v3_1_replace.setImageDrawable(myDrawable);
+                break;
+            case 2:
+                myDrawable = getResources().getDrawable(R.drawable.rate_2);
+                rate_v3_1_replace.setImageDrawable(myDrawable);
+                break;
+            case 1:
+                myDrawable = getResources().getDrawable(R.drawable.rate_1);
+                rate_v3_1_replace.setImageDrawable(myDrawable);
+                break;
+        }
 
 
         // так как нет в коллекции фото выкидываем с нулл поинтером
@@ -112,7 +141,7 @@ public class place_reviews extends Fragment {
         Picasso.get().load(url_image)
                 .resize(150, 150)
                 .centerCrop()
-                .placeholder(R.drawable.ic_launcher_background)
+                .placeholder(R.drawable.basic_person)
                 .into(image_v3_1_replace);
 
         String date_review_v3_1 = review.getPublished_at().format(DateTimeFormatter.ISO_LOCAL_DATE);
