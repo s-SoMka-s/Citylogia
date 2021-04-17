@@ -19,8 +19,8 @@ public class ExampleDialog extends AppCompatDialogFragment {
 
     private EditText editTextReview;
     private RatingBar ratingBar;
-    private TextView textView;
     private float rateValue;
+    private String textReview;
 
     @NonNull
     @Override
@@ -40,10 +40,12 @@ public class ExampleDialog extends AppCompatDialogFragment {
                 .setPositiveButton("Отправить", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String textReview = editTextReview.getText().toString(); // here is our review
+                        textReview = editTextReview.getText().toString(); // here is our review
                         rateValue = ratingBar.getRating(); // here is our rating
                     }
                 });
+
+        // send our review to the server. Get in class review from the structure and reload
 
         editTextReview = view.findViewById(R.id.review);
         ratingBar = view.findViewById(R.id.ratingBar);
