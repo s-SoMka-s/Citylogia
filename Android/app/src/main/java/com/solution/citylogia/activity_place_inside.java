@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
@@ -14,7 +15,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.solution.citylogia.models.BaseCollectionResponse;
+import com.solution.citylogia.models.BaseObjectResponse;
 import com.solution.citylogia.models.Place;
+import com.solution.citylogia.network.PlaceService;
+import com.solution.citylogia.network.RetrofitSingleton;
+import com.solution.citylogia.network.api.IPlaceApi;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,7 +33,6 @@ public class activity_place_inside extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -92,6 +97,14 @@ public class activity_place_inside extends Fragment {
             @Override
             public void onClick(View v) {
                 navController.navigate(R.id.action_activity_place_inside_to_place_info);
+            }
+        });
+
+        Button but_set_route = view.findViewById(R.id.set_route);
+        but_set_route.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().onBackPressed();
             }
         });
     }

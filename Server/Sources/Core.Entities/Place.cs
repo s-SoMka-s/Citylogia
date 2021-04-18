@@ -1,5 +1,4 @@
 ﻿using Libraries.Db.Base;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Citylogia.Server.Core.Entityes
@@ -13,6 +12,8 @@ namespace Citylogia.Server.Core.Entityes
             this.Name = string.Empty;
             this.Description = string.Empty;
             this.Type = default;
+            this.Longitude = default;
+            this.Latitude = default;
             this.Address = default;
             this.Photos = default;
             this.Reviews = default;
@@ -31,9 +32,11 @@ namespace Citylogia.Server.Core.Entityes
 
         public PlaceType Type { get; set; }
 
-        [ForeignKey(nameof(Address))]
-        public long AddressId { get; set; }
-        public Address Address { get; set; }
+        public double Latitude { get; set; }
+
+        public double Longitude { get; set; }
+
+        public string Address { get; set; }
 
         public Photo[] Photos { get; set; }
 

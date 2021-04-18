@@ -14,6 +14,8 @@ namespace Core.Api.Models
             this.Description = source.Description;
             this.Type = source.Type;
             this.Address = source.Address;
+            this.Latitude = source.Latitude;
+            this.Longtitude = source.Longitude;
 
             if (source.Photos != default)
             {
@@ -25,6 +27,7 @@ namespace Core.Api.Models
                 this.Reviews = new BaseCollectionResponse<Review>(source.Reviews.ToList());
             }
         }
+
 
         [JsonProperty("id")]
         public long Id { get; set; }
@@ -38,12 +41,17 @@ namespace Core.Api.Models
         [JsonProperty("description")]
         public string Description { get; set; }
 
-
         [JsonProperty("type")]
         public PlaceType Type { get; set; }
 
         [JsonProperty("address")]
-        public Address Address { get; set; }
+        public string Address { get; set; }
+
+        [JsonProperty("latitude")]
+        public double Latitude { get; set; }
+
+        [JsonProperty("longitude")]
+        public double Longtitude { get; set; }
 
         [JsonProperty("photo")]
         public BaseCollectionResponse<Photo> Photos { get; set; }

@@ -70,7 +70,10 @@ public class place_info extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         View view = inflater.inflate(R.layout.fragment_place_info, container, false);
+
+        ImageView but_back = view.findViewById(R.id.icon_back);
 
         TextView title_v2_replace = view.findViewById(R.id.title_v2);
         TextView address_v2_replace = view.findViewById(R.id.address_v2);
@@ -78,11 +81,11 @@ public class place_info extends Fragment {
 
         Place place = new Place();
         String title_v2 = place.getName();
-        PlaceAddress address_v2 = place.getAddress();
+        String address_v2 = place.getAddress();
         String text_v2 = place.getDescription();
 
         title_v2_replace.setText(title_v2);
-        address_v2_replace.setText(address_v2.getStreet());
+        address_v2_replace.setText(address_v2);
         text_v2_replace.setText(text_v2);
 
         return view;
@@ -95,20 +98,15 @@ public class place_info extends Fragment {
         final NavController navController = Navigation.findNavController(view);
 
         Button but_reviews = view.findViewById(R.id.but_reviews);
+        but_reviews.setOnClickListener(v -> navController.navigate(R.id.action_place_info_to_place_reviews));
+
+
+        ImageView but_back = view.findViewById(R.id.icon_back);
         but_reviews.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navController.navigate(R.id.action_place_info_to_place_reviews);
+                //navController.navigate(R.id.action_place_info_to_place_reviews);
             }
         });
-
-        ImageView but_back = view.findViewById(R.id.icon_back);
-        but_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navController.navigate(R.id.action_place_info_to_activity_place_inside);
-            }
-        });
-
     }
 }
