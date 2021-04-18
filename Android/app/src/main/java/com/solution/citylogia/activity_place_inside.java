@@ -18,7 +18,7 @@ import android.widget.TextView;
 import com.solution.citylogia.models.BaseCollectionResponse;
 import com.solution.citylogia.models.BaseObjectResponse;
 import com.solution.citylogia.models.Place;
-import com.solution.citylogia.network.PlaceService;
+
 import com.solution.citylogia.network.RetrofitSingleton;
 import com.solution.citylogia.network.api.IPlaceApi;
 

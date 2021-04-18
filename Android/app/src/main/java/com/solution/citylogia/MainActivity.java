@@ -39,6 +39,9 @@ import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.mancj.materialsearchbar.MaterialSearchBar;
+import com.solution.citylogia.models.ShortPlace;
+import com.solution.citylogia.network.RetrofitSingleton;
+import com.solution.citylogia.network.api.IPlaceApi;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -52,15 +55,20 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import retrofit2.Retrofit;
+
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
-    private Place[] places;
+    private Iterable<ShortPlace> places;
     private ArrayList<Place> allPlaces;
-    private ArrayList<Place> placesToShow; //new
     private static boolean refresh = true;
     private static boolean requestToGetPlaces = true; //временное
     private static final String Tag = "MainActivity";
     private GoogleMap mMap;
     private Geocoder geocoder;
+    private IPlaceApi placeApi;
+    private Place placeInfo = null;
     private int ACCESS_LOCATION_REQUEST_CODE = 10001;
     FusedLocationProviderClient fusedLocationProviderClient;
     LocationRequest locationRequest;
@@ -245,6 +253,16 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         });*/
     }
 
+    private void drawMarkers(Iterable<ShortPlace> placesToDraw) {
+        placesToDraw.forEach(place -> {
+            LatLng latLng = new LatLng(place.getLatitude(), place.getLongitude());
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(latLng);
+            markerOptions.snippet("" + place.getId());
+            mMap.addMarker(markerOptions);
+        });
+    }
+
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -263,27 +281,29 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 MapStyleOptions.loadRawResourceStyle(
                         this, R.raw.mapstyle));
 
-        //  mMap.setOnMapLongClickListener(this);
-        //  mMap.setOnMarkerDragListener(this);
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
         } else {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, ACCESS_LOCATION_REQUEST_CODE);
         }
 
-        /*
-         * Я тут при клике на маркер перехожу на активити с его описанием.
-         */
-        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                String PlaceID = marker.getSnippet();
+        Retrofit retrofit = RetrofitSingleton.INSTANCE.getRetrofit();
+        this.placeApi = retrofit.create(IPlaceApi.class);
 
-                Intent i = new Intent(MainActivity.this, PlaceInside.class); // АНДРЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЙ 2й параметр
-                startActivity(i);
+        this.placeApi.getAllPlaces().subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(places -> {
+            this.places = places.getData().getElements();
+            System.out.println(this.places);
+            this.drawMarkers(this.places);
+        });
 
-                return false;
-            }
+        mMap.setOnMarkerClickListener(marker -> {
+            Long placeId = Long.parseLong(marker.getSnippet());
+            System.out.println("ID этого места " + placeId);
+            Intent i = new Intent(MainActivity.this, PlaceInside.class);
+            startActivity(i);
+
+            return false;
         });
     }
 
