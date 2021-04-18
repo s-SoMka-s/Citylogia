@@ -9,7 +9,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 object RetrofitSingleton {
     val retrofit = this.configureRetrofit()
 
-
     private fun configureRetrofit(): Retrofit {
         val interceptor = HttpLoggingInterceptor()
         interceptor.level = HttpLoggingInterceptor.Level.BODY
