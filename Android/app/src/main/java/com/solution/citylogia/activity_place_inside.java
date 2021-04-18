@@ -22,6 +22,10 @@ import com.solution.citylogia.models.Place;
 import com.solution.citylogia.network.RetrofitSingleton;
 import com.solution.citylogia.network.api.IPlaceApi;
 
+import io.reactivex.Scheduler;
+import io.reactivex.schedulers.Schedulers;
+import retrofit2.Retrofit;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link activity_place_inside#newInstance} factory method to
@@ -33,12 +37,17 @@ public class activity_place_inside extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private final IPlaceApi placeApi;
+    private Place placeInfo = null;
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
     public activity_place_inside() {
         // Required empty public constructor
+        Retrofit retrofit = RetrofitSingleton.INSTANCE.getRetrofit();
+        this.placeApi = retrofit.create(IPlaceApi.class);
     }
 
     /**
@@ -73,17 +82,23 @@ public class activity_place_inside extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_place_inside, container, false);
 
+        this.placeApi.getAllPlaces().subscribeOn(Schedulers.io()).subscribe(places -> {
+            this.placeInfo = places.getData().getElements().get(0);
+            this.setData(view, this.placeInfo);
+        });
+
+        return view;
+    }
+
+    public void setData (View view, Place place) {
         TextView title_v1_replace = view.findViewById(R.id.title_v1);
         TextView text_v1_replace = view.findViewById(R.id.text_v1);
 
-        Place place = new Place();
         String title_v1 = place.getName();
-        String text_v1 = place.getDescription();
+        String text_v1 = "Тут будет описание";
 
         title_v1_replace.setText(title_v1);
-        text_v1_replace.setText(text_v1);
-
-        return view;
+        //text_v1_replace.setText(text_v1);
     }
 
     @Override
