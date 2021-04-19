@@ -19,6 +19,7 @@ import com.solution.citylogia.models.BaseCollectionResponse;
 import com.solution.citylogia.models.BaseObjectResponse;
 import com.solution.citylogia.models.Place;
 
+import com.solution.citylogia.models.ShortPlace;
 import com.solution.citylogia.network.RetrofitSingleton;
 import com.solution.citylogia.network.api.IPlaceApi;
 
@@ -38,7 +39,7 @@ public class activity_place_inside extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private final IPlaceApi placeApi;
-    private Place placeInfo = null;
+    private ShortPlace placeInfo = null;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -90,7 +91,7 @@ public class activity_place_inside extends Fragment {
         return view;
     }
 
-    public void setData (View view, Place place) {
+    public void setData (View view, ShortPlace place) {
         TextView title_v1_replace = view.findViewById(R.id.title_v1);
         TextView text_v1_replace = view.findViewById(R.id.text_v1);
 

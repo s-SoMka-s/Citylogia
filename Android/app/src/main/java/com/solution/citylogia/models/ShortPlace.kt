@@ -5,7 +5,9 @@ data class ShortPlace(
         val type: PlaceType = PlaceType(),
         val latitude: Double = 0.0,
         val longitude: Double = 0.0,
+        val name: String? = null,
 ){
+
     companion object Factory {
         private var lastId: Long = -1;
 

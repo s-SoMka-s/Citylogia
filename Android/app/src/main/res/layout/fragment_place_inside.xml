@@ -64,7 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/custom_button_filter"
-
+            android:visibility="gone"
             android:layout_marginTop="80dp"
             android:text="Установить маршрут"
             app:layout_constraintStart_toStartOf="parent"

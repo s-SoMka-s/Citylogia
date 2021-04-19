@@ -24,7 +24,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ProfileActivity"></activity>
+        <activity android:name=".ProfileActivity" />
         <activity android:name=".RegisterActivity" />
 
         <uses-library
@@ -42,7 +42,6 @@
             android:name=".LoginActivity"
             android:label="@string/title_activity_register">
 
-
             <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -50,22 +49,21 @@
             </intent-filter>-->
         </activity>
         <activity android:name=".PermissionsActivity">
-            <intent-filter>
+            <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter>-->
         </activity>
         <activity
-            android:name=".PlaceInside"
-            tools:ignore="DuplicateActivity">
-            <!--<intent-filter>
+            android:name=".PlaceInside">
+            <intent-filter>
 
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            -->
+
         </activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -83,11 +81,11 @@
             android:name=".MainActivity"
             android:label="@string/title_activity_maps">
 
-        <intent-filter>
+        <!--<intent-filter>
             <action android:name="android.intent.action.MAIN" />
 
             <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
+        </intent-filter>-->
         </activity>
 
         <activity android:name=".Search" />

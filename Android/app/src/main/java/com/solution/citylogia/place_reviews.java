@@ -92,7 +92,6 @@ public class place_reviews extends Fragment {
             }
         });
 
-
         TextView name_v3_1_replace = view.findViewById(R.id.name_v3_1);
         TextView comment_v3_1_replace = view.findViewById(R.id.comment_v3_1);
         TextView date_v3_1_replace = view.findViewById(R.id.date_v3_1);
@@ -161,12 +160,7 @@ public class place_reviews extends Fragment {
         final NavController navController = Navigation.findNavController(view);
 
         Button but_info = view.findViewById(R.id.but_info);
-        but_info.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navController.navigate(R.id.action_place_reviews_to_place_info);
-            }
-        });
+        but_info.setOnClickListener(v -> navController.navigate(R.id.action_place_reviews_to_place_info));
     }
   
     public void openDialog() {
