@@ -18,6 +18,7 @@
     "Citylogia.Server": {
       "commandName": "Project",
       "launchBrowser": false,
+      "launchUrl": "http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "POSTGRES_CONNECTION": "Host=178.154.212.96;Port=5432;Database=citylogia;User ID=citylogia;Password=citylogia;"

@@ -21,7 +21,7 @@
           "flat": "",
           "postcode": 630099
         },
-        "description": "Сердце культуры",
+        "description": "Сердце культуры и города в целом",
         "photos": [
           {
             "id": 1,
@@ -42,9 +42,9 @@
                   "id": 1,
                   "link": "тут будет ссылочка"
                 },
-                "mark": 5
+                "mark": 4
               },
-              "mark": 5,
+              "mark": 4.0,
               "published_at": 131313
             }
           ]
@@ -92,7 +92,7 @@
                 },
                 "mark": 5
               },
-              "mark": 5,
+              "mark": 5.0,
               "published_at": 131313
             }
           ]

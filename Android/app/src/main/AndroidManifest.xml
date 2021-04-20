@@ -24,7 +24,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".RegisterActivity"></activity>
+        <activity android:name=".ProfileActivity" />
+        <activity android:name=".RegisterActivity" />
 
         <uses-library
             android:name="com.google.android.wearable"
@@ -48,23 +49,21 @@
             </intent-filter>-->
         </activity>
         <activity android:name=".PermissionsActivity">
-
-            <!--
-            <intent-filter>
+            <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            -->
+            </intent-filter>-->
         </activity>
         <activity
-            android:name=".PlaceInside"
-            tools:ignore="DuplicateActivity">
+            android:name=".PlaceInside">
             <intent-filter>
+
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -80,7 +79,17 @@
 
         <activity
             android:name=".MainActivity"
-            android:label="@string/title_activity_maps" />
+            android:label="@string/title_activity_maps">
+
+        <!--<intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>-->
+        </activity>
+
+        <activity android:name=".Search" />
+
     </application>
 
 </manifest>

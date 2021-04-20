@@ -2,6 +2,9 @@ package com.solution.citylogia;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.location.Geocoder;
@@ -9,6 +12,8 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -30,32 +35,55 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.solution.citylogia.models.Place;
+import com.google.android.libraries.places.api.model.AutocompletePrediction;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.mancj.materialsearchbar.MaterialSearchBar;
+import com.solution.citylogia.models.ShortPlace;
+import com.solution.citylogia.network.RetrofitSingleton;
+import com.solution.citylogia.network.api.IPlaceApi;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import retrofit2.Retrofit;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
-    private Place[] places;
+    private Iterable<ShortPlace> places;
+    private ArrayList<Place> allPlaces;
     private static boolean refresh = true;
     private static boolean requestToGetPlaces = true; //временное
     private static final String Tag = "MainActivity";
     private GoogleMap mMap;
     private Geocoder geocoder;
+    private IPlaceApi placeApi;
+    private Place placeInfo = null;
     private int ACCESS_LOCATION_REQUEST_CODE = 10001;
     FusedLocationProviderClient fusedLocationProviderClient;
     LocationRequest locationRequest;
+    //new
+    Button filter;
+    String[] typeArray = {"Парки", "Архитектура", "Еда", "Другое"};
+    private boolean[] selectedType = new boolean[typeArray.length];
+    ArrayList<Integer> typeList = new ArrayList<>();
+    ArrayList<Marker> markers = new ArrayList<>();
 
     Marker userLocationMarker;
 
-    /**
-     * Класс место, который содержит всё описание о нём: тип, отзывы, фото и т.п.
-     * Используется для отображения меток на карте и для перехода на страницу с отзывами/оценками.
-     * Костыль - айдишник места (элемент массива) вписывается как snippet, который на карте без title
-     * не отображается. Т.о. я могу передать Place[i] в активитис с оценками и отзывами
-     */
+    //new
+    private MaterialSearchBar materialSearchBar;
+    private List<AutocompletePrediction> predictionList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +110,157 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         locationRequest.setInterval(500);
         locationRequest.setFastestInterval(500);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        /////////////////new
+
+        for (int i = 0; i < typeArray.length; i++) {
+            selectedType[i] = false;
+        }
+        filter = findViewById(R.id.bt_filter);
+        filter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Какие места вам интересны?");
+                builder.setCancelable(false);
+                builder.setMultiChoiceItems(typeArray, selectedType, new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+
+                    }
+                });
+
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        refreshInterestingPlaces(); //new
+                    }
+                });
+
+                builder.setNeutralButton("Выбрать всё", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        for (int i = 0; i < selectedType.length; i++) {
+                            selectedType[i] = true;
+                            typeList.add(which);
+                        }
+                        refreshInterestingPlaces();//new
+                        //                      Collections.sort(typeList);
+                    }
+                });
+
+                builder.setNegativeButton("Очистить всё", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        for (int i = 0; i < selectedType.length; i++) {
+                            selectedType[i] = false;
+                            typeList.clear();
+                        }
+                        refreshInterestingPlaces();//new
+                    }
+                });
+
+                builder.show();
+            }
+        });
+
+        materialSearchBar = findViewById(R.id.searchBar);
+        materialSearchBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(MainActivity.this, Search.class);
+                i.putExtra("all places", allPlaces);
+                i.putExtra("selected types", selectedType);
+                LatLng position = userLocationMarker.getPosition();
+                i.putExtra("user position", position);
+                startActivityForResult(i, 2404);
+                //startActivity(i);
+            }
+        });
+        /*materialSearchBar.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
+            @Override
+            public void onSearchStateChanged(boolean enabled) {
+
+            }
+
+            @Override
+            public void onSearchConfirmed(CharSequence text) {
+                startSearch(text.toString(), true, null, true);
+            }
+
+            @Override
+            public void onButtonClicked(int buttonCode) {
+                if (buttonCode == MaterialSearchBar.BUTTON_NAVIGATION) {
+                    //opening or closing a navigation drawer
+                    Intent i = new Intent(MainActivity.this, Search.class); // АНДРЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЙ 2й параметр
+
+                    //i.putExtra("places element", places[Integer.parseInt(PlaceID)]); // контекст - вся инфа о месте - изу структуру!
+
+                    startActivity(i);
+                } else if (buttonCode == MaterialSearchBar.BUTTON_BACK) {
+                    materialSearchBar.closeSearch();
+                }
+                Intent i = new Intent(MainActivity.this, Search.class); // АНДРЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЙ 2й параметр
+
+                //i.putExtra("places element", places[Integer.parseInt(PlaceID)]); // контекст - вся инфа о месте - изу структуру!
+
+                startActivity(i);
+            }
+        });*/
+
+       /* materialSearchBar.addTextChangeListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                FindAutocompletePredictionsRequest predictionsRequest = FindAutocompletePredictionsRequest.
+                        builder().
+                        setTypeFilter(TypeFilter.ADDRESS).
+                        setSessionToken(token).
+                        setQuery(s.toString()).
+                        build();
+                placesClient.findAutocompletePredictions(predictionsRequest).addOnCompleteListener(new OnCompleteListener<FindAutocompletePredictionsResponse>() {
+                    @Override
+                    public void onComplete(@NonNull Task<FindAutocompletePredictionsResponse> task) {
+                        if (task.isSuccessful()) {
+                            FindAutocompletePredictionsResponse predictionsResponse = task.getResult();
+                            if (predictionsResponse != null) {
+                                predictionList = predictionsResponse.getAutocompletePredictions();
+                                List<String> suggestionsList = new ArrayList<>();
+                                for (int i=0; i< predictionList.size();i++){
+                                    AutocompletePrediction prediction = predictionList.get(i);
+                                    suggestionsList.add(prediction.getFullText(null).toString());
+                                }
+                                materialSearchBar.updateLastSuggestions(suggestionsList);
+                                if (!materialSearchBar.isSuggestionsVisible()){
+                                    materialSearchBar.showSuggestionsList();
+                                }
+                            }
+                        } else {
+                            Log.i("mytag","prediction failed");
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });*/
+    }
+
+    private void drawMarkers(Iterable<ShortPlace> placesToDraw) {
+        placesToDraw.forEach(place -> {
+            LatLng latLng = new LatLng(place.getLatitude(), place.getLongitude());
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(latLng);
+            markerOptions.snippet("" + place.getId());
+            mMap.addMarker(markerOptions);
+        });
     }
 
     /**
@@ -102,27 +281,29 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 MapStyleOptions.loadRawResourceStyle(
                         this, R.raw.mapstyle));
 
-        //  mMap.setOnMapLongClickListener(this);
-        //  mMap.setOnMarkerDragListener(this);
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
         } else {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, ACCESS_LOCATION_REQUEST_CODE);
         }
 
-        /*
-         * Я тут при клике на маркер перехожу на активити с его описанием.
-         */
-        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                String PlaceID = marker.getSnippet();
-                System.out.println(PlaceID);
-                //Intent i = new Intent(MainActivity.this, PlaceInside.class);
-                //startActivity(i);
+        Retrofit retrofit = RetrofitSingleton.INSTANCE.getRetrofit();
+        this.placeApi = retrofit.create(IPlaceApi.class);
 
-                return false;
-            }
+        this.placeApi.getAllPlaces().subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(places -> {
+            this.places = places.getData().getElements();
+            System.out.println(this.places);
+            this.drawMarkers(this.places);
+        });
+
+        mMap.setOnMarkerClickListener(marker -> {
+            Long placeId = Long.parseLong(marker.getSnippet());
+            System.out.println("ID этого места " + placeId);
+            Intent i = new Intent(MainActivity.this, PlaceInside.class);
+            startActivity(i);
+
+            return false;
         });
     }
 
@@ -179,7 +360,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onStop() {
         super.onStop();
-        stopLocationUpdates();
+        //stopLocationUpdates();
     }
 
     @SuppressLint("MissingPermission")
@@ -198,30 +379,24 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-    private String JsonDataFromAsset(String fileName) {
-        String json = null;
-        try {
-            InputStream inputStream = getAssets().open(fileName);
-            int sizeOfFile = inputStream.available();
-            byte[] bufferData = new byte[sizeOfFile];
-            inputStream.read(bufferData);
-            inputStream.close();
-            json = new String(bufferData, "UTF-8");
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+    private void createInterestingPlaces() { // new placesFound и placesDraw - разные вещи, ибо нам мб нужно будет показать только парки или т.п.
+        MarkerOptions markerOptions = new MarkerOptions();
+        Marker newMarker;
+
+        for (int i = 0; i < allPlaces.size(); i++) {
+            //markerOptions.position(new LatLng(allPlaces.get(i).getAddress().latitude, allPlaces.get(i).address.longitude));
+            //markerOptions.icon(bitmapDescriptorFromVector(getApplicationContext(), R.drawable.ic_baseline_place_36));
+            //markerOptions.snippet(Integer.toString(allPlaces.get(i).id - 1)); // я в сниппет сую АЙДИ этого места, чтобы инфу о нем можно было передавать в дургие активитис. Внимание -1, так id с 1, массив с 0
+            newMarker = mMap.addMarker(markerOptions);
+            markers.add(newMarker);
+            newMarker.setVisible(false);
         }
-        return json;
+
+        refreshInterestingPlaces(); //new
     }
 
-    public void drawInterestingPlaces(List<Place> places) {
-        MarkerOptions markerOptions = new MarkerOptions();
+    private void refreshInterestingPlaces() { //new
 
-        places.stream().forEach(place -> {
-            long id = place.getId();
-            LatLng coords = new LatLng(place.getAddress().getLatitude(), place.getAddress().getLongitude());
-            putMarker(markerOptions, coords, id);
-        });
     }
 
     public void putMarker(MarkerOptions markerOptions, LatLng coords, long placeId) {
@@ -230,4 +405,18 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         markerOptions.snippet(java.lang.Long.toString(placeId));
         mMap.addMarker(markerOptions);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK && requestCode == 2404) {
+            if(data != null) {
+                int index = data.getIntExtra("selected places in search",-1);
+                LatLng latLng = markers.get(index).getPosition();
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
+                //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
+            }
+        }
+    }
+
 }
