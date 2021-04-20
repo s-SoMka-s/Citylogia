@@ -20,7 +20,7 @@ namespace Core.Api
         }
 
         [HttpPost("Auth/Email")]
-        public BaseApiResponse<bool> Authorize([FromBody] AuthParameters parameters)
+        public bool Authorize([FromBody] AuthParameters parameters)
         {
             var repository = this.context.Users;
             var users = repository.ToList();
@@ -28,14 +28,14 @@ namespace Core.Api
             var user = users.Find(u => u.Email == parameters.Email && u.Password == parameters.Password);
             if (user == default)
             {
-                return new BaseApiResponse<bool>(200, false);
+                return false;
             }
 
-            return new BaseApiResponse<bool>(200, true);
+            return true;
         }
 
         [HttpPost("Auth/Register")]
-        public BaseApiResponse<bool> Register([FromBody] AuthParameters parameters)
+        public bool Register([FromBody] AuthParameters parameters)
         {
             var repository = this.context.Users;
             var users = repository.ToList();
@@ -43,18 +43,18 @@ namespace Core.Api
             var user = users.Find(u => u.Email == parameters.Email);
             if (user != default)
             {
-                return new BaseApiResponse<bool>(200, false);
+                return false;
             }
 
             var newUser = parameters.Build();
             repository.Add(newUser);
             this.context.SaveChanges();
 
-            return new BaseApiResponse<bool>(200, true);
+            return true;
         }
 
         [HttpGet("")]
-        public BaseApiResponse<BaseCollectionResponse<UserSummary>> GetUsers()
+        public BaseCollectionResponse<UserSummary> GetUsers()
         {
             var users = this.context.Users.ToList();
 
@@ -68,7 +68,7 @@ namespace Core.Api
 
             var baseCollectionResponse = new BaseCollectionResponse<UserSummary>(summaries);
 
-            return new BaseApiResponse<BaseCollectionResponse<UserSummary>>(200, baseCollectionResponse);
+            return baseCollectionResponse;
         } 
     }
 }

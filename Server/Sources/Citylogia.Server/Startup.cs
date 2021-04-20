@@ -5,6 +5,7 @@ using Citylogia.Server.Core.Db;
 using Citylogia.Server.Core.Tools.Implementations.AppSettings;
 using Citylogia.Server.Core.Tools.Interfaces.AppSettings;
 using Citylogia.Server.Initializations;
+using Citylogia.Server.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,9 +37,12 @@ namespace Citylogia.Server
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostApplicationLifetime appLifetime)
         {
+            app.UseMiddleware<BaseResponseMiddleware>();
+
             app.MigrateDb();
             app.UseApi();
 
+            
 
             var applicationContainer = app.ApplicationServices.GetAutofacRoot();
             appLifetime.ApplicationStopped.Register(() =>
