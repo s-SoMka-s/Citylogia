@@ -43,6 +43,8 @@ namespace Core.Api.Reviews
         public async Task<bool> AddReview(long id, [FromBody] ReviewInputParameters parameters)
         {
             var @new = parameters.Build(id);
+            var place = this.context.Places.FirstOrDefault(p => p.Id == id);
+            var review = new Review() { PlaceId = place.Id };
             await this.context.Reviews.AddAsync(@new);
             await this.context.SaveChangesAsync();
 

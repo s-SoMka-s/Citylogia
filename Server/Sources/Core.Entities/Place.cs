@@ -1,4 +1,6 @@
 ﻿using Libraries.Db.Base;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Citylogia.Server.Core.Entityes
@@ -16,7 +18,6 @@ namespace Citylogia.Server.Core.Entityes
             this.Latitude = default;
             this.Address = default;
             this.Photos = default;
-            this.Reviews = default;
         }
 
 
@@ -40,6 +41,6 @@ namespace Citylogia.Server.Core.Entityes
 
         public Photo[] Photos { get; set; }
 
-        public Review[] Reviews { get; set; }
+        public virtual ICollection<Review> Reviews { get; set; }
     }
 }

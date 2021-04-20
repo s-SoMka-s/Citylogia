@@ -4,6 +4,7 @@ using Core.Api.Models;
 using Core.Api.Models.Input;
 using Core.Api.Models.Output;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -47,11 +48,11 @@ namespace Citylogia.Server.Core.Api
 
             return true;
         }
-        
+
         [HttpGet("{id}")]
         public PlaceSummary GetPlace(long id)
         {
-            var place = this.context.Places.Find(id);
+            var place = this.Query().FirstOrDefault(p => p.Id == id);
             var res = new PlaceSummary(place);
 
             return res;
@@ -63,7 +64,7 @@ namespace Citylogia.Server.Core.Api
             var types = this.context.PlaceTypes.ToList();
 
             var typeSummaries = new List<PlaceTypeSummary>();
-            foreach(var type in types)
+            foreach (var type in types)
             {
                 var summary = new PlaceTypeSummary(type);
                 typeSummaries.Add(summary);
@@ -86,6 +87,11 @@ namespace Citylogia.Server.Core.Api
             this.context.SaveChanges();
 
             return true;
+        }
+
+        private IQueryable<Place> Query()
+        {
+            return this.context.Places.Include(p => p.Reviews);
         }
     }
 }

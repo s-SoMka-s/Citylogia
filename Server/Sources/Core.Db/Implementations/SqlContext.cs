@@ -32,10 +32,6 @@ namespace Citylogia.Server.Core.Db.Implementations
                      .WithOne()
                      .OnDelete(DeleteBehavior.Cascade);
 
-                place.HasMany(p => p.Reviews)
-                     .WithOne()
-                     .OnDelete(DeleteBehavior.Cascade);
-
                 place.HasOne(p => p.Type)
                      .WithMany()
                      .OnDelete(DeleteBehavior.Cascade);
