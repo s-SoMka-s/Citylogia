@@ -20,7 +20,7 @@ namespace Citylogia.Server.Core.Api
         }
 
         [HttpGet("")]
-        public BaseApiResponse<BaseCollectionResponse<PlaceSummary>> Get()
+        public BaseCollectionResponse<PlaceSummary> Get()
         {
             var places = this.context.Places.ToList();
 
@@ -34,7 +34,7 @@ namespace Citylogia.Server.Core.Api
 
             var baseCollectionResponse = new BaseCollectionResponse<PlaceSummary>(summaries);
 
-            return new BaseApiResponse<BaseCollectionResponse<PlaceSummary>>(200, baseCollectionResponse);
+            return baseCollectionResponse;
         }
 
         [HttpPost("")]

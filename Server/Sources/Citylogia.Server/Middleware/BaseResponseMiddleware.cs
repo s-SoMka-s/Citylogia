@@ -20,37 +20,33 @@ namespace Citylogia.Server.Middleware
 
         public async Task InvokeAsync(HttpContext context)
         {
-            var watch = new Stopwatch();
-            watch.Start();
+            using var stream = new MemoryStream();
+            using var reader = new StreamReader(stream, Encoding.Default);
 
-            //To add Headers AFTER everything you need to do this
-            context.Response.OnStarting(state => {
-                var httpContext = (HttpContext)state;
-                httpContext.Response.ContentType = "application/json";
-                httpContext.Response.Headers.Remove("Content-Length");
+            var defaultBody = context.Response.Body;
+            
+            context.Response.Body = stream;
 
-                return Task.CompletedTask;
-            }, context);
+            await nextAsync(context);
 
-            var newContent = string.Empty;
+            reader.BaseStream.Seek(0, SeekOrigin.Begin);
+            // content - body от контроллера
+            var content = await reader.ReadToEndAsync();
+            var obj = JsonConvert.DeserializeObject(content);
+            var @new = new BaseApiResponse<object>(200, obj);
 
-            using (var newBody = new MemoryStream())
-            {
-                // We set the response body to our stream so we can read after the chain of middlewares have been called.
-                //context.Response.Body = newBody;
-
-                await nextAsync(context);
-
-                // Reset the body so nothing from the latter middlewares goes to the output.
-               context.Response.Body = new MemoryStream();
-
-                newBody.Seek(0, SeekOrigin.Begin);
-
-                newContent += ", World!";
-
-                // Send our modified content to the response body.
-                await context.Response.WriteAsync(newContent);
-            }
+            var response = JsonConvert.SerializeObject(@new);
+            await CompleteResponseAsync(context, response, defaultBody);
         }
+
+        private async Task CompleteResponseAsync(HttpContext context, string response, Stream defaultBody)
+        {
+            context.Response.Body = defaultBody;
+            context.Response.ContentType = "application/json";
+            context.Response.Headers.Remove("Content-Length");
+
+            await context.Response.WriteAsync(response);
+        }
+
     }
 }
