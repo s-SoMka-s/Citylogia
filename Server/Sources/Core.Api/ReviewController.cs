@@ -12,12 +12,5 @@ namespace Core.Api
         {
             this.context = sqlContext;
         }
-
-
-        [HttpPost("Map/Places/{id}/Reviews")]
-        public ReviewSummary AddReview([FromBody] ReviewInputParameters)
-        {
-
-        }
     }
 }
