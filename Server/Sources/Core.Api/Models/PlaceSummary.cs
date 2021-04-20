@@ -24,7 +24,8 @@ namespace Core.Api.Models
 
             if (source.Reviews != default)
             {
-                this.Reviews = new BaseCollectionResponse<Review>(source.Reviews.ToList());
+                var reviews = source.Reviews.Select(r => new ReviewSummary(r)).ToList();
+                this.Reviews = new BaseCollectionResponse<ReviewSummary>(reviews);
             }
         }
 
@@ -57,7 +58,7 @@ namespace Core.Api.Models
         public BaseCollectionResponse<Photo> Photos { get; set; }
 
         [JsonProperty("reviews")]
-        public BaseCollectionResponse<Review> Reviews { get; set; }
+        public BaseCollectionResponse<ReviewSummary> Reviews { get; set; }
     }
 
 
