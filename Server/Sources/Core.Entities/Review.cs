@@ -13,6 +13,7 @@ namespace Citylogia.Server.Core.Entityes
             this.Mark = 0;
             this.PublishedAt = DateTimeOffset.Now;
             this.Author = default;
+            this.Place = default;
         }
 
         
@@ -24,7 +25,10 @@ namespace Citylogia.Server.Core.Entityes
 
         [ForeignKey(nameof(User))]
         public long UserId { get; set; }
-        
         public User Author { get; set; }
+
+        [ForeignKey(nameof(Place))]
+        public long PlaceId { get; set; }
+        public Place Place { get; set; }
     }
 }

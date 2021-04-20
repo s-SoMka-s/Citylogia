@@ -46,7 +46,11 @@ namespace Citylogia.Server.Core.Db.Implementations
             var review = builder.Entity<Review>();
 
             review.HasOne(r => r.Author)
-                  .WithOne()
+                  .WithMany()
+                  .OnDelete(DeleteBehavior.Cascade);
+
+            review.HasOne(r => r.Place)
+                  .WithMany(p => p.Reviews)
                   .OnDelete(DeleteBehavior.Cascade);
 
             var photo = builder.Entity<Photo>();
