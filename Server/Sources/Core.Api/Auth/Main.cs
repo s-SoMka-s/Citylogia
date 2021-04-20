@@ -24,7 +24,7 @@ namespace Core.Api.Auth
 
 
         [HttpPost("Email")]
-        public BaseApiResponse<Token> Login([FromBody] LoginParameters parameters)
+        public Token Login([FromBody] LoginParameters parameters)
         {
             var existed = this.context
                               .Users
@@ -33,25 +33,25 @@ namespace Core.Api.Auth
 
             if (existed == default)
             {
-                return new BaseApiResponse<Token>(400, null);
+                return null;
             }
 
             var hash = this.getHash(parameters.Password);
             if (existed.Password != hash)
             {
-                return new BaseApiResponse<Token>(400, null);
+                return null;
             }
 
-            return new BaseApiResponse<Token>(200, new Token("121212"));
+            return new Token("1111");
         }
 
         [HttpPost("Register")]
-        public async Task<BaseApiResponse<Token>> RegisterAsync([FromBody] RegisterParameters parameters)
+        public async Task<Token> RegisterAsync([FromBody] RegisterParameters parameters)
         {
             var existed = this.context.Users.ToList().Any(u => u.Email == parameters.Email);
             if (existed)
             {
-                return new BaseApiResponse<Token>(400, null);
+                return null;
             }
 
             var hash = this.getHash(parameters.Password);
@@ -62,7 +62,7 @@ namespace Core.Api.Auth
             await users.AddAsync(@new);
             await this.context.SaveChangesAsync();
 
-            return new BaseApiResponse<Token>(200, new Token(hash));
+            return new Token(hash);
         }
 
 

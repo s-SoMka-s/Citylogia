@@ -38,27 +38,27 @@ namespace Citylogia.Server.Core.Api
         }
 
         [HttpPost("")]
-        public BaseApiResponse<bool> AddPlace([FromBody] PlaceInputParameters parameters)
+        public bool AddPlace([FromBody] PlaceInputParameters parameters)
         {
             var place = parameters.Build();
 
             this.context.Places.Add(place);
             this.context.SaveChanges();
 
-            return new BaseApiResponse<bool>(200, true);
+            return true;
         }
         
         [HttpGet("{id}")]
-        public BaseApiResponse<PlaceSummary> GetPlace(long id)
+        public PlaceSummary GetPlace(long id)
         {
             var place = this.context.Places.Find(id);
             var res = new PlaceSummary(place);
 
-            return new BaseApiResponse<PlaceSummary>(200, res);
+            return res;
         }
 
         [HttpGet("Types")]
-        public BaseApiResponse<BaseCollectionResponse<PlaceTypeSummary>> GetPlaceTypes()
+        public BaseCollectionResponse<PlaceTypeSummary> GetPlaceTypes()
         {
             var types = this.context.PlaceTypes.ToList();
 
@@ -71,11 +71,11 @@ namespace Citylogia.Server.Core.Api
 
             var collectionResponse = new BaseCollectionResponse<PlaceTypeSummary>(typeSummaries);
 
-            return new BaseApiResponse<BaseCollectionResponse<PlaceTypeSummary>>(200, collectionResponse);
+            return collectionResponse;
         }
 
         [HttpPost("Types")]
-        public BaseApiResponse<bool> AddPlaceType([FromBody] TypeInputParameters parameters)
+        public bool AddPlaceType([FromBody] TypeInputParameters parameters)
         {
             var type = new PlaceType()
             {
@@ -85,7 +85,7 @@ namespace Citylogia.Server.Core.Api
             this.context.PlaceTypes.Add(type);
             this.context.SaveChanges();
 
-            return new BaseApiResponse<bool>(200, true);
+            return true;
         }
     }
 }
