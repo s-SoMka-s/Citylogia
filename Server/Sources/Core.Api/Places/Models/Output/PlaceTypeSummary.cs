@@ -1,7 +1,7 @@
 ﻿using Citylogia.Server.Core.Entityes;
 using Newtonsoft.Json;
 
-namespace Core.Api.Models.Output
+namespace Core.Api.Places.Models.Output
 {
     public class PlaceTypeSummary
     {
@@ -10,6 +10,7 @@ namespace Core.Api.Models.Output
             this.Id = source.Id;
             this.Name = source.Name;
         }
+
 
         [JsonProperty("id")]
         public long Id { get; set; }
