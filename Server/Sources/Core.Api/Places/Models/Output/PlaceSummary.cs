@@ -1,8 +1,9 @@
 ﻿using Citylogia.Server.Core.Entityes;
+using Core.Api.Models;
 using Newtonsoft.Json;
 using System.Linq;
 
-namespace Core.Api.Models
+namespace Core.Api.Places.Models.Output
 {
     public class PlaceSummary
     {
@@ -12,7 +13,7 @@ namespace Core.Api.Models
             this.Mark = source.Mark;
             this.Name = source.Name;
             this.Description = source.Description;
-            this.Type = source.Type;
+            this.Type = new PlaceTypeSummary(source.Type);
             this.Address = source.Address;
             this.Latitude = source.Latitude;
             this.Longtitude = source.Longitude;
@@ -43,7 +44,7 @@ namespace Core.Api.Models
         public string Description { get; set; }
 
         [JsonProperty("type")]
-        public PlaceType Type { get; set; }
+        public PlaceTypeSummary Type { get; set; }
 
         [JsonProperty("address")]
         public string Address { get; set; }
@@ -60,6 +61,4 @@ namespace Core.Api.Models
         [JsonProperty("reviews")]
         public BaseCollectionResponse<ReviewSummary> Reviews { get; set; }
     }
-
-
 }
