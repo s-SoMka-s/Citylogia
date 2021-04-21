@@ -23,7 +23,7 @@ namespace Citylogia.Server.Core.Api
         [HttpGet("")]
         public BaseCollectionResponse<PlaceSummary> Get()
         {
-            var places = this.context.Places.ToList();
+            var places = this.Query().ToList();
 
             var summaries = new List<PlaceSummary>();
 
@@ -91,7 +91,10 @@ namespace Citylogia.Server.Core.Api
 
         private IQueryable<Place> Query()
         {
-            return this.context.Places.Include(p => p.Reviews);
+            return this.context
+                       .Places
+                       .Include(p => p.Reviews)
+                       .Include(p => p.Type);
         }
     }
 }
