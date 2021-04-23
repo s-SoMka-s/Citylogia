@@ -1,11 +1,12 @@
 package com.solution.citylogia.models
 
+
 data class ShortPlace(
-        val id: Long = 0,
-        val type: PlaceType = PlaceType(),
-        val latitude: Double = 0.0,
-        val longitude: Double = 0.0,
-        val name: String? = null,
+        var id: Long = 0,
+        var type: PlaceType = PlaceType(),
+        var latitude: Double = 0.0,
+        var longitude: Double = 0.0,
+        var name: String? = null,
 ){
 
     companion object Factory {

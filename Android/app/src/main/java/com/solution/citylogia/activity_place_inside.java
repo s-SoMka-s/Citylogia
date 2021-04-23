@@ -27,6 +27,7 @@ import io.reactivex.Scheduler;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link activity_place_inside#newInstance} factory method to
@@ -39,7 +40,7 @@ public class activity_place_inside extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private final IPlaceApi placeApi;
-    private ShortPlace placeInfo = null;
+    private static ShortPlace placeInfo = null;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -65,6 +66,10 @@ public class activity_place_inside extends Fragment {
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
+
+        // Попытка создать канал
+        args.putSerializable("placeInfo", placeInfo);
+
         fragment.setArguments(args);
         return fragment;
     }
