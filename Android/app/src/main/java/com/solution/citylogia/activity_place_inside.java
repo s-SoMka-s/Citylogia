@@ -68,7 +68,7 @@ public class activity_place_inside extends Fragment {
         args.putString(ARG_PARAM2, param2);
 
         // Попытка создать канал
-        args.putSerializable("placeInfo", placeInfo);
+        //args.putSerializable("placeInfo", placeInfo);
 
         fragment.setArguments(args);
         return fragment;
