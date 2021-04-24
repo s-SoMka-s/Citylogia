@@ -32,8 +32,6 @@ import com.squareup.picasso.Picasso;
 public class place_reviews extends Fragment {
 
     private Place place = null;
-    private Review review = new Review();
-    private User user = new User();
 
     public place_reviews() {
 
@@ -65,15 +63,21 @@ public class place_reviews extends Fragment {
         ImageView open_review_v3_1 = view.findViewById(R.id.openReview);
         open_review_v3_1.setOnClickListener(v -> openDialog());
 
-        long count = this.place.getReviews().getCount();
+        long id = 0;
+        try {
+            id = this.place.getReviews().getCount();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("\n\n\n\n\n\nPID " + id + "\n\n\n\n\n\n");
+
         LinearLayout reviewLayoutInsert = view.findViewById(R.id.reviewLayoutInsert);
 
-
-        
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < id; i++) {
             final View cricketerView = getLayoutInflater().inflate(R.layout.review_row_add, null, false);
             reviewLayoutInsert.addView(cricketerView);
-            //fillDataTest(cricketerView, reviewLayoutInsert, count);
+            fillData(reviewLayoutInsert, id);
         }
 
         return view;
@@ -94,18 +98,30 @@ public class place_reviews extends Fragment {
         exampleDialog.show(getChildFragmentManager(), "text");
     }
 
-   /* private void fillData(View view, ConstraintLayout reviewLayout, int count) {
-        TextView name_v3_1_replace = view.findViewById(R.id.name_v3_1);
-        TextView comment_v3_1_replace = view.findViewById(R.id.comment_v3_1);
-        TextView date_v3_1_replace = view.findViewById(R.id.date_v3_1);
-        ImageView image_v3_1_replace = view.findViewById(R.id.image_v3_1);
-        ImageView rate_v3_1_replace = view.findViewById(R.id.rate_v3_1);
+    private void fillData(LinearLayout reviewLayout, long id) {
+        TextView name = reviewLayout.findViewById(R.id.reviewName);
+        TextView comment = reviewLayout.findViewById(R.id.reviewComment);
+        TextView date = reviewLayout.findViewById(R.id.reviewDate);
+        ImageView image = reviewLayout.findViewById(R.id.reviewImage);
+        ImageView rateImage = reviewLayout.findViewById(R.id.reviewRate);
 
-        user = review.getAuthor();
-        String name_v3_1 = user.getName();
-        String comment_v3_1 = review.getBody();
+        // set up rate
+        double rate = this.place.getReviews().getElements().get((int)id).getMark();
+        setRate(rateImage, rate);
 
-        setRate(rate_v3_1_replace);
+        // set up author name
+        String nameReplace = this.place.getReviews().getElements().get((int)id).getAuthor().getName();
+        name.setText(nameReplace);
+
+        // set up text of review
+        String commentReplace = this.place.getReviews().getElements().get((int)id).getBody();
+        comment.setText(commentReplace);
+
+        // set up date of publishing
+        String dateReplace = this.place.getReviews().getElements().get((int)id).getPublished_at();
+        date.setText(dateReplace);
+        //String date_review_v3_1 = review.getPublished_at().format(DateTimeFormatter.ISO_LOCAL_DATE);
+
 
         // так как нет в коллекции фото выкидываем с нулл поинтером
         //Photo image_v3_1 = place.getPhotos().getElements().get(1);
@@ -117,19 +133,12 @@ public class place_reviews extends Fragment {
                 .resize(150, 150)
                 .centerCrop()
                 .placeholder(R.drawable.basic_person)
-                .into(image_v3_1_replace);
+                .into(image);
+    }
 
-        //String date_review_v3_1 = review.getPublished_at().format(DateTimeFormatter.ISO_LOCAL_DATE);
-
-        name_v3_1_replace.setText(name_v3_1);
-
-        comment_v3_1_replace.setText(comment_v3_1);
-        //date_v3_1_replace.setText(date_review_v3_1);
-    }*/
-
-    private void setRate(ImageView rateImage) {
+    private void setRate(ImageView rateImage, double rate) {
         Drawable myDrawable;
-        switch ((int)review.getMark()) {
+        switch ((int)rate) {
             case 5:
                 myDrawable = getResources().getDrawable(R.drawable.rate_5);
                 rateImage.setImageDrawable(myDrawable);
