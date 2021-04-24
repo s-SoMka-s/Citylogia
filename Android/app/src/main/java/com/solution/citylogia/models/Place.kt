@@ -1,9 +1,12 @@
 package com.solution.citylogia.models
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Place(
         val id: Long = 0,
         val mark: Long = 0,
-        val name: String = "Имя из структуры Place",
+        val name: String? = null,
         val description: String? = null,
         val short_description: String? = null,
         val type: PlaceType = PlaceType(),

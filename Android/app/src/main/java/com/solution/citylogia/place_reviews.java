@@ -2,11 +2,12 @@ package com.solution.citylogia;
 
 import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
-import android.icu.text.DateFormat;
+import android.media.Image;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -14,56 +15,31 @@ import androidx.navigation.Navigation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.solution.citylogia.models.BaseCollectionClass;
-import com.solution.citylogia.models.Photo;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.solution.citylogia.models.Place;
 import com.solution.citylogia.models.Review;
 import com.solution.citylogia.models.User;
 import com.squareup.picasso.Picasso;
 
-import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.Locale;
-
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link place_reviews#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class place_reviews extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private Place place = null;
 
     public place_reviews() {
-        // Required empty public constructor
+
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment place_reviews.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static place_reviews newInstance(String param1, String param2) {
+    public static place_reviews newInstance() {
         place_reviews fragment = new place_reviews();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -71,9 +47,10 @@ public class place_reviews extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Bundle args = getArguments();
+        if (args != null) {
+            this.place = gson.fromJson(String.valueOf(args.getSerializable("place")), Place.class);
         }
     }
 
@@ -84,51 +61,63 @@ public class place_reviews extends Fragment {
         View view = inflater.inflate(R.layout.fragment_place_reviews, container, false);
 
         ImageView open_review_v3_1 = view.findViewById(R.id.openReview);
+        open_review_v3_1.setOnClickListener(v -> openDialog());
 
-        open_review_v3_1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openDialog();
-            }
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        LinearLayout reviewLayoutInsert = view.findViewById(R.id.reviewLayoutInsert);
+        this.place.getReviews().getElements().forEach(review -> {
+            final View cricketerView = getLayoutInflater().inflate(R.layout.review_row_add, null, false);
+            reviewLayoutInsert.addView(cricketerView);
+            fillData(cricketerView.findViewById(R.id.testLayout), review);
+
         });
 
-        TextView name_v3_1_replace = view.findViewById(R.id.name_v3_1);
-        TextView comment_v3_1_replace = view.findViewById(R.id.comment_v3_1);
-        TextView date_v3_1_replace = view.findViewById(R.id.date_v3_1);
-        ImageView image_v3_1_replace = view.findViewById(R.id.image_v3_1);
-        ImageView rate_v3_1_replace = view.findViewById(R.id.rate_v3_1);
+        final NavController navController = Navigation.findNavController(view);
 
-        Place place = new Place();
-        Review review = new Review();
-        User user = new User();
-        user = review.getAuthor();
-        String name_v3_1 = user.getName();
-        String comment_v3_1 = review.getBody();
+        Button but_info = view.findViewById(R.id.but_info);
+        but_info.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            bundle.putSerializable("place", gson.toJson(place));
+            navController.navigate(R.id.action_place_reviews_to_place_info, bundle); });
+    }
+  
+    public void openDialog() {
+        ExampleDialog exampleDialog = new ExampleDialog();
+        exampleDialog.show(getChildFragmentManager(), "text");
+    }
 
-        // rating
-        Drawable myDrawable;
-        switch ((int)review.getMark()) {
-            case 5:
-                myDrawable = getResources().getDrawable(R.drawable.rate_5);
-                rate_v3_1_replace.setImageDrawable(myDrawable);
-                break;
-            case 4:
-                myDrawable = getResources().getDrawable(R.drawable.rate_4);
-                rate_v3_1_replace.setImageDrawable(myDrawable);
-                break;
-            case 3:
-                myDrawable = getResources().getDrawable(R.drawable.rate_3);
-                rate_v3_1_replace.setImageDrawable(myDrawable);
-                break;
-            case 2:
-                myDrawable = getResources().getDrawable(R.drawable.rate_2);
-                rate_v3_1_replace.setImageDrawable(myDrawable);
-                break;
-            case 1:
-                myDrawable = getResources().getDrawable(R.drawable.rate_1);
-                rate_v3_1_replace.setImageDrawable(myDrawable);
-                break;
-        }
+
+    private void fillData(ConstraintLayout reviewLayout, Review review) {
+
+        TextView name = reviewLayout.findViewById(R.id.reviewName);
+        TextView comment = reviewLayout.findViewById(R.id.reviewComment);
+        TextView date = reviewLayout.findViewById(R.id.reviewDate);
+        ImageView image = reviewLayout.findViewById(R.id.reviewImage);
+        ImageView rateImage = reviewLayout.findViewById(R.id.reviewRate);
+
+        // set up rate
+        double rate = review.getMark();
+        setRate(rateImage, rate);
+
+        // set up author name
+        String nameReplace =  review.getAuthor().getName();
+        name.setText(nameReplace);
+
+        // set up text of review
+        String commentReplace = review.getBody();
+        comment.setText(commentReplace);
+
+        // set up date of publishing
+        String dateReplace = review.getPublished_at();
+        date.setText(dateReplace);
+        //String date_review_v3_1 = review.getPublished_at().format(DateTimeFormatter.ISO_LOCAL_DATE);
 
 
         // так как нет в коллекции фото выкидываем с нулл поинтером
@@ -141,30 +130,32 @@ public class place_reviews extends Fragment {
                 .resize(150, 150)
                 .centerCrop()
                 .placeholder(R.drawable.basic_person)
-                .into(image_v3_1_replace);
-
-        String date_review_v3_1 = review.getPublished_at().format(DateTimeFormatter.ISO_LOCAL_DATE);
-
-        name_v3_1_replace.setText(name_v3_1);
-
-        comment_v3_1_replace.setText(comment_v3_1);
-        date_v3_1_replace.setText(date_review_v3_1);
-        
-        return view;
+                .into(image);
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        final NavController navController = Navigation.findNavController(view);
-
-        Button but_info = view.findViewById(R.id.but_info);
-        but_info.setOnClickListener(v -> navController.navigate(R.id.action_place_reviews_to_place_info));
-    }
-  
-    public void openDialog() {
-        ExampleDialog exampleDialog = new ExampleDialog();
-        exampleDialog.show(getChildFragmentManager(), "text");
+    private void setRate(ImageView rateImage, double rate) {
+        Drawable myDrawable;
+        switch ((int)rate) {
+            case 5:
+                myDrawable = getResources().getDrawable(R.drawable.rate_5);
+                rateImage.setImageDrawable(myDrawable);
+                break;
+            case 4:
+                myDrawable = getResources().getDrawable(R.drawable.rate_4);
+                rateImage.setImageDrawable(myDrawable);
+                break;
+            case 3:
+                myDrawable = getResources().getDrawable(R.drawable.rate_3);
+                rateImage.setImageDrawable(myDrawable);
+                break;
+            case 2:
+                myDrawable = getResources().getDrawable(R.drawable.rate_2);
+                rateImage.setImageDrawable(myDrawable);
+                break;
+            case 1:
+                myDrawable = getResources().getDrawable(R.drawable.rate_1);
+                rateImage.setImageDrawable(myDrawable);
+                break;
+        }
     }
 }
