@@ -45,7 +45,7 @@ public class place_info extends Fragment {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
         if (args != null) {
-            this.place = gson.fromJson(String.valueOf(args.getSerializable("placeInfo")), Place.class);
+            this.place = gson.fromJson(String.valueOf(args.getSerializable("place")), Place.class);
             System.out.println(this.place);
         }
     }
@@ -60,7 +60,7 @@ public class place_info extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         final NavController navController = Navigation.findNavController(view);
-
+        this.fillData(view);
         Button but_reviews = view.findViewById(R.id.but_reviews);
         but_reviews.setOnClickListener(v -> {
             Bundle bundle = new Bundle();

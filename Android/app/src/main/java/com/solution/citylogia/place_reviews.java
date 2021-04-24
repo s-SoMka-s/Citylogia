@@ -80,7 +80,11 @@ public class place_reviews extends Fragment {
         final NavController navController = Navigation.findNavController(view);
 
         Button but_info = view.findViewById(R.id.but_info);
-        but_info.setOnClickListener(v -> navController.navigate(R.id.action_place_reviews_to_place_info));
+        but_info.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            bundle.putSerializable("place", gson.toJson(place));
+            navController.navigate(R.id.action_place_reviews_to_place_info, bundle); });
     }
   
     public void openDialog() {
