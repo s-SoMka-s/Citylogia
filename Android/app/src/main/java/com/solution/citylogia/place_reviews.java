@@ -29,6 +29,10 @@ import com.solution.citylogia.models.Review;
 import com.solution.citylogia.models.User;
 import com.squareup.picasso.Picasso;
 
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
+
 public class place_reviews extends Fragment {
 
     private Place place = null;
