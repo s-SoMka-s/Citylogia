@@ -13,6 +13,7 @@ namespace Core.Api.Places.Models.Output
             this.Mark = source.Mark;
             this.Name = source.Name;
             this.ShortDescription = source.ShortDescription;
+
             this.Description = source.Description;
             this.Type = new PlaceTypeSummary(source.Type);
             this.Address = source.Address;
