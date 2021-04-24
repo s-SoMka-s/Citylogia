@@ -30,22 +30,11 @@ import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 
 public class place_info extends Fragment {
+    private Place place;
 
-    private final IPlaceApi placeApi;
-
-    private Place place = null;
-
-    public place_info() {
-        Retrofit retrofit = RetrofitSingleton.INSTANCE.getRetrofit();
-        this.placeApi = retrofit.create(IPlaceApi.class);
-    }
-
-    public place_info newInstance() {
+    public static place_info newInstance(Bundle bundle) {
         place_info fragment = new place_info();
-        Bundle args = new Bundle();
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        args.putSerializable("place", gson.toJson(this.place));
-        fragment.setArguments(args);
+        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -57,6 +46,7 @@ public class place_info extends Fragment {
         if (getArguments() != null) {
             savedInstanceState = getArguments();
             this.place = gson.fromJson((JsonElement) savedInstanceState.getSerializable("placeInfo"), Place.class);
+            System.out.println(this.place);
         }
     }
 
@@ -70,14 +60,6 @@ public class place_info extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         final NavController navController = Navigation.findNavController(view);
-        newInstance();
-
-        this.placeApi.getPlaceInfo(2).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).subscribe(place -> {
-            this.place = place.getData();
-            this.fillData(view);
-            System.out.println(this.place);
-        });
 
         Button but_reviews = view.findViewById(R.id.but_reviews);
         but_reviews.setOnClickListener(v -> navController.navigate(R.id.action_place_info_to_place_reviews));

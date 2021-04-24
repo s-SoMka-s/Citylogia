@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
@@ -27,6 +28,7 @@ import com.solution.citylogia.network.RetrofitSingleton;
 import com.solution.citylogia.network.api.IPlaceApi;
 
 import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import kotlinx.serialization.json.Json;
 import retrofit2.Retrofit;
@@ -63,7 +65,7 @@ public class activity_place_inside extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_place_inside, container, false);
 
-        this.placeApi.getPlaceInfo(2).subscribeOn(Schedulers.io()).subscribe(place -> {
+        this.placeApi.getPlaceInfo(2).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(place -> {
             this.placeInfo = place.getData();
             this.setData(view, this.placeInfo);
         });
@@ -72,6 +74,8 @@ public class activity_place_inside extends Fragment {
     }
 
     public void setData (View view, Place place) {
+
+
         TextView title_v1_replace = view.findViewById(R.id.title_v1);
         TextView text_v1_replace = view.findViewById(R.id.text_v1);
 
@@ -92,7 +96,11 @@ public class activity_place_inside extends Fragment {
         but_more.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navController.navigate(R.id.action_activity_place_inside_to_place_info);
+                Bundle bundle = new Bundle();
+                Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                bundle.putSerializable("placeInfo", gson.toJson(placeInfo));
+
+                navController.navigate(R.id.action_activity_place_inside_to_place_info,bundle);
             }
         });
 
@@ -104,6 +112,6 @@ public class activity_place_inside extends Fragment {
             }
         });
 
-        newInstance();
+
     }
 }
