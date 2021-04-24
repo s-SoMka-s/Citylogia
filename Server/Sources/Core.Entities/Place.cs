@@ -12,6 +12,7 @@ namespace Citylogia.Server.Core.Entityes
         {
             this.Mark = 0;
             this.Name = string.Empty;
+            this.ShortDescription = string.Empty;
             this.Description = string.Empty;
             this.Type = default;
             this.Longitude = default;
@@ -24,9 +25,10 @@ namespace Citylogia.Server.Core.Entityes
         public long Mark { get; set; }
 
         public string Name { get; set; }
+
+        public string ShortDescription { get; set; }
         
         public string Description { get; set; }
-
 
         [ForeignKey(nameof(PlaceType))]
         public long TypeId { get; set; }

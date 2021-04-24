@@ -39,12 +39,14 @@ namespace Core.Api.Reviews
             return response;
         }
 
-        [HttpPost("{id}")]
-        public async Task<bool> AddReview(long id, [FromBody] ReviewInputParameters parameters)
+        [HttpPost("{placeId}")]
+        public async Task<bool> AddReviewAsync(long placeId, [FromBody] ReviewInputParameters parameters)
         {
-            var @new = parameters.Build(id);
-            var place = this.context.Places.FirstOrDefault(p => p.Id == id);
-            var review = new Review() { PlaceId = place.Id };
+            var @new = parameters.Build();
+            var place = this.context.Places.FirstOrDefault(p => p.Id == placeId);
+            var author = this.context.Users.FirstOrDefault(u => u.Id == parameters.UserId);
+            @new.PlaceId = place.Id;
+            @new.UserId = author.Id;
             await this.context.Reviews.AddAsync(@new);
             await this.context.SaveChangesAsync();
 
