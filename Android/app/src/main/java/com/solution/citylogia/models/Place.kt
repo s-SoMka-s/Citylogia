@@ -1,5 +1,8 @@
 package com.solution.citylogia.models
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Place(
         val id: Long = 0,
         val mark: Long = 0,

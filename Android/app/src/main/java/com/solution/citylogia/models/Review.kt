@@ -6,7 +6,7 @@ data class Review(
         val id: Long = 0,
         val body: String = "Здесь должно быть содержание отзыва",
         val mark: Double = 0.0,
-        val published_at: OffsetDateTime = OffsetDateTime.now(),
+        val published_at: String? = null,
         val author: User = User()
 ) {
     companion object Factory {

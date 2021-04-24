@@ -143,12 +143,12 @@ public class place_reviews extends Fragment {
                 .placeholder(R.drawable.basic_person)
                 .into(image_v3_1_replace);
 
-        String date_review_v3_1 = review.getPublished_at().format(DateTimeFormatter.ISO_LOCAL_DATE);
+        //String date_review_v3_1 = review.getPublished_at().format(DateTimeFormatter.ISO_LOCAL_DATE);
 
         name_v3_1_replace.setText(name_v3_1);
 
         comment_v3_1_replace.setText(comment_v3_1);
-        date_v3_1_replace.setText(date_review_v3_1);
+        //date_v3_1_replace.setText(date_review_v3_1);
         
         return view;
     }

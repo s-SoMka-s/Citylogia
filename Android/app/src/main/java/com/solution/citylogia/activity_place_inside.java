@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.solution.citylogia.models.BaseCollectionResponse;
 import com.solution.citylogia.models.BaseObjectResponse;
 import com.solution.citylogia.models.Place;
@@ -25,6 +27,7 @@ import com.solution.citylogia.network.api.IPlaceApi;
 
 import io.reactivex.Scheduler;
 import io.reactivex.schedulers.Schedulers;
+import kotlinx.serialization.json.Json;
 import retrofit2.Retrofit;
 
 /**
@@ -39,7 +42,7 @@ public class activity_place_inside extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private final IPlaceApi placeApi;
-    private ShortPlace placeInfo = null;
+    private Place placeInfo = null;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -60,11 +63,13 @@ public class activity_place_inside extends Fragment {
      * @return A new instance of fragment activity_place_inside.
      */
     // TODO: Rename and change types and number of parameters
-    public static activity_place_inside newInstance(String param1, String param2) {
+    public activity_place_inside newInstance(String param1, String param2) {
         activity_place_inside fragment = new activity_place_inside();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        args.putSerializable("place", gson.toJson(this.placeInfo));
         fragment.setArguments(args);
         return fragment;
     }
@@ -83,15 +88,15 @@ public class activity_place_inside extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_place_inside, container, false);
 
-        this.placeApi.getAllPlaces().subscribeOn(Schedulers.io()).subscribe(places -> {
-            this.placeInfo = places.getData().getElements().get(0);
+        this.placeApi.getPlaceInfo(2).subscribeOn(Schedulers.io()).subscribe(place -> {
+            this.placeInfo = place.getData();
             this.setData(view, this.placeInfo);
         });
 
         return view;
     }
 
-    public void setData (View view, ShortPlace place) {
+    public void setData (View view, Place place) {
         TextView title_v1_replace = view.findViewById(R.id.title_v1);
         TextView text_v1_replace = view.findViewById(R.id.text_v1);
 
