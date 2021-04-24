@@ -75,6 +75,7 @@ public class place_reviews extends Fragment {
             final View cricketerView = getLayoutInflater().inflate(R.layout.review_row_add, null, false);
             reviewLayoutInsert.addView(cricketerView);
             fillData(cricketerView.findViewById(R.id.testLayout), review);
+
         });
 
         final NavController navController = Navigation.findNavController(view);
@@ -92,7 +93,9 @@ public class place_reviews extends Fragment {
         exampleDialog.show(getChildFragmentManager(), "text");
     }
 
+
     private void fillData(ConstraintLayout reviewLayout, Review review) {
+
         TextView name = reviewLayout.findViewById(R.id.reviewName);
         TextView comment = reviewLayout.findViewById(R.id.reviewComment);
         TextView date = reviewLayout.findViewById(R.id.reviewDate);
