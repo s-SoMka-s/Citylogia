@@ -48,9 +48,9 @@ public class place_reviews extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        if (getArguments() != null) {
-            savedInstanceState = getArguments();
-            this.place = gson.fromJson((JsonElement) savedInstanceState.getSerializable("place"), Place.class);
+        Bundle args = getArguments();
+        if (args != null) {
+            this.place = gson.fromJson(String.valueOf(args.getSerializable("place")), Place.class);
         }
     }
 
@@ -63,29 +63,19 @@ public class place_reviews extends Fragment {
         ImageView open_review_v3_1 = view.findViewById(R.id.openReview);
         open_review_v3_1.setOnClickListener(v -> openDialog());
 
-        long id = 0;
-        try {
-            id = this.place.getReviews().getCount();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        System.out.println("\n\n\n\n\n\nPID " + id + "\n\n\n\n\n\n");
-
-        LinearLayout reviewLayoutInsert = view.findViewById(R.id.reviewLayoutInsert);
-
-        for (int i = 0; i < id; i++) {
-            final View cricketerView = getLayoutInflater().inflate(R.layout.review_row_add, null, false);
-            reviewLayoutInsert.addView(cricketerView);
-            fillData(reviewLayoutInsert, id);
-        }
-
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        LinearLayout reviewLayoutInsert = view.findViewById(R.id.reviewLayoutInsert);
+        this.place.getReviews().getElements().forEach(review -> {
+            final View cricketerView = getLayoutInflater().inflate(R.layout.review_row_add, null, false);
+            reviewLayoutInsert.addView(cricketerView);
+            fillData(reviewLayoutInsert, review);
+        });
 
         final NavController navController = Navigation.findNavController(view);
 
@@ -98,7 +88,7 @@ public class place_reviews extends Fragment {
         exampleDialog.show(getChildFragmentManager(), "text");
     }
 
-    private void fillData(LinearLayout reviewLayout, long id) {
+    private void fillData(LinearLayout reviewLayout, Review review) {
         TextView name = reviewLayout.findViewById(R.id.reviewName);
         TextView comment = reviewLayout.findViewById(R.id.reviewComment);
         TextView date = reviewLayout.findViewById(R.id.reviewDate);
@@ -106,19 +96,19 @@ public class place_reviews extends Fragment {
         ImageView rateImage = reviewLayout.findViewById(R.id.reviewRate);
 
         // set up rate
-        double rate = this.place.getReviews().getElements().get((int)id).getMark();
+        double rate = review.getMark();
         setRate(rateImage, rate);
 
         // set up author name
-        String nameReplace = this.place.getReviews().getElements().get((int)id).getAuthor().getName();
+        String nameReplace =  review.getAuthor().getName();
         name.setText(nameReplace);
 
         // set up text of review
-        String commentReplace = this.place.getReviews().getElements().get((int)id).getBody();
+        String commentReplace = review.getBody();
         comment.setText(commentReplace);
 
         // set up date of publishing
-        String dateReplace = this.place.getReviews().getElements().get((int)id).getPublished_at();
+        String dateReplace = review.getPublished_at();
         date.setText(dateReplace);
         //String date_review_v3_1 = review.getPublished_at().format(DateTimeFormatter.ISO_LOCAL_DATE);
 

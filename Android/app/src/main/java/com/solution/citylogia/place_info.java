@@ -40,12 +40,12 @@ public class place_info extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Bundle args = getArguments();
         super.onCreate(savedInstanceState);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-        if (getArguments() != null) {
-            savedInstanceState = getArguments();
-            this.place = gson.fromJson((JsonElement) savedInstanceState.getSerializable("placeInfo"), Place.class);
+        if (args != null) {
+            this.place = gson.fromJson(String.valueOf(args.getSerializable("placeInfo")), Place.class);
             System.out.println(this.place);
         }
     }
@@ -62,7 +62,12 @@ public class place_info extends Fragment {
         final NavController navController = Navigation.findNavController(view);
 
         Button but_reviews = view.findViewById(R.id.but_reviews);
-        but_reviews.setOnClickListener(v -> navController.navigate(R.id.action_place_info_to_place_reviews));
+        but_reviews.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            bundle.putSerializable("place", gson.toJson(place));
+            navController.navigate(R.id.action_place_info_to_place_reviews,bundle);
+        });
 
         ImageView but_back = view.findViewById(R.id.icon_back);
         but_back.setOnClickListener(v -> navController.navigate(R.id.action_place_info_to_activity_place_inside));
