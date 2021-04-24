@@ -1,5 +1,6 @@
 package com.solution.citylogia;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -50,7 +51,7 @@ public class activity_place_inside extends Fragment {
         activity_place_inside fragment = new activity_place_inside();
         Bundle args = new Bundle();
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        args.putSerializable("placeInfo", gson.toJson(this.placeInfo));
+        args.putSerializable("place", gson.toJson(this.placeInfo));
         fragment.setArguments(args);
         return fragment;
     }
@@ -58,6 +59,8 @@ public class activity_place_inside extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle a = getArguments();
+        System.out.println(a);
     }
 
     @Override
@@ -65,43 +68,37 @@ public class activity_place_inside extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_place_inside, container, false);
 
-        this.placeApi.getPlaceInfo(2).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(place -> {
-            this.placeInfo = place.getData();
-            this.setData(view, this.placeInfo);
-        });
 
         return view;
     }
 
     public void setData (View view, Place place) {
-
-
         TextView title_v1_replace = view.findViewById(R.id.title_v1);
         TextView text_v1_replace = view.findViewById(R.id.text_v1);
 
         String title_v1 = place.getName();
-        String text_v1 = "Тут будет описание";
 
         title_v1_replace.setText(title_v1);
-        //text_v1_replace.setText(text_v1);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        this.placeApi.getPlaceInfo(2).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(place -> {
+            this.placeInfo = place.getData();
+            this.setData(view, this.placeInfo);
+        });
+
 
         final NavController navController = Navigation.findNavController(view);
 
         Button but_more = view.findViewById(R.id.but_more);
-        but_more.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                bundle.putSerializable("placeInfo", gson.toJson(placeInfo));
+        but_more.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            bundle.putSerializable("place", gson.toJson(placeInfo));
 
-                navController.navigate(R.id.action_activity_place_inside_to_place_info,bundle);
-            }
+            navController.navigate(R.id.action_activity_place_inside_to_place_info,bundle);
         });
 
         Button but_set_route = view.findViewById(R.id.set_route);

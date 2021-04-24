@@ -230,7 +230,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 Long placeId = Long.parseLong(marker.getSnippet());
                 System.out.println("ID этого места " + placeId);
                 Intent i = new Intent(MainActivity.this, PlaceInside.class);
+                i.putExtra("id", placeId);
                 startActivity(i);
+
             }
             catch (Exception e){
                 e.printStackTrace();
