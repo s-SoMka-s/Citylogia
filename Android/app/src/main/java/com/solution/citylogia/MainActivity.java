@@ -48,6 +48,7 @@ import com.solution.citylogia.models.PlaceType;
 import com.solution.citylogia.models.ShortPlace;
 import com.solution.citylogia.network.RetrofitSingleton;
 import com.solution.citylogia.network.api.IPlaceApi;
+import com.solution.citylogia.services.MapService;
 import com.solution.citylogia.utils.Generator;
 
 import java.util.ArrayList;
@@ -63,6 +64,7 @@ import retrofit2.Retrofit;
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
     private Iterable<ShortPlace> places;
     private final Generator generator = new Generator();
+    private final MapService mapService = new MapService();
     private static boolean refresh = true;
     private static final String Tag = "MainActivity";
     private GoogleMap mMap;
@@ -218,7 +220,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(places -> {
             this.places = places.getData().getElements();
             System.out.println(this.places);
-            this.drawMarkers(this.places);
+            this.mapService.drawMarkers(this.mMap, this.places);
         });
 
         mMap.setOnMarkerClickListener(marker -> {
