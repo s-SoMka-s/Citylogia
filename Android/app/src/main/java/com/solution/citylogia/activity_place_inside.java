@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.solution.citylogia.models.BaseCollectionResponse;
 import com.solution.citylogia.models.BaseObjectResponse;
 import com.solution.citylogia.models.Place;
@@ -30,23 +31,12 @@ import io.reactivex.schedulers.Schedulers;
 import kotlinx.serialization.json.Json;
 import retrofit2.Retrofit;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link activity_place_inside#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class activity_place_inside extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
     private final IPlaceApi placeApi;
     private Place placeInfo = null;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     public activity_place_inside() {
         // Required empty public constructor
@@ -54,22 +44,11 @@ public class activity_place_inside extends Fragment {
         this.placeApi = retrofit.create(IPlaceApi.class);
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment activity_place_inside.
-     */
-    // TODO: Rename and change types and number of parameters
-    public activity_place_inside newInstance(String param1, String param2) {
+    public activity_place_inside newInstance() {
         activity_place_inside fragment = new activity_place_inside();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        args.putSerializable("place", gson.toJson(this.placeInfo));
+        args.putSerializable("placeInfo", gson.toJson(this.placeInfo));
         fragment.setArguments(args);
         return fragment;
     }
@@ -77,10 +56,6 @@ public class activity_place_inside extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -128,5 +103,7 @@ public class activity_place_inside extends Fragment {
                 getActivity().onBackPressed();
             }
         });
+
+        newInstance();
     }
 }

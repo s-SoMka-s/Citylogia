@@ -1,7 +1,9 @@
 package com.solution.citylogia.models
 
+import kotlinx.serialization.Serializable
 import java.time.OffsetDateTime
 
+@Serializable
 data class Review(
         val id: Long = 0,
         val body: String = "Здесь должно быть содержание отзыва",
