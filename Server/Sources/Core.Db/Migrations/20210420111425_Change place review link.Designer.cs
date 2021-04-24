@@ -3,15 +3,17 @@ using System;
 using Citylogia.Server.Core.Db.Implementations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Core.Db.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    partial class SqlContextModelSnapshot : ModelSnapshot
+    [Migration("20210420111425_Change place review link")]
+    partial class Changeplacereviewlink
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -188,7 +190,7 @@ namespace Core.Db.Migrations
             modelBuilder.Entity("Citylogia.Server.Core.Entityes.Review", b =>
                 {
                     b.HasOne("Citylogia.Server.Core.Entityes.Place", "Place")
-                        .WithMany("Reviews")
+                        .WithMany()
                         .HasForeignKey("PlaceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -217,8 +219,6 @@ namespace Core.Db.Migrations
             modelBuilder.Entity("Citylogia.Server.Core.Entityes.Place", b =>
                 {
                     b.Navigation("Photos");
-
-                    b.Navigation("Reviews");
                 });
 #pragma warning restore 612, 618
         }

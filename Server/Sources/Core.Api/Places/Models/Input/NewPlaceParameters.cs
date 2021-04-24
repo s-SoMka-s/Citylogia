@@ -1,15 +1,12 @@
 ﻿using Citylogia.Server.Core.Entityes;
 using Newtonsoft.Json;
 
-namespace Core.Api.Models.Input
+namespace Core.Api.Places.Models.Input
 {
-    public class PlaceInputParameters
+    public class NewPlaceParameters
     {
         [JsonProperty("name")]
         public string Name { get; set; }
-
-        [JsonProperty("mark")]
-        public long Mark { get; set; }
 
         [JsonProperty("description")]
         public string Description { get; set; }
@@ -30,7 +27,6 @@ namespace Core.Api.Models.Input
         {
             return new Place()
             {
-                Mark = Mark,
                 Name = Name,
                 Description = Description,
                 TypeId = TypeId,
@@ -39,6 +35,5 @@ namespace Core.Api.Models.Input
                 Latitude = Latitude
             };
         }
-
     }
 }

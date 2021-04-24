@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Spinner;
@@ -20,7 +21,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.Gson;
 import com.solution.citylogia.models.Place;
+import com.solution.citylogia.models.ShortPlace;
 import com.solution.citylogia.utils.Generator;
 
 import java.util.ArrayList;
@@ -45,7 +48,7 @@ public class Search extends AppCompatActivity {
     String[] typeArray = {"Парки", "Архитектура", "Еда", "Другое"};
     Spinner filter;
     TextView textView;
-    boolean[] selectedTypes;
+    ArrayList<Boolean> selectedTypes;
     static final int AMOUNT_OF_TYPES = 4;
 
     enum Sort {byMarks, byDistances}
@@ -78,9 +81,9 @@ public class Search extends AppCompatActivity {
         Generator generator = new Generator();
         this.places = generator.genPlaces(10);
         setContentView(R.layout.activity_search);
-        getSupportActionBar().hide();
+        //getSupportActionBar().hide();
         position = getIntent().getParcelableExtra("user position");
-        selectedTypes = getIntent().getBooleanArrayExtra("selected types");
+        //selectedTypes = getIntent().getBooleanArrayExtra("selected types");
         listView = findViewById(R.id.search_list_view);
         searchView = findViewById(R.id.search_view);
         textView = findViewById(R.id.selected_types);
@@ -89,23 +92,6 @@ public class Search extends AppCompatActivity {
 
         items = getItems();
         reBuild();
-        /*items = sortItems(items);
-        names = getNames(items);
-        distances = getDistances(items);
-        distancesString = getDistancesString(items);
-        types = getTypes(items);
-        marks = getMarks(items);
-        marksString = getMarksString(items);*/
-
-        /*adapter = new MyAdapter(this, names, types, distancesString);
-        listView.setAdapter(adapter);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getApplicationContext(), adapter.getItem(position), Toast.LENGTH_SHORT).show();
-            }
-        });*/
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -259,7 +245,6 @@ public class Search extends AppCompatActivity {
             this.rOriginalTitle = new ArrayList<>(rTitle);
             this.rDescription1 = description1;
             this.rDescription2 = description2;
-            //this.rImgs = imgs;
         }
 
         @NonNull
@@ -267,7 +252,7 @@ public class Search extends AppCompatActivity {
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             LayoutInflater layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View row = layoutInflater.inflate(R.layout.search_row, parent, false);
-            //ImageView images = row.findViewById(R.id.image);
+            ImageView images = row.findViewById(R.id.image);
             TextView myTitle = row.findViewById(R.id.textView1);
             TextView myDescription1 = row.findViewById(R.id.textView2);
             TextView myDescription2 = row.findViewById(R.id.textView3);
@@ -380,16 +365,9 @@ public class Search extends AppCompatActivity {
         StringBuilder res = new StringBuilder();
         boolean flag = false;
 
-        for (int i = 0; i < selectedTypes.length; i++) {
-            if (selectedTypes[i]) {
-                if (!flag) {
-                    res.append(String.format("%s", typeArray[i]));
-                    flag = true;
-                } else {
-                    res.append(String.format(", %s", typeArray[i]));
-                }
-            }
-        }
+        //this.selectedTypes
+
+
         return res.toString();
     }
 
