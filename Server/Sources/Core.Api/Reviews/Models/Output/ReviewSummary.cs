@@ -11,6 +11,7 @@ namespace Core.Api
             this.PublishedAt = source.PublishedAt;
             this.Mark = source.Mark;
             this.Body = source.Body;
+            this.User = new UserSummary(source.Author);
         }
 
         [JsonProperty("published_at")]
@@ -21,5 +22,8 @@ namespace Core.Api
 
         [JsonProperty("body")]
         public string Body { get; set; }
+
+        [JsonProperty("author")]
+        public UserSummary User { get; set; }
     }
 }

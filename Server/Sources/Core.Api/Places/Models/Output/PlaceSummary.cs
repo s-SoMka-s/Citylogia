@@ -12,6 +12,7 @@ namespace Core.Api.Places.Models.Output
             this.Id = source.Id;
             this.Mark = source.Mark;
             this.Name = source.Name;
+            this.ShortDescription = source.ShortDescription;
             this.Description = source.Description;
             this.Type = new PlaceTypeSummary(source.Type);
             this.Address = source.Address;
@@ -39,6 +40,9 @@ namespace Core.Api.Places.Models.Output
 
         [JsonProperty("name")]
         public string Name { get; set; }
+
+        [JsonProperty("short_description")]
+        public string ShortDescription { get; set; }
 
         [JsonProperty("description")]
         public string Description { get; set; }
