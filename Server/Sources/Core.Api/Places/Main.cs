@@ -1,9 +1,11 @@
 ﻿using Citylogia.Server.Core.Db.Implementations;
 using Citylogia.Server.Core.Entityes;
 using Core.Api.Models;
-using Core.Api.Models.Input;
-using Core.Api.Models.Output;
+using Core.Api.Places.Models.Input;
+using Core.Api.Places.Models.Output;
+using Libraries.Updates;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,59 +13,65 @@ namespace Citylogia.Server.Core.Api
 {
     [ApiController]
     [Route("/api/Map/Places")]
-    public class MapController : Controller
+    public class Main : Controller
     {
         private readonly SqlContext context;
-        public MapController(SqlContext context)
+        public Main(SqlContext context)
         {
             this.context = context;
         }
 
         [HttpGet("")]
-        public BaseApiResponse<BaseCollectionResponse<PlaceSummary>> Get()
+        public BaseCollectionResponse<ShortPlaceSummary> Get()
         {
-            var places = this.context.Places.ToList();
+            var places = this.Query().ToList();
 
-            var summaries = new List<PlaceSummary>();
+            var summaries = new List<ShortPlaceSummary>();
 
             foreach (var place in places)
             {
-                var summary = new PlaceSummary(place);
+                var summary = new ShortPlaceSummary(place);
                 summaries.Add(summary);
             }
 
-            var baseCollectionResponse = new BaseCollectionResponse<PlaceSummary>(summaries);
+            var baseCollectionResponse = new BaseCollectionResponse<ShortPlaceSummary>(summaries);
 
-            return new BaseApiResponse<BaseCollectionResponse<PlaceSummary>>(200, baseCollectionResponse);
+            return baseCollectionResponse;
         }
 
         [HttpPost("")]
-        public BaseApiResponse<bool> AddPlace([FromBody] PlaceInputParameters parameters)
+        public bool AddPlace([FromBody] NewPlaceParameters parameters)
         {
             var place = parameters.Build();
 
             this.context.Places.Add(place);
             this.context.SaveChanges();
 
-            return new BaseApiResponse<bool>(200, true);
+            return true;
         }
-        
+
         [HttpGet("{id}")]
-        public BaseApiResponse<PlaceSummary> GetPlace([FromQuery] long placeId)
+        public PlaceSummary GetPlace(long id)
         {
-            var place = this.context.Places.Find(placeId);
+            var place = this.Query().FirstOrDefault(p => p.Id == id);
             var res = new PlaceSummary(place);
 
-            return new BaseApiResponse<PlaceSummary>(200, res);
+            return res;
+        }
+
+        [HttpPut("{id}")]
+        public PlaceSummary UpdatePlace(long id, [FromBody] IEnumerable<UpdateContainer> updates)
+        {
+            return null;
         }
 
         [HttpGet("Types")]
-        public BaseApiResponse<BaseCollectionResponse<PlaceTypeSummary>> GetPlaceTypes()
+        public BaseCollectionResponse<PlaceTypeSummary> GetPlaceTypes()
         {
             var types = this.context.PlaceTypes.ToList();
 
             var typeSummaries = new List<PlaceTypeSummary>();
-            foreach(var type in types)
+            foreach (var type in types)
             {
                 var summary = new PlaceTypeSummary(type);
                 typeSummaries.Add(summary);
@@ -71,11 +79,11 @@ namespace Citylogia.Server.Core.Api
 
             var collectionResponse = new BaseCollectionResponse<PlaceTypeSummary>(typeSummaries);
 
-            return new BaseApiResponse<BaseCollectionResponse<PlaceTypeSummary>>(200, collectionResponse);
+            return collectionResponse;
         }
 
         [HttpPost("Types")]
-        public BaseApiResponse<bool> AddPlaceType([FromBody] TypeInputParameters parameters)
+        public bool AddPlaceType([FromBody] NewPlaceTypeParameters parameters)
         {
             var type = new PlaceType()
             {
@@ -85,7 +93,15 @@ namespace Citylogia.Server.Core.Api
             this.context.PlaceTypes.Add(type);
             this.context.SaveChanges();
 
-            return new BaseApiResponse<bool>(200, true);
+            return true;
+        }
+
+        private IQueryable<Place> Query()
+        {
+            return this.context
+                       .Places
+                       .Include(p => p.Reviews)
+                       .Include(p => p.Type);
         }
     }
 }

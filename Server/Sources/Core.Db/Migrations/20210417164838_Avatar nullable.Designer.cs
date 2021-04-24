@@ -3,15 +3,17 @@ using System;
 using Citylogia.Server.Core.Db.Implementations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Core.Db.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    partial class SqlContextModelSnapshot : ModelSnapshot
+    [Migration("20210417164838_Avatar nullable")]
+    partial class Avatarnullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -115,7 +117,7 @@ namespace Core.Db.Migrations
                     b.Property<long>("Mark")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("PlaceId")
+                    b.Property<long?>("PlaceId")
                         .HasColumnType("bigint");
 
                     b.Property<DateTimeOffset>("PublishedAt")
@@ -128,7 +130,8 @@ namespace Core.Db.Migrations
 
                     b.HasIndex("PlaceId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Reviews");
                 });
@@ -187,21 +190,18 @@ namespace Core.Db.Migrations
 
             modelBuilder.Entity("Citylogia.Server.Core.Entityes.Review", b =>
                 {
-                    b.HasOne("Citylogia.Server.Core.Entityes.Place", "Place")
+                    b.HasOne("Citylogia.Server.Core.Entityes.Place", null)
                         .WithMany("Reviews")
                         .HasForeignKey("PlaceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Citylogia.Server.Core.Entityes.User", "Author")
-                        .WithMany()
-                        .HasForeignKey("UserId")
+                        .WithOne()
+                        .HasForeignKey("Citylogia.Server.Core.Entityes.Review", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Author");
-
-                    b.Navigation("Place");
                 });
 
             modelBuilder.Entity("Citylogia.Server.Core.Entityes.User", b =>

@@ -25,7 +25,7 @@ namespace Citylogia.Server.Core.Entityes
         public string Password { get; set; }
 
         [ForeignKey(nameof(Photo))]
-        public long PhotoId { get; set; }
+        public long? PhotoId { get; set; }
         public Photo Avatar { get; set; }
     }
 }
