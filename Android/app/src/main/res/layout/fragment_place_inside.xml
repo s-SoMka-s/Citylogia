@@ -2,28 +2,28 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:name="выф"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity_place_inside"
     android:background="@drawable/place1"
     android:padding="16dp"
-    android:name="@+id/dick"
-    android:theme="@style/Theme.AppCompat.NoActionBar">
+    android:theme="@style/Theme.AppCompat.NoActionBar"
+    tools:context=".activity_place_inside">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <TextView
-                  
+
             android:id="@+id/title_v1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
             android:layout_marginTop="320dp"
-            android:text="Название места"
+            android:text=""
             android:textColor="#ffff"
-            android:textSize="24dp"
+            android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -63,10 +63,10 @@
             android:id="@+id/set_route"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/custom_button_filter"
-            android:visibility="gone"
             android:layout_marginTop="80dp"
+            android:background="@drawable/custom_button_filter"
             android:text="Установить маршрут"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView2" />
 

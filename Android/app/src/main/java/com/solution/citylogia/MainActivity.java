@@ -111,6 +111,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         locationRequest.setFastestInterval(500);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         filter = findViewById(R.id.bt_filter);
+
         filter.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setTitle("Какие места вам интересны?");
@@ -153,6 +154,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             LatLng position = userLocationMarker.getPosition();
             i.putExtra("user position", position);
             startActivityForResult(i, 2404);
+
         });
     }
 
