@@ -29,6 +29,10 @@ import com.solution.citylogia.models.Review;
 import com.solution.citylogia.models.User;
 import com.squareup.picasso.Picasso;
 
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
+
 public class place_reviews extends Fragment {
 
     private Place place = null;
@@ -74,7 +78,8 @@ public class place_reviews extends Fragment {
         this.place.getReviews().getElements().forEach(review -> {
             final View cricketerView = getLayoutInflater().inflate(R.layout.review_row_add, null, false);
             reviewLayoutInsert.addView(cricketerView);
-            fillData(reviewLayoutInsert, review);
+            fillData(cricketerView.findViewById(R.id.testLayout), review);
+
         });
 
         final NavController navController = Navigation.findNavController(view);
@@ -92,7 +97,9 @@ public class place_reviews extends Fragment {
         exampleDialog.show(getChildFragmentManager(), "text");
     }
 
-    private void fillData(LinearLayout reviewLayout, Review review) {
+
+    private void fillData(ConstraintLayout reviewLayout, Review review) {
+
         TextView name = reviewLayout.findViewById(R.id.reviewName);
         TextView comment = reviewLayout.findViewById(R.id.reviewComment);
         TextView date = reviewLayout.findViewById(R.id.reviewDate);
