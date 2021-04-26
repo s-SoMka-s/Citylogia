@@ -24,7 +24,8 @@ namespace Core.Api.Places.Models.Output
 
             if (source.Photos != default)
             {
-                this.Photos = new BaseCollectionResponse<Photo>(source.Photos.ToList());
+                var photos = source.Photos.Select(p => new FileSummary(p)).ToList();
+                this.Photos = new BaseCollectionResponse<FileSummary>(photos);
             }
 
             if (source.Reviews != default)
@@ -66,7 +67,7 @@ namespace Core.Api.Places.Models.Output
         public double Longtitude { get; set; }
 
         [JsonProperty("photo")]
-        public BaseCollectionResponse<Photo> Photos { get; set; }
+        public BaseCollectionResponse<FileSummary> Photos { get; set; }
 
         [JsonProperty("reviews")]
         public BaseCollectionResponse<ReviewSummary> Reviews { get; set; }
