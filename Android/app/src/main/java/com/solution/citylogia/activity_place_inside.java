@@ -39,6 +39,7 @@ public class activity_place_inside extends Fragment {
 
     private final IPlaceApi placeApi;
     private Place placeInfo = null;
+    private Long id;
 
 
     public activity_place_inside() {
@@ -59,8 +60,8 @@ public class activity_place_inside extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle a = getArguments();
-        System.out.println(a);
+        this.id = (Long)requireActivity().getIntent().getExtras().get("id");
+        System.out.println("идентификатор места" + id);
     }
 
     @Override
@@ -84,7 +85,7 @@ public class activity_place_inside extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        this.placeApi.getPlaceInfo(2).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(place -> {
+        this.placeApi.getPlaceInfo(this.id).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(place -> {
             this.placeInfo = place.getData();
             this.setData(view, this.placeInfo);
         });

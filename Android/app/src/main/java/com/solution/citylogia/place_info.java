@@ -31,6 +31,7 @@ import retrofit2.Retrofit;
 
 public class place_info extends Fragment {
     private Place place;
+    private Long id;
 
     public static place_info newInstance(Bundle bundle) {
         place_info fragment = new place_info();
@@ -40,13 +41,11 @@ public class place_info extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Bundle args = getArguments();
         super.onCreate(savedInstanceState);
+        Bundle args = getArguments();
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
-        if (args != null) {
+        if (args!=null) {
             this.place = gson.fromJson(String.valueOf(args.getSerializable("place")), Place.class);
-            System.out.println(this.place);
         }
     }
 
