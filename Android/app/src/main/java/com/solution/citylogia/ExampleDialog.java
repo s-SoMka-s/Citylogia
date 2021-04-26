@@ -44,7 +44,6 @@ public class ExampleDialog extends AppCompatDialogFragment {
                         rateValue = ratingBar.getRating(); // here is our rating
                     }
                 });
-
         // send our review to the server. Get in class review from the structure and reload
 
         editTextReview = view.findViewById(R.id.review);
