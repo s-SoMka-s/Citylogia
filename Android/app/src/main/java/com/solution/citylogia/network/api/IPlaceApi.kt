@@ -9,7 +9,7 @@ import retrofit2.http.QueryMap
 
 interface IPlaceApi {
     @GET("Map/Places")
-    fun getAllPlaces(@Query("longitude") longitude: Double? = null, @Query("latitude") latitude: Double? = null, @Query("radius") radius: Double? = null, @Query("type_ids") typeIds: Iterable<Long>? = null): Single<BaseCollectionResponse<ShortPlace>>
+    fun getAllPlaces(@Query("longtitude") longitude: Double? = null, @Query("latitude") latitude: Double? = null, @Query("radius_in_km") radius: Double? = null, @Query("type_ids") typeIds: Iterable<Long>? = null): Single<BaseCollectionResponse<ShortPlace>>
 
     @GET("Map/Places/{id}")
     fun getPlaceInfo(@Path("id") placeId: Long): Single<BaseObjectResponse<Place>>

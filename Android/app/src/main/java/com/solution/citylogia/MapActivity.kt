@@ -39,6 +39,7 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
     private val placeApi = retrofit.create(IPlaceApi::class.java)
     private var mMap: GoogleMap? = null
     private val mapService = MapService()
+    private var markers: List<Marker>? = null
     private var userLocationMarker: Marker? = null
     private val ACCESS_LOCATION_REQUEST_CODE = 10001
     private var fusedLocationProviderClient: FusedLocationProviderClient? = null
@@ -74,8 +75,7 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
         supportFragmentManager.setFragmentResultListener("filters_fragment_key", this) { _, bundle ->
                     val selectedTypes = bundle.get("selected_types") as ArrayList<PlaceType>?
                     val radius = bundle.get("radius") as Double?
-                    selectedTypes?.add(selectedTypes[0]);
-                    this.loadPlaces(types = selectedTypes, radius = radius, longitude = this.userLongitude, latitude = this.userLatitude);
+                    this.loadPlaces(types = selectedTypes, radius = 82.0, longitude = 82.924, latitude = 55.0308);
                 }
     }
 
@@ -163,6 +163,12 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
         return BitmapDescriptorFactory.fromBitmap(bitmap)
     }
 
+    private fun clearMarkers() {
+        this.markers?.forEach {
+            it.remove();
+        }
+    }
+
     @SuppressLint("CheckResult")
     private fun loadPlaces(types: ArrayList<PlaceType>? = null, latitude: Double? = null, radius: Double? = null, longitude: Double? = null){
         val typeIds = types?.map { type -> type.id }
@@ -170,9 +176,11 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
         this.placeApi.getAllPlaces(latitude = latitude, longitude = longitude, radius = radius, typeIds = typeIds)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe({ places: BaseCollectionResponse<ShortPlace>? ->
+
                     val places = places?.data?.elements
                     if (places != null) {
-                        this.mapService.drawMarkers(this.mMap, places)
+                        this.clearMarkers()
+                        this.markers = this.mapService.drawMarkers(this.mMap, places)
                     }
                 }, {})
     }
