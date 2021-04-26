@@ -41,17 +41,33 @@
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/title_v3"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
-            android:gravity="start"
-            android:text="Название места"
+            android:orientation="horizontal"
+            android:layout_marginTop="25dp">
 
-            android:textColor="@color/blackPrimary"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            <TextView
+                android:id="@+id/title_v3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Название места"
+
+                android:textColor="@color/blackPrimary"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_weight="0.9"/>
+
+            <ImageView
+                android:id="@+id/icon_heart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:src="@drawable/heart"
+                android:layout_gravity="right"
+                android:layout_weight="0.1"/>
+
+        </LinearLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"

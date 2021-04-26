@@ -28,6 +28,7 @@ import com.squareup.picasso.Picasso;
 public class place_reviews extends Fragment {
 
     private Place place = null;
+    private Boolean isPressed = false;
 
     public place_reviews() {
 
@@ -87,8 +88,35 @@ public class place_reviews extends Fragment {
 
         ImageView but_back = view.findViewById(R.id.icon_back_v3);
         but_back.setOnClickListener(v -> navController.navigate(R.id.action_place_reviews_to_activity_place_inside));
+
+        ImageView but_like = view.findViewById(R.id.icon_heart);
+
+        but_like.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                boolean isPressed = getLike();
+                if (!isPressed) {
+                    but_like.setImageResource(R.drawable.heart_color);
+                    // выставить флажок, в профиле у человека, что ему место понравилось. (В базе)
+                    setLike(true);
+                } else {
+                    but_like.setImageResource(R.drawable.heart);
+                    // убрать из базы данных
+                    setLike(false);
+                }
+            }
+        });
     }
-  
+
+    private boolean getLike() {
+        return isPressed;
+    }
+
+    private void setLike(boolean state) {
+        isPressed = state;
+    }
+
     public void openDialog() {
         ExampleDialog exampleDialog = new ExampleDialog();
         exampleDialog.show(getChildFragmentManager(), "text");
@@ -99,12 +127,18 @@ public class place_reviews extends Fragment {
         TextView title_v3_replace = view.findViewById(R.id.title_v3);
         TextView address_v3_replace = view.findViewById(R.id.address_v3);
 
-
         String title_v2 = this.place.getName();
         String address_v2 = this.place.getAddress();
+        // Boolean isLikePressed = ...
 
         title_v3_replace.setText(title_v2);
         address_v3_replace.setText(address_v2);
+
+        /*if (isLikePressed) {
+            ImageView but_like = view.findViewById(R.id.icon_heart);
+            but_like.setImageResource(R.drawable.heart_color);
+        }*/
+
     }
 
     private void fillReviews(ConstraintLayout reviewLayout, Review review) {
