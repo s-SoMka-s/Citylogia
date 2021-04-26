@@ -8,7 +8,9 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import com.solution.citylogia.models.PlaceType
 import com.solution.citylogia.network.RetrofitSingleton.retrofit
 import com.solution.citylogia.network.api.IPlaceApi
@@ -85,8 +87,13 @@ class FiltersFragment : Fragment() {
 
     private fun goBack() {
         println(this.selectedTypes);
+        var activity = requireActivity() as MapActivity
+        activity.intent.putExtra("12", "1212");
         requireActivity().supportFragmentManager
                 .beginTransaction()
+                .remove(this)
                 .commit()
+
+        setFragmentResult("filters_fragment_key", bundleOf("selected_types" to this.selectedTypes))
     }
 }

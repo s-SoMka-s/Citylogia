@@ -11,6 +11,8 @@ import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.os.Looper
+import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
@@ -20,7 +22,9 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.google.gson.Gson
 import com.solution.citylogia.models.BaseCollectionResponse
+import com.solution.citylogia.models.PlaceType
 import com.solution.citylogia.models.ShortPlace
 import com.solution.citylogia.network.RetrofitSingleton.retrofit
 import com.solution.citylogia.network.api.IPlaceApi
@@ -28,6 +32,7 @@ import com.solution.citylogia.services.MapService
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class MapActivity : FragmentActivity(), OnMapReadyCallback {
@@ -40,6 +45,8 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
     private var locationRequest: LocationRequest? = null
     private var refresh = true
     private var geocoder: Geocoder? = null
+    private var userLongitude: Double? = null
+    private var userLatitude: Double? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +59,24 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
         this.locationRequest?.interval = 500
         this.locationRequest?.fastestInterval = 500
         locationRequest?.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+
+        var filter = findViewById<Button>(R.id.bt_filter)
+
+        filter.setOnClickListener{
+            var bundle = Bundle();
+            var filtersFragment = FiltersFragment.getNewInstance(bundle);
+            supportFragmentManager.beginTransaction()
+                    .replace(R.id.map, filtersFragment)
+                    .addToBackStack(null)
+                    .commit();
+        }
+
+        supportFragmentManager.setFragmentResultListener("filters_fragment_key", this) { _, bundle ->
+                    val selectedTypes = bundle.get("selected_types") as ArrayList<PlaceType>?
+                    val radius = bundle.get("radius") as Double?
+                    selectedTypes?.add(selectedTypes[0]);
+                    this.loadPlaces(types = selectedTypes, radius = radius, longitude = this.userLongitude, latitude = this.userLatitude);
+                }
     }
 
     override fun onStart() {
@@ -60,6 +85,11 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
             startLocationUpdates()
         } else {
         }
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        println("restarted")
     }
 
     @SuppressLint("CheckResult")
@@ -72,14 +102,7 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
         } else {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), ACCESS_LOCATION_REQUEST_CODE)
         }
-        this.placeApi.getAllPlaces()
-                     .subscribeOn(Schedulers.io())
-                     .observeOn(AndroidSchedulers.mainThread()).subscribe({ places: BaseCollectionResponse<ShortPlace>? ->
-                        val places = places?.data?.elements
-                        if (places != null) {
-                            this.mapService.drawMarkers(this.mMap, places)
-                        }
-                    }, {})
+        this.loadPlaces()
         mMap!!.setOnMarkerClickListener { marker: Marker ->
             try {
                 val placeId = marker.snippet.toLong()
@@ -109,6 +132,9 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
     }
 
     private fun setUserLocationMarker(location: Location) {
+        this.userLongitude = location.longitude
+        this.userLatitude = location.latitude
+
         val latLng = LatLng(location.latitude, location.longitude)
         if (userLocationMarker == null) {
             val markerOptions = MarkerOptions()
@@ -135,5 +161,19 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
         val canvas = Canvas(bitmap)
         vectorDrawable.draw(canvas)
         return BitmapDescriptorFactory.fromBitmap(bitmap)
+    }
+
+    @SuppressLint("CheckResult")
+    private fun loadPlaces(types: ArrayList<PlaceType>? = null, latitude: Double? = null, radius: Double? = null, longitude: Double? = null){
+        val typeIds = types?.map { type -> type.id }
+
+        this.placeApi.getAllPlaces(latitude = latitude, longitude = longitude, radius = radius, typeIds = typeIds)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe({ places: BaseCollectionResponse<ShortPlace>? ->
+                    val places = places?.data?.elements
+                    if (places != null) {
+                        this.mapService.drawMarkers(this.mMap, places)
+                    }
+                }, {})
     }
 }
