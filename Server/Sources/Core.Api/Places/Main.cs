@@ -3,6 +3,7 @@ using Citylogia.Server.Core.Entityes;
 using Core.Api.Models;
 using Core.Api.Places.Models.Input;
 using Core.Api.Places.Models.Output;
+using Core.Entities;
 using Libraries.Updates;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -54,7 +55,9 @@ namespace Citylogia.Server.Core.Api
         public PlaceSummary GetPlace(long id)
         {
             var place = this.Query().FirstOrDefault(p => p.Id == id);
-            var res = new PlaceSummary(place);
+
+            var favorites = this.FavoritesQuery().Where(l => l.UserId == 2).Select(l => l.PlaceId).ToHashSet<long>();
+            var res = new PlaceSummary(place, favorites);
 
             return res;
         }
@@ -105,6 +108,14 @@ namespace Citylogia.Server.Core.Api
                        .ThenInclude(r=>r.Author)
 
                        .Include(p => p.Type);
+        }
+
+        private IQueryable<FavoritePlaceLink> FavoritesQuery()
+        {
+            return this.context
+                       .FavoritePlaceLinks
+                       .Include(l => l.User)
+                       .Include(l => l.Place);
         }
     }
 }
