@@ -21,7 +21,9 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -113,36 +115,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         filter = findViewById(R.id.bt_filter);
 
         filter.setOnClickListener(v -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-            builder.setTitle("Какие места вам интересны?");
-            builder.setCancelable(false);
-            builder.setMultiChoiceItems(this.prepareTypesForFilter(), this.prepareSelectedTypesForFilter(), new DialogInterface.OnMultiChoiceClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+            Fragment filtersFragment = FiltersFragment.Companion.newInstance();
 
-                }
-            });
-
-            builder.setPositiveButton("OK", (dialog, which) -> {
-               // refreshInterestingPlaces(); //new
-            });
-
-            builder.setNeutralButton("Выбрать всё", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    selectedTypes.addAll(typeArray);
-                    //refreshInterestingPlaces();//new
-                    //                      Collections.sort(typeList);
-                }
-            });
-
-            builder.setNegativeButton("Очистить всё", (dialog, which) -> {
-                selectedTypes.clear();
-                System.out.println(selectedTypes);
-                //refreshInterestingPlaces();//new
-            });
-
-            builder.show();
+            getSupportFragmentManager().beginTransaction()
+                                       .replace(R.id.map, filtersFragment)
+                                       .commit();
         });
 
         materialSearchBar = findViewById(R.id.searchBar);
