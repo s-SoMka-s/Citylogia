@@ -74,12 +74,13 @@ public class activity_place_inside extends Fragment {
     }
 
     public void setData (View view, Place place) {
-        TextView title_v1_replace = view.findViewById(R.id.title_v1);
-        TextView text_v1_replace = view.findViewById(R.id.text_v1);
+        TextView name = view.findViewById(R.id.title_v1);
+        TextView shortDescription = view.findViewById(R.id.text_v1);
 
         String title_v1 = place.getName();
+        shortDescription.setText(place.getShort_description());
 
-        title_v1_replace.setText(title_v1);
+        name.setText(title_v1);
     }
 
     @Override
@@ -89,6 +90,7 @@ public class activity_place_inside extends Fragment {
             this.placeInfo = place.getData();
             this.setData(view, this.placeInfo);
         });
+
 
 
         final NavController navController = Navigation.findNavController(view);
