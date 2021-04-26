@@ -1,5 +1,6 @@
 package com.solution.citylogia;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -61,6 +63,12 @@ public class place_info extends Fragment {
 
         ImageView but_back = view.findViewById(R.id.icon_back_v3);
         but_back.setOnClickListener(v -> navController.navigate(R.id.action_place_info_to_activity_place_inside));
+
+        ImageButton profile_but = view.findViewById(R.id.profile_but);
+        profile_but.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), ProfileActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void fillData(View view) {
