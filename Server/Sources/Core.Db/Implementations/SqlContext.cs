@@ -13,7 +13,6 @@ namespace Citylogia.Server.Core.Db.Implementations
         public DbSet<PlaceType> PlaceTypes { get; set; }
         public DbSet<FavoritePlaceLink> FavoritePlaceLinks { get; set; }
 
-
         public SqlContext() : base() { }
 
         public SqlContext(DbContextOptions<SqlContext> options) : base(options) { }
@@ -28,10 +27,6 @@ namespace Citylogia.Server.Core.Db.Implementations
             #region Place
             {
                 var place = builder.Entity<Place>();
-
-                place.HasMany(p => p.Photos)
-                     .WithOne()
-                     .OnDelete(DeleteBehavior.Cascade);
 
                 place.HasOne(p => p.Type)
                      .WithMany()
@@ -51,6 +46,10 @@ namespace Citylogia.Server.Core.Db.Implementations
                   .OnDelete(DeleteBehavior.Cascade);
 
             var photo = builder.Entity<Photo>();
+
+            photo.HasOne(p => p.Place)
+                .WithMany(p => p.Photos)
+                .OnDelete(DeleteBehavior.Cascade);
 
             var placeType = builder.Entity<PlaceType>();
 

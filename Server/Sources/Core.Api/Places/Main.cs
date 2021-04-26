@@ -121,11 +121,12 @@ namespace Citylogia.Server.Core.Api
         {
             return this.context
                        .Places
-                       
-                       .Include(p => p.Reviews)
-                       .ThenInclude(r=>r.Author)
 
-                       .Include(p => p.Type);
+                       .Include(p => p.Reviews)
+                       .ThenInclude(r => r.Author)
+
+                       .Include(p => p.Type)
+                       .Include(p => p.Photos);
         }
 
         private IQueryable<FavoritePlaceLink> FavoritesQuery()

@@ -8,10 +8,14 @@ namespace Citylogia.Server.Core.Entityes
     {
         public Photo() : base()
         {
-            this.Link = string.Empty;
+            this.PublicUrl = string.Empty;
         }
 
 
-        public string Link { get; set; }
+        public string PublicUrl { get; set; }
+
+        [ForeignKey(nameof(Place))]
+        public long PlaceId { get; set; }
+        public Place Place { get; set; }
     }
 }

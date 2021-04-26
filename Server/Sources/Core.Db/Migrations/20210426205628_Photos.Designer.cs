@@ -3,15 +3,17 @@ using System;
 using Citylogia.Server.Core.Db.Implementations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Core.Db.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    partial class SqlContextModelSnapshot : ModelSnapshot
+    [Migration("20210426205628_Photos")]
+    partial class Photos
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -169,31 +171,6 @@ namespace Core.Db.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Core.Entities.FavoritePlaceLink", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<long>("PlaceId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PlaceId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Favorite-Place-Links");
-                });
-
             modelBuilder.Entity("Citylogia.Server.Core.Entityes.Photo", b =>
                 {
                     b.HasOne("Citylogia.Server.Core.Entityes.Place", "Place")
@@ -243,25 +220,6 @@ namespace Core.Db.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Avatar");
-                });
-
-            modelBuilder.Entity("Core.Entities.FavoritePlaceLink", b =>
-                {
-                    b.HasOne("Citylogia.Server.Core.Entityes.Place", "Place")
-                        .WithMany()
-                        .HasForeignKey("PlaceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Citylogia.Server.Core.Entityes.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Place");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Citylogia.Server.Core.Entityes.Place", b =>
