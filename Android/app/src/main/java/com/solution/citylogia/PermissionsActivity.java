@@ -32,11 +32,11 @@ public class PermissionsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_permissions);
         //getSupportActionBar().hide();
 
-        if (ContextCompat.checkSelfPermission(PermissionsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            startActivity(new Intent(PermissionsActivity.this, MainActivity.class));
+        /*if (ContextCompat.checkSelfPermission(PermissionsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            startActivity(new Intent(PermissionsActivity.this, MapActivity.class));
             finish();
             return;
-        }
+        }*/
 
         btnGrant = findViewById(R.id.btn_grant);
 
@@ -46,7 +46,7 @@ public class PermissionsActivity extends AppCompatActivity {
                 Dexter.withActivity(PermissionsActivity.this).withPermission(Manifest.permission.ACCESS_FINE_LOCATION).withListener(new PermissionListener() {
                     @Override
                     public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
-                        startActivity(new Intent(PermissionsActivity.this, MainActivity.class));
+                        startActivity(new Intent(PermissionsActivity.this, MapActivity.class));
                         finish();
                     }
 

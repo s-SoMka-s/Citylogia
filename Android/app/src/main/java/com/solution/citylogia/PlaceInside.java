@@ -13,9 +13,6 @@ public class PlaceInside extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
-        Bundle a = getIntent().getBundleExtra("id");
-        System.out.println(a);
-        //getSupportActionBar().hide();
     }
 
 }
