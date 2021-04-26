@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
 
     tools:context=".ProfileActivity">
 
@@ -90,7 +91,7 @@
         android:layout_marginTop="15dp"
         android:layout_marginEnd="16dp"
 
-        android:text="м"
+        android:text="км"
         android:textColor="@color/blackPrimary"
         android:textSize="16sp"
         android:textStyle="normal"
@@ -98,14 +99,14 @@
         app:layout_constraintTop_toBottomOf="@+id/view2" />
 
     <TextView
-        android:id="@+id/distance"
+        android:id="@+id/filter_distance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
         android:layout_marginTop="15dp"
 
         android:layout_marginEnd="5dp"
-        android:text="1500"
+        android:text="10"
         android:textColor="@color/blackPrimary"
         android:textSize="16sp"
         android:textStyle="normal"
@@ -123,10 +124,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekBar" />
+        app:layout_constraintTop_toBottomOf="@+id/filter_seekBar" />
 
     <SeekBar
-        android:id="@+id/seekBar"
+        android:id="@+id/filter_seekBar"
         android:layout_width="380dp"
         android:layout_height="wrap_content"
 
@@ -135,9 +136,9 @@
         android:layout_marginEnd="16dp"
 
 
-        android:max="10000"
-        android:min="100"
-        android:progress="1000"
+        android:max="100"
+        android:min="1"
+        android:progress="10"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView7" />

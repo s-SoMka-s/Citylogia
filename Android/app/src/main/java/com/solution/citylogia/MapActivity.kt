@@ -24,6 +24,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.gson.Gson
 import com.solution.citylogia.models.BaseCollectionResponse
+import com.solution.citylogia.models.Place
 import com.solution.citylogia.models.PlaceType
 import com.solution.citylogia.models.ShortPlace
 import com.solution.citylogia.network.RetrofitSingleton.retrofit
@@ -48,6 +49,7 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
     private var geocoder: Geocoder? = null
     private var userLongitude: Double? = null
     private var userLatitude: Double? = null
+    private var selectedTyped: ArrayList<PlaceType> = ArrayList();
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,7 +66,8 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
         var filter = findViewById<Button>(R.id.bt_filter)
 
         filter.setOnClickListener{
-            var bundle = Bundle();
+            var bundle = Bundle()
+            bundle.putSerializable("selected_types", this.selectedTyped)
             var filtersFragment = FiltersFragment.getNewInstance(bundle);
             supportFragmentManager.beginTransaction()
                     .replace(R.id.map, filtersFragment)
@@ -72,10 +75,11 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
                     .commit();
         }
 
-        supportFragmentManager.setFragmentResultListener("filters_fragment_key", this) { _, bundle ->
+        supportFragmentManager.setFragmentResultListener("filters_fragment_apply", this) { _, bundle ->
                     val selectedTypes = bundle.get("selected_types") as ArrayList<PlaceType>?
                     val radius = bundle.get("radius") as Double?
-                    this.loadPlaces(types = selectedTypes, radius = 82.0, longitude = 82.924, latitude = 55.0308);
+                    this.selectedTyped = selectedTyped
+                    this.loadPlaces(types = selectedTypes, radius = radius, longitude = this.userLongitude, latitude = this.userLatitude);
                 }
     }
 

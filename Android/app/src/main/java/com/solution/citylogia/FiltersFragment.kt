@@ -7,19 +7,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.LinearLayout
+import android.widget.SeekBar
 import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
+import com.solution.citylogia.models.Place
 import com.solution.citylogia.models.PlaceType
 import com.solution.citylogia.network.RetrofitSingleton.retrofit
 import com.solution.citylogia.network.api.IPlaceApi
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
-class FiltersFragment : Fragment() {
+class FiltersFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
     val typeArray = ArrayList<PlaceType>();
-    val selectedTypes = ArrayList<PlaceType>()
+    private var selectedTypes: ArrayList<PlaceType>? = ArrayList()
+    private var radius: Double? = null
 
     companion object {
         fun getNewInstance(args: Bundle?): FiltersFragment {
@@ -39,6 +42,7 @@ class FiltersFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        this.selectedTypes = arguments?.getSerializable("selected_types") as ArrayList<PlaceType>
         super.onViewCreated(view, savedInstanceState)
         this.setUpButtons(view);
         this.loadTypes(view);
@@ -56,13 +60,18 @@ class FiltersFragment : Fragment() {
                 val cricketerView = layoutInflater.inflate(R.layout.type_select_layout, null, false)
                 val typeCheckBox = cricketerView.findViewById<CheckBox>(R.id.type_select_checkBox);
                 typeCheckBox.text = placeType.name;
+
+                if (this.selectedTypes?.contains(placeType) == true){
+                    typeCheckBox.isChecked = true;
+                }
+
                 typeCheckBox.setOnClickListener {
                     val checkBox = it as CheckBox;
                     if (checkBox.isChecked) {
-                        this.selectedTypes.add(placeType)
+                        this.selectedTypes?.add(placeType)
                     }
                     else{
-                        this.selectedTypes.remove(placeType)
+                        this.selectedTypes?.remove(placeType)
                     }
                 }
                 typesLayout.addView(cricketerView);
@@ -82,7 +91,11 @@ class FiltersFragment : Fragment() {
 
         doneBtn.setOnClickListener{
             this.goBack();
+            setFragmentResult("filters_fragment_apply", bundleOf("selected_types" to this.selectedTypes, "radius" to this.radius))
         }
+
+        val rangeSeekBar = view.findViewById<SeekBar>(R.id.filter_seekBar)
+        rangeSeekBar.setOnSeekBarChangeListener(this)
     }
 
     private fun goBack() {
@@ -94,6 +107,21 @@ class FiltersFragment : Fragment() {
                 .remove(this)
                 .commit()
 
-        setFragmentResult("filters_fragment_key", bundleOf("selected_types" to this.selectedTypes))
+
+    }
+
+    @SuppressLint("UseRequireInsteadOfGet")
+    override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+        this.radius = progress.toDouble()
+        this.view?.findViewById<TextView>(R.id.filter_distance)!!.text = progress.toString();
+    }
+
+
+    override fun onStartTrackingTouch(seekBar: SeekBar?) {
+        println("start tracking touch")
+    }
+
+    override fun onStopTrackingTouch(seekBar: SeekBar?) {
+        println("stop tracking touch")
     }
 }
