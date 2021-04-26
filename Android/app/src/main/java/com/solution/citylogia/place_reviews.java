@@ -2,7 +2,6 @@ package com.solution.citylogia;
 
 import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,7 +14,6 @@ import androidx.navigation.Navigation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -23,15 +21,9 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
 import com.solution.citylogia.models.Place;
 import com.solution.citylogia.models.Review;
-import com.solution.citylogia.models.User;
 import com.squareup.picasso.Picasso;
-
-import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
 
 public class place_reviews extends Fragment {
 
@@ -78,9 +70,11 @@ public class place_reviews extends Fragment {
         this.place.getReviews().getElements().forEach(review -> {
             final View cricketerView = getLayoutInflater().inflate(R.layout.review_row_add, null, false);
             reviewLayoutInsert.addView(cricketerView);
-            fillData(cricketerView.findViewById(R.id.testLayout), review);
+            fillReviews(cricketerView.findViewById(R.id.testLayout), review);
 
         });
+
+        this.fillData(view);
 
         final NavController navController = Navigation.findNavController(view);
 
@@ -90,6 +84,9 @@ public class place_reviews extends Fragment {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             bundle.putSerializable("place", gson.toJson(place));
             navController.navigate(R.id.action_place_reviews_to_place_info, bundle); });
+
+        ImageView but_back = view.findViewById(R.id.icon_back_v3);
+        but_back.setOnClickListener(v -> navController.navigate(R.id.action_place_reviews_to_activity_place_inside));
     }
   
     public void openDialog() {
@@ -98,7 +95,19 @@ public class place_reviews extends Fragment {
     }
 
 
-    private void fillData(ConstraintLayout reviewLayout, Review review) {
+    private void fillData(View view) {
+        TextView title_v3_replace = view.findViewById(R.id.title_v3);
+        TextView address_v3_replace = view.findViewById(R.id.address_v3);
+
+
+        String title_v2 = this.place.getName();
+        String address_v2 = this.place.getAddress();
+
+        title_v3_replace.setText(title_v2);
+        address_v3_replace.setText(address_v2);
+    }
+
+    private void fillReviews(ConstraintLayout reviewLayout, Review review) {
 
         TextView name = reviewLayout.findViewById(R.id.reviewName);
         TextView comment = reviewLayout.findViewById(R.id.reviewComment);
