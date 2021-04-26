@@ -1,5 +1,6 @@
 package com.solution.citylogia
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,22 +9,30 @@ import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.solution.citylogia.models.PlaceType
 import com.solution.citylogia.network.RetrofitSingleton.retrofit
 import com.solution.citylogia.network.api.IPlaceApi
-import com.solution.citylogia.utils.Generator
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
 class FiltersFragment : Fragment() {
+    val typeArray = ArrayList<PlaceType>();
+    val selectedTypes = ArrayList<PlaceType>()
 
     companion object {
-        fun newInstance(): FiltersFragment {
-            return FiltersFragment();
+        fun getNewInstance(args: Bundle?): FiltersFragment {
+            val filtersFragment = FiltersFragment();
+            println(args)
+            filtersFragment.arguments = args;
+            return filtersFragment;
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.filter_layout, container, false);
     }
 
@@ -33,17 +42,27 @@ class FiltersFragment : Fragment() {
         this.loadTypes(view);
     }
 
+    @SuppressLint("CheckResult")
     private fun loadTypes(view: View) {
         val placeApi = retrofit.create(IPlaceApi::class.java)
 
-        placeApi.getPlaceTypes().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe({
-            val types = it.data.elements;
+        placeApi.getPlaceTypes().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe({ response ->
+            val types = response.data.elements;
             val typesLayout = view.findViewById<LinearLayout>(R.id.types_layout)
 
-            types?.forEach{
+            types?.forEach { placeType ->
                 val cricketerView = layoutInflater.inflate(R.layout.type_select_layout, null, false)
                 val typeCheckBox = cricketerView.findViewById<CheckBox>(R.id.type_select_checkBox);
-                typeCheckBox.text = it.name;
+                typeCheckBox.text = placeType.name;
+                typeCheckBox.setOnClickListener {
+                    val checkBox = it as CheckBox;
+                    if (checkBox.isChecked) {
+                        this.selectedTypes.add(placeType)
+                    }
+                    else{
+                        this.selectedTypes.remove(placeType)
+                    }
+                }
                 typesLayout.addView(cricketerView);
             }
         }, {})
@@ -65,9 +84,9 @@ class FiltersFragment : Fragment() {
     }
 
     private fun goBack() {
+        println(this.selectedTypes);
         requireActivity().supportFragmentManager
                 .beginTransaction()
-                .remove(this)
                 .commit()
     }
 }
