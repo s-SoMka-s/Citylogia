@@ -1,15 +1,6 @@
 package com.solution.citylogia;
 
-import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,17 +8,15 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
 import com.solution.citylogia.models.Place;
-import com.solution.citylogia.models.PlaceAddress;
-import com.solution.citylogia.network.RetrofitSingleton;
-import com.solution.citylogia.network.api.IPlaceApi;
-
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
-import retrofit2.Retrofit;
 
 public class place_info extends Fragment {
     private Place place;
@@ -44,7 +33,7 @@ public class place_info extends Fragment {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        if (args!=null) {
+        if (args != null) {
             this.place = gson.fromJson(String.valueOf(args.getSerializable("place")), Place.class);
         }
     }
