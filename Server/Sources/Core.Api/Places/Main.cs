@@ -3,9 +3,12 @@ using Citylogia.Server.Core.Entityes;
 using Core.Api.Models;
 using Core.Api.Places.Models.Input;
 using Core.Api.Places.Models.Output;
+using Core.Entities;
+using GeoCoordinatePortable;
 using Libraries.Updates;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -22,17 +25,24 @@ namespace Citylogia.Server.Core.Api
         }
 
         [HttpGet("")]
-        public BaseCollectionResponse<ShortPlaceSummary> Get()
+        public async System.Threading.Tasks.Task<BaseCollectionResponse<ShortPlaceSummary>> GetAsync([FromQuery] PlaceSelectParameters parameters)
         {
-            var places = this.Query().ToList();
+            var query = this.Query();
 
-            var summaries = new List<ShortPlaceSummary>();
-
-            foreach (var place in places)
+            if (parameters.TypeIds.Any())
             {
-                var summary = new ShortPlaceSummary(place);
-                summaries.Add(summary);
+                query = query.Where(p => parameters.TypeIds.Contains(p.TypeId));
             }
+
+            var places = query.ToList();
+            if (parameters.Longtitude != default && parameters.Latitude != default && parameters.RadiusInKm != default)
+            {
+                places = places.Where(p => this.IsPlaceInRange(p, parameters.Longtitude, parameters.Latitude, parameters.RadiusInKm)).ToList();
+            }
+
+            var summaries = places.Select(p => new ShortPlaceSummary(p)).ToList();
+
+            
 
             var baseCollectionResponse = new BaseCollectionResponse<ShortPlaceSummary>(summaries);
 
@@ -54,7 +64,9 @@ namespace Citylogia.Server.Core.Api
         public PlaceSummary GetPlace(long id)
         {
             var place = this.Query().FirstOrDefault(p => p.Id == id);
-            var res = new PlaceSummary(place);
+
+            var favorites = this.FavoritesQuery().Where(l => l.UserId == 2).Select(l => l.PlaceId).ToHashSet<long>();
+            var res = new PlaceSummary(place, favorites);
 
             return res;
         }
@@ -96,6 +108,15 @@ namespace Citylogia.Server.Core.Api
             return true;
         }
 
+        private bool IsPlaceInRange(Place place, double longtitude, double latitude, double radiusInKm)
+        {
+            var geoPlace = new GeoCoordinate(place.Latitude, place.Longitude);
+            var geoUser = new GeoCoordinate(latitude, longtitude);
+            var distanceToPlace = geoUser.GetDistanceTo(geoPlace);
+            Console.WriteLine(distanceToPlace);
+            return distanceToPlace <= radiusInKm;
+        }
+
         private IQueryable<Place> Query()
         {
             return this.context
@@ -105,6 +126,14 @@ namespace Citylogia.Server.Core.Api
                        .ThenInclude(r=>r.Author)
 
                        .Include(p => p.Type);
+        }
+
+        private IQueryable<FavoritePlaceLink> FavoritesQuery()
+        {
+            return this.context
+                       .FavoritePlaceLinks
+                       .Include(l => l.User)
+                       .Include(l => l.Place);
         }
     }
 }
