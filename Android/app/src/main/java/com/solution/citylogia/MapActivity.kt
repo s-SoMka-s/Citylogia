@@ -12,7 +12,6 @@ import android.location.Location
 import android.os.Bundle
 import android.os.Looper
 import android.widget.Button
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
@@ -22,9 +21,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
-import com.google.gson.Gson
 import com.solution.citylogia.models.BaseCollectionResponse
-import com.solution.citylogia.models.Place
 import com.solution.citylogia.models.PlaceType
 import com.solution.citylogia.models.ShortPlace
 import com.solution.citylogia.network.RetrofitSingleton.retrofit

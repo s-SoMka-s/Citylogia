@@ -12,7 +12,6 @@ import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
-import com.solution.citylogia.models.Place
 import com.solution.citylogia.models.PlaceType
 import com.solution.citylogia.network.RetrofitSingleton.retrofit
 import com.solution.citylogia.network.api.IPlaceApi
@@ -20,7 +19,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
 class FiltersFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
-    val typeArray = ArrayList<PlaceType>();
     private var selectedTypes: ArrayList<PlaceType>? = ArrayList()
     private var radius: Double? = null
 
@@ -31,10 +29,6 @@ class FiltersFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
             filtersFragment.arguments = args;
             return filtersFragment;
         }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
