@@ -9,7 +9,7 @@ namespace Core.Api.Places.Models.Input
         [FromQuery(Name = "latitude")]
         public double Latitude { get; set; }
 
-        [FromQuery(Name = "longtitude")]
+        [FromQuery(Name = "longitude")]
         public double Longtitude { get; set; }
 
         [FromQuery(Name = "radius_in_km")]
