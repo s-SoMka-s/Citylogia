@@ -1,16 +1,18 @@
 ﻿using Citylogia.Server.Core.Entityes;
 using Core.Api.Models;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Core.Api.Places.Models.Output
 {
     public class PlaceSummary
     {
-        public PlaceSummary(Place source)
+        public PlaceSummary(Place source, HashSet<long> favorites)
         {
             this.Id = source.Id;
             this.Mark = source.Mark;
+            this.IsFavorite = favorites.Contains(this.Id);
             this.Name = source.Name;
             this.ShortDescription = source.ShortDescription;
 
@@ -38,6 +40,9 @@ namespace Core.Api.Places.Models.Output
 
         [JsonProperty("mark")]
         public long Mark { get; set; }
+
+        [JsonProperty("is_favorite")]
+        public bool IsFavorite { get; set; }
 
         [JsonProperty("name")]
         public string Name { get; set; }
