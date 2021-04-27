@@ -93,6 +93,7 @@ namespace Citylogia.Server.Core.Api
             return true;
         }
 
+
         [HttpGet("Types")]
         public BaseCollectionResponse<PlaceTypeSummary> GetPlaceTypes()
         {
