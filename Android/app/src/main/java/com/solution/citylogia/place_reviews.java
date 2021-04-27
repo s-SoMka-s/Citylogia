@@ -169,9 +169,13 @@ public class place_reviews extends Fragment {
 
         ImageView placeImage = view.findViewById(R.id.image_replace);
         String url_image = place.getPhoto().getElements().get(1).getPublic_url();
-        Picasso.get().load(url_image)
-                .placeholder(R.drawable.basic_person)
-                .into(placeImage);
+        try {
+            Picasso.get().load(url_image)
+                    .placeholder(R.drawable.image_template)
+                    .into(placeImage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void fillReviews(ConstraintLayout reviewLayout, Review review) {
@@ -201,11 +205,15 @@ public class place_reviews extends Fragment {
 
         String url_image = review.getAuthor().getAvatar().getPublic_url();
 
-        Picasso.get().load(url_image)
-                .resize(150, 150)
-                .centerCrop()
-                .placeholder(R.drawable.basic_person)
-                .into(image);
+        try {
+            Picasso.get().load(url_image)
+                    .resize(150, 150)
+                    .centerCrop()
+                    .placeholder(R.drawable.basic_person)
+                    .into(image);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void setRate(ImageView rateImage, double rate) {
