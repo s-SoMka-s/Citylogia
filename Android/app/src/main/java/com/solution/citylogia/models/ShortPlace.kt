@@ -6,6 +6,8 @@ data class ShortPlace(
         var type: PlaceType = PlaceType(),
         var latitude: Double = 0.0,
         var longitude: Double = 0.0,
+        var distanceTo: Double? = null,
+        var address: String = "",
         var name: String? = null,
 ){
 
