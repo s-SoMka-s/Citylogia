@@ -1,41 +1,27 @@
 package com.solution.citylogia;
 
-import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.solution.citylogia.models.BaseCollectionResponse;
-import com.solution.citylogia.models.BaseObjectResponse;
 import com.solution.citylogia.models.Place;
-
-import com.solution.citylogia.models.ShortPlace;
 import com.solution.citylogia.network.RetrofitSingleton;
 import com.solution.citylogia.network.api.IPlaceApi;
 import com.squareup.picasso.Picasso;
 
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
-import kotlinx.serialization.json.Json;
 import retrofit2.Retrofit;
 
 
