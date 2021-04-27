@@ -124,6 +124,21 @@ namespace Citylogia.Server.Core.Api
             return true;
         }
 
+        [HttpDelete("Types/{id}")]
+        public async Task<bool> DeleteTypeAsync(long id)
+        {
+            var type = await this.context.PlaceTypes.FirstOrDefaultAsync(t => t.Id == id);
+            if (type == default)
+            {
+                return false;
+            }
+
+            this.context.Remove(type);
+            await this.context.SaveChangesAsync();
+
+            return true;
+        }
+
         private bool IsPlaceInRange(Place place, double longtitude, double latitude, double radiusInKm)
         {
             var geoPlace = new GeoCoordinate(place.Latitude, place.Longitude);
