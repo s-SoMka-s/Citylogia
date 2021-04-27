@@ -9,8 +9,18 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.solution.citylogia.models.Favorite;
+import com.solution.citylogia.models.Place;
+import com.solution.citylogia.models.ShortPlace;
+import com.solution.citylogia.network.RetrofitSingleton;
+import com.solution.citylogia.network.api.IFavoritesApi;
+
+import org.w3c.dom.Text;
 
 import java.util.HashMap;
+import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -18,18 +28,14 @@ import io.reactivex.schedulers.Schedulers;
 public class ProfileActivity extends AppCompatActivity {
 
     private Boolean isPressed = false;
+    private IFavoritesApi favoritesApi = RetrofitSingleton.INSTANCE.getRetrofit().create(IFavoritesApi.class);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        LinearLayout LikedLayoutInsert = findViewById(R.id.LikedLayoutInsert);
-        for (int i = 0; i < 5; i++) {
-            final View likedPlace = getLayoutInflater().inflate(R.layout.liked_place_add, null, false);
-            LikedLayoutInsert.addView(likedPlace);
-            fillLikedPlaces(likedPlace.findViewById(R.id.LikedWholeContainer));
-        }
+        this.loadFavorites();
 
         ImageButton map_but = findViewById(R.id.map_icon);
         map_but.setOnClickListener(v -> {
@@ -52,8 +58,29 @@ public class ProfileActivity extends AppCompatActivity {
         });*/
     }
 
-    private void fillLikedPlaces(ConstraintLayout LikedWholeContainer) {
+    private void fillLikedPlaces(Place place, View view) {
+        TextView name = view.findViewById(R.id.title_v);
+        name.setText(place.getName());
 
+        TextView address = view.findViewById(R.id.address_v);
+        address.setText(place.getAddress());
+        ImageView but_like = view.findViewById(R.id.icon_like);
+        but_like.setPressed(true);
+
+        but_like.setImageResource(R.drawable.heart_color);
+
+    }
+
+    private void loadFavorites() {
+        this.favoritesApi.getFavorites().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(res -> {
+            List<Favorite> favorites = res.getData().getElements();
+            LinearLayout LikedLayoutInsert = findViewById(R.id.LikedLayoutInsert);
+            favorites.forEach(favorite -> {
+                final View likedPlace = getLayoutInflater().inflate(R.layout.liked_place_add, null, false);
+                fillLikedPlaces(favorite.getPlace(), likedPlace);
+                LikedLayoutInsert.addView(likedPlace);
+            });
+        });
     }
 
     private boolean getLike() {

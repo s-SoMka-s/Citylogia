@@ -11,7 +11,9 @@ import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.os.Looper
+import android.view.View
 import android.widget.Button
+import android.widget.ImageButton
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
@@ -29,8 +31,6 @@ import com.solution.citylogia.network.api.IPlaceApi
 import com.solution.citylogia.services.MapService
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import java.util.*
-import kotlin.collections.ArrayList
 
 
 class MapActivity : FragmentActivity(), OnMapReadyCallback {
@@ -81,6 +81,12 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
                     this.selectedRadius = radius
                     this.loadPlaces(types = selectedTypes, radius = radius.toDouble(), longitude = this.userLongitude, latitude = this.userLatitude);
                 }
+
+        val profile_but: ImageButton = findViewById(R.id.but_profile)
+        profile_but.setOnClickListener { v: View? ->
+            startActivity(Intent(this, ProfileActivity::class.java))
+            finish()
+        }
     }
 
     override fun onStart() {
