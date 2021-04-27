@@ -136,6 +136,11 @@ public class place_reviews extends Fragment {
             but_like.setImageResource(R.drawable.heart_color);
         }*/
 
+        ImageView placeImage = view.findViewById(R.id.image_replace);
+        String url_image = place.getPhoto().getElements().get(1).getPublic_url();
+        Picasso.get().load(url_image)
+                .placeholder(R.drawable.basic_person)
+                .into(placeImage);
     }
 
     private void fillReviews(ConstraintLayout reviewLayout, Review review) {
@@ -163,12 +168,7 @@ public class place_reviews extends Fragment {
         date.setText(dateReplace);
         //String date_review_v3_1 = review.getPublished_at().format(DateTimeFormatter.ISO_LOCAL_DATE);
 
-
-        // так как нет в коллекции фото выкидываем с нулл поинтером
-        //Photo image_v3_1 = place.getPhotos().getElements().get(1);
-        //String url_image = image_v3_1.getLink();;
-
-        String url_image = "https://sun9-15.userapi.com/impf/c631924/v631924846/245f1/0OxkD0nPXqY.jpg?size=762x1104&quality=96&sign=4ec3533e9b0e4edb1b058368ed04ec62&type=album";
+        String url_image = review.getAuthor().getAvatar().getPublic_url();
 
         Picasso.get().load(url_image)
                 .resize(150, 150)

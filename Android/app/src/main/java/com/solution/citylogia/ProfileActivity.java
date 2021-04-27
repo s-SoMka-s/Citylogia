@@ -3,8 +3,10 @@ package com.solution.citylogia;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -20,6 +22,12 @@ public class ProfileActivity extends AppCompatActivity {
             LikedLayoutInsert.addView(likedPlace);
             fillLikedPlaces(likedPlace.findViewById(R.id.LikedWholeContainer));
         }
+
+        ImageButton map_but = findViewById(R.id.map_icon);
+        map_but.setOnClickListener(v -> {
+            startActivity(new Intent(getApplicationContext(), MapActivity.class));
+            finish();
+        });
     }
 
     private void fillLikedPlaces(ConstraintLayout LikedWholeContainer) {
