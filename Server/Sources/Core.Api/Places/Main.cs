@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Citylogia.Server.Core.Api
 {
@@ -75,6 +76,21 @@ namespace Citylogia.Server.Core.Api
         public PlaceSummary UpdatePlace(long id, [FromBody] IEnumerable<UpdateContainer> updates)
         {
             return null;
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<bool> DeleteAsync(long id)
+        {
+            var place = this.Query().FirstOrDefault(p => p.Id == id);
+            if (place == default)
+            {
+                return false;
+            }
+
+            this.context.Places.Remove(place);
+            await this.context.SaveChangesAsync();
+
+            return true;
         }
 
         [HttpGet("Types")]
