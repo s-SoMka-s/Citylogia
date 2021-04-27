@@ -2,6 +2,7 @@ package com.solution.citylogia;
 
 import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
+import android.icu.lang.UCharacter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -168,8 +169,9 @@ public class place_reviews extends Fragment {
         }
 
         ImageView placeImage = view.findViewById(R.id.image_replace);
-        String url_image = place.getPhoto().getElements().get(1).getPublic_url();
+
         try {
+            String url_image = place.getPhoto().getElements().get(1).getPublic_url();
             Picasso.get().load(url_image)
                     .placeholder(R.drawable.image_template)
                     .into(placeImage);
@@ -201,11 +203,9 @@ public class place_reviews extends Fragment {
         // set up date of publishing
         String dateReplace = FromTimestamp(review.getPublished_at());
         date.setText(dateReplace);
-        //String date_review_v3_1 = review.getPublished_at().format(DateTimeFormatter.ISO_LOCAL_DATE);
-
-        String url_image = review.getAuthor().getAvatar().getPublic_url();
-
+        
         try {
+            String url_image = review.getAuthor().getAvatar().getPublic_url();
             Picasso.get().load(url_image)
                     .resize(150, 150)
                     .centerCrop()

@@ -87,10 +87,9 @@ public class activity_place_inside extends Fragment {
         name.setText(title_v1);
 
         ImageView placeImage = view.findViewById(R.id.image_inside);
-        String url_image = placeInfo.getPhoto().getElements().get(0).getPublic_url();
-        System.out.println(url_image);
 
         try {
+            String url_image = placeInfo.getPhoto().getElements().get(0).getPublic_url();
             Picasso.get().load(url_image)
                     .placeholder(R.drawable.image_template)
                     .into(placeImage);
