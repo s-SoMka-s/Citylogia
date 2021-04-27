@@ -97,7 +97,7 @@ public class place_reviews extends Fragment {
         but_info.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            bundle.putSerializable("place", gson.toJson(place));
+            bundle.putSerializable("place", gson.toJson(this.place));
             navController.navigate(R.id.action_place_reviews_to_place_info, bundle); });
 
         ImageView but_back = view.findViewById(R.id.icon_back_v3);
@@ -130,13 +130,17 @@ public class place_reviews extends Fragment {
             body.put("user_id", 4);
             this.favoritesApi.makeFavorite(body).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(res -> {
                 this.isPressed = res.getData() ? true : this.isPressed;
+                this.place.set_favorite(this.isPressed);
             });
         }
         else {
             this.favoritesApi.deleteFavorite(this.place.getId()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(res -> {
                 this.isPressed = res.getData() ? false : this.isPressed;
+                this.place.set_favorite(this.isPressed);
             });
         }
+
+
     }
 
     public void openDialog() {
