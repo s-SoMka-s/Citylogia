@@ -66,7 +66,7 @@ namespace Citylogia.Server.Core.Api
         {
             var place = this.Query().FirstOrDefault(p => p.Id == id);
 
-            var favorites = this.FavoritesQuery().Where(l => l.UserId == 2).Select(l => l.PlaceId).ToHashSet<long>();
+            var favorites = this.FavoritesQuery().Where(l => l.UserId == 4).Select(l => l.PlaceId).ToHashSet<long>();
             var res = new PlaceSummary(place, favorites);
 
             return res;

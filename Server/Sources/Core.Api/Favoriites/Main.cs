@@ -1,5 +1,6 @@
 ﻿using Citylogia.Server.Core.Db.Implementations;
 using Core.Api.Favoriites.Models.Input;
+using Core.Api.Favoriites.Models.Output;
 using Core.Api.Models;
 using Core.Api.Places.Models.Output;
 using Core.Entities;
@@ -23,11 +24,11 @@ namespace Core.Api.Favoriites
 
 
         [HttpGet("")]
-        public async Task<BaseCollectionResponse<ShortPlaceSummary>> GetFavoritesAsync()
+        public async Task<BaseCollectionResponse<FavoriteSummary>> GetFavoritesAsync()
         {
-            var summaries = await this.Query().Select(l => new ShortPlaceSummary(l.Place)).ToListAsync();
+            var summaries = await this.Query().Select(l => new FavoriteSummary(l)).ToListAsync();
 
-            return new BaseCollectionResponse<ShortPlaceSummary>(summaries);
+            return new BaseCollectionResponse<FavoriteSummary>(summaries);
         }
 
         [HttpPost("")]
@@ -49,10 +50,32 @@ namespace Core.Api.Favoriites
             @new.User = user;
             @new.Place = place;
 
+            var existed = await this.context.FavoritePlaceLinks.FirstOrDefaultAsync(l => l.PlaceId == @new.PlaceId && l.UserId == @new.UserId);
+            if (existed != default)
+            {
+                return false;
+            }
+
             await this.context.AddAsync(@new);
             await this.context.SaveChangesAsync();
 
             return true;
+        }
+
+
+        [HttpDelete("{id}")]
+        public async Task<bool> DeleteAsync(long id)
+        {
+            var link = await this.context.FavoritePlaceLinks.FirstOrDefaultAsync(l => l.Id == id);
+            if (link == default)
+            {
+                return false;
+            }
+
+            this.context.Remove(link);
+            await this.context.SaveChangesAsync();
+
+            return true;    
         }
 
 
