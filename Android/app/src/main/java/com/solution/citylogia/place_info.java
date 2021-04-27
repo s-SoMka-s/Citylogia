@@ -68,6 +68,12 @@ public class place_info extends Fragment {
             Intent intent = new Intent(getActivity(), ProfileActivity.class);
             startActivity(intent);
         });
+
+        ImageButton map_btn = view.findViewById(R.id.map_icon);
+        map_btn.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), MapActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void fillData(View view) {
