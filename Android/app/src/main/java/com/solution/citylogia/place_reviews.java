@@ -22,7 +22,17 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.solution.citylogia.models.Place;
 import com.solution.citylogia.models.Review;
+import com.solution.citylogia.network.RetrofitSingleton;
+import com.solution.citylogia.network.api.IFavoritesApi;
+import com.solution.citylogia.network.api.IPlaceApi;
+import com.solution.citylogia.network.api.IReviewsApi;
 import com.squareup.picasso.Picasso;
+
+import java.util.HashMap;
+
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 import static com.solution.citylogia.utils.DateTimeExtensionsKt.FromTimestamp;
 
@@ -30,6 +40,7 @@ public class place_reviews extends Fragment {
 
     private Place place = null;
     private Boolean isPressed = false;
+    private IFavoritesApi favoritesApi = RetrofitSingleton.INSTANCE.getRetrofit().create(IFavoritesApi.class);
 
     public place_reviews() {
 
@@ -96,7 +107,7 @@ public class place_reviews extends Fragment {
 
         but_like.setOnClickListener(v -> {
             boolean isPressed = getLike();
-            if (!isPressed) {
+            if (!this.place.is_favorite()) {
                 but_like.setImageResource(R.drawable.heart_color);
                 // выставить флажок, в профиле у человека, что ему место понравилось. (В базе)
                 setLike(true);
@@ -113,7 +124,19 @@ public class place_reviews extends Fragment {
     }
 
     private void setLike(boolean state) {
-        isPressed = state;
+        if (state){
+            HashMap<String, Object> body = new HashMap<>();
+            body.put("place_id", this.place.getId());
+            body.put("user_id", 4);
+            this.favoritesApi.makeFavorite(body).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(res -> {
+                this.isPressed = res.getData() ? true : this.isPressed;
+            });
+        }
+        else {
+            this.favoritesApi.deleteFavorite(this.place.getId()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(res -> {
+                this.isPressed = res.getData() ? false : this.isPressed;
+            });
+        }
     }
 
     public void openDialog() {
@@ -133,10 +156,12 @@ public class place_reviews extends Fragment {
         title_v3_replace.setText(title_v2);
         address_v3_replace.setText(address_v2);
 
-        /*if (isLikePressed) {
-            ImageView but_like = view.findViewById(R.id.icon_heart);
+        ImageView but_like = view.findViewById(R.id.icon_heart);
+        but_like.setPressed(this.place.is_favorite());
+
+        if (but_like.isPressed()) {
             but_like.setImageResource(R.drawable.heart_color);
-        }*/
+        }
 
     }
 
