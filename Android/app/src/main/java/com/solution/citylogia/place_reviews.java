@@ -91,20 +91,16 @@ public class place_reviews extends Fragment {
 
         ImageView but_like = view.findViewById(R.id.icon_heart);
 
-        but_like.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                boolean isPressed = getLike();
-                if (!isPressed) {
-                    but_like.setImageResource(R.drawable.heart_color);
-                    // выставить флажок, в профиле у человека, что ему место понравилось. (В базе)
-                    setLike(true);
-                } else {
-                    but_like.setImageResource(R.drawable.heart);
-                    // убрать из базы данных
-                    setLike(false);
-                }
+        but_like.setOnClickListener(v -> {
+            boolean isPressed = getLike();
+            if (!isPressed) {
+                but_like.setImageResource(R.drawable.heart_color);
+                // выставить флажок, в профиле у человека, что ему место понравилось. (В базе)
+                setLike(true);
+            } else {
+                but_like.setImageResource(R.drawable.heart);
+                // убрать из базы данных
+                setLike(false);
             }
         });
     }
@@ -118,8 +114,8 @@ public class place_reviews extends Fragment {
     }
 
     public void openDialog() {
-        ExampleDialog exampleDialog = new ExampleDialog();
-        exampleDialog.show(getChildFragmentManager(), "text");
+        ReviewPopUp reviewPopUp = new ReviewPopUp();
+        reviewPopUp.show(getChildFragmentManager(), "text");
     }
 
 

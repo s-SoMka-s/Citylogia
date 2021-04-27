@@ -54,7 +54,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="50dp"
 
         android:text="Любимое"
         android:textColor="@color/colorAccent"
@@ -83,4 +83,39 @@
             android:orientation="vertical">
         </LinearLayout>
     </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageButton
+
+            android:id="@+id/imageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="56dp"
+            android:layout_gravity="bottom"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:src="@drawable/ic_baseline_place_30"
+            android:tint="@color/nonActive" />
+
+        <ImageButton
+
+            android:id="@+id/profile_but"
+            android:layout_width="wrap_content"
+            android:layout_height="56dp"
+            android:layout_gravity="bottom"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:clickable="true"
+            android:src="@drawable/user__2_"
+            android:tint="@color/colorAccent" />
+
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
