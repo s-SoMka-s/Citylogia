@@ -34,5 +34,8 @@
         <action
             android:id="@+id/action_place_reviews_to_place_info"
             app:destination="@id/place_info" />
+        <action
+            android:id="@+id/action_place_reviews_to_activity_place_inside"
+            app:destination="@id/activity_place_inside" />
     </fragment>
 </navigation>

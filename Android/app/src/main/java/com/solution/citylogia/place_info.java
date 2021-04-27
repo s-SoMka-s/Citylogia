@@ -1,10 +1,12 @@
 package com.solution.citylogia;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -57,14 +59,20 @@ public class place_info extends Fragment {
             navController.navigate(R.id.action_place_info_to_place_reviews,bundle);
         });
 
-        ImageView but_back = view.findViewById(R.id.icon_back);
+        ImageView but_back = view.findViewById(R.id.icon_back_v3);
         but_back.setOnClickListener(v -> navController.navigate(R.id.action_place_info_to_activity_place_inside));
+
+        ImageButton profile_but = view.findViewById(R.id.profile_but);
+        profile_but.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), ProfileActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void fillData(View view) {
         TextView title_v2_replace = view.findViewById(R.id.title_v2);
-        TextView address_v2_replace = view.findViewById(R.id.address_v2);
-        TextView text_v2_replace = view.findViewById(R.id.text_v2);
+        TextView address_v2_replace = view.findViewById(R.id.address_v3);
+        TextView text_v2_replace = view.findViewById(R.id.text_intro);
 
         String title_v2 = this.place.getName();
         String address_v2 = this.place.getAddress();
