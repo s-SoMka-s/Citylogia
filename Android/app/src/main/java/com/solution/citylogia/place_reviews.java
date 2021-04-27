@@ -107,7 +107,6 @@ public class place_reviews extends Fragment {
         ImageView but_like = view.findViewById(R.id.icon_heart);
 
         but_like.setOnClickListener(v -> {
-            boolean isPressed = getLike();
             if (!this.place.is_favorite()) {
                 but_like.setImageResource(R.drawable.heart_color);
                 // выставить флажок, в профиле у человека, что ему место понравилось. (В базе)
