@@ -76,4 +76,17 @@
         app:layout_constraintBottom_toBottomOf="@+id/placeLikedImage"
         app:layout_constraintStart_toEndOf="@+id/imageView11" />
 
+    <ImageView
+        android:id="@+id/icon_like"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="15dp"
+        android:layout_weight="0.1"
+        android:clickable="true"
+        android:src="@drawable/heart"
+        app:layout_constraintBottom_toBottomOf="@+id/placeLikedImage"
+        app:layout_constraintEnd_toEndOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
