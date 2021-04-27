@@ -90,9 +90,13 @@ public class activity_place_inside extends Fragment {
         String url_image = placeInfo.getPhoto().getElements().get(0).getPublic_url();
         System.out.println(url_image);
 
-        Picasso.get().load(url_image)
-                .placeholder(R.drawable.image_template)
-                .into(placeImage);
+        try {
+            Picasso.get().load(url_image)
+                    .placeholder(R.drawable.image_template)
+                    .into(placeImage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
