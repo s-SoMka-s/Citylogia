@@ -24,6 +24,8 @@ import com.solution.citylogia.models.Place;
 import com.solution.citylogia.models.Review;
 import com.squareup.picasso.Picasso;
 
+import static com.solution.citylogia.utils.DateTimeExtensionsKt.FromTimestamp;
+
 public class place_reviews extends Fragment {
 
     private Place place = null;
@@ -159,7 +161,7 @@ public class place_reviews extends Fragment {
         comment.setText(commentReplace);
 
         // set up date of publishing
-        String dateReplace = review.getPublished_at();
+        String dateReplace = FromTimestamp(review.getPublished_at());
         date.setText(dateReplace);
         //String date_review_v3_1 = review.getPublished_at().format(DateTimeFormatter.ISO_LOCAL_DATE);
 
