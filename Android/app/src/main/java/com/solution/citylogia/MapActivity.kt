@@ -12,8 +12,7 @@ import android.location.Location
 import android.os.Bundle
 import android.os.Looper
 import android.view.View
-import android.widget.Button
-import android.widget.ImageButton
+import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
@@ -29,6 +28,8 @@ import com.solution.citylogia.models.ShortPlace
 import com.solution.citylogia.network.RetrofitSingleton.retrofit
 import com.solution.citylogia.network.api.IPlaceApi
 import com.solution.citylogia.services.MapService
+import com.solution.citylogia.utils.getNearest
+import com.squareup.picasso.Picasso
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -79,7 +80,8 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
                     val radius = bundle.get("radius") as Int
                     this.selectedTyped = selectedTyped
                     this.selectedRadius = radius
-                    this.loadPlaces(types = selectedTypes, radius = radius.toDouble(), longitude = this.userLongitude, latitude = this.userLatitude);
+                    this.loadPlaces(types = selectedTypes, radius = radius.toDouble(), longitude = this.userLongitude, latitude = this.userLatitude)
+
                 }
 
         val profile_but: ImageButton = findViewById(R.id.but_profile)
@@ -97,11 +99,6 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
         }
     }
 
-    override fun onRestart() {
-        super.onRestart()
-        println("restarted")
-    }
-
     @SuppressLint("CheckResult")
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
@@ -116,7 +113,6 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
         mMap!!.setOnMarkerClickListener { marker: Marker ->
             try {
                 val placeId = marker.snippet.toLong()
-                println("ID этого места $placeId")
                 val i = Intent(this@MapActivity, PlaceInside::class.java)
                 i.putExtra("id", placeId)
                 startActivity(i)
@@ -164,6 +160,18 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
         }
     }
 
+    private fun loadNearestPlace(place: ShortPlace) {
+        val nearPlaceLayout = this.findViewById(R.id.maps_tools) as LinearLayout
+        val cricketerView = layoutInflater.inflate(R.layout.near_place, null, false)
+
+        cricketerView.findViewById<TextView>(R.id.place_name).text = place.name
+        cricketerView.findViewById<TextView>(R.id.place_address).text = place.address
+        var nearPlaceImage = cricketerView.findViewById<ImageView>(R.id.near_place_img)
+        Picasso.get().load(R.drawable.near_place_template)
+                     .into(nearPlaceImage)
+        nearPlaceLayout.addView(cricketerView);
+    }
+
     private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor? {
         val vectorDrawable = ContextCompat.getDrawable(context, vectorResId)
         vectorDrawable!!.setBounds(0, 0, vectorDrawable.intrinsicWidth, vectorDrawable.intrinsicHeight)
@@ -190,6 +198,9 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
                     val places = places?.data?.elements
                     if (places != null) {
                         this.clearMarkers()
+                        var nearest = places.getNearest()
+                        if (nearest != null)
+                            this.loadNearestPlace(nearest);
                         this.markers = this.mapService.drawMarkers(this.mMap, places)
                     }
                 }, {})
