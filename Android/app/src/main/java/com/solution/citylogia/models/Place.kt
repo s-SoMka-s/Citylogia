@@ -14,7 +14,7 @@ data class Place(
         val address: String? = null,
         val latitude: Double = 0.0,
         val longitude: Double = 0.0,
-        val photos: BaseCollectionClass<Photo> = BaseCollectionClass(),
+        val photo: BaseCollectionClass<Photo> = BaseCollectionClass(),
         val reviews: BaseCollectionClass<Review> = BaseCollectionClass(),
 ) {
     companion object Factory {

@@ -19,6 +19,7 @@ import androidx.navigation.Navigation;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.solution.citylogia.models.Place;
+import com.squareup.picasso.Picasso;
 
 public class place_info extends Fragment {
     private Place place;
@@ -81,5 +82,11 @@ public class place_info extends Fragment {
         title_v2_replace.setText(title_v2);
         address_v2_replace.setText(address_v2);
         text_v2_replace.setText(text_v2);
+
+        ImageView placeImage = view.findViewById(R.id.image_replace);
+        String url_image = place.getPhoto().getElements().get(1).getPublic_url();
+        Picasso.get().load(url_image)
+                .placeholder(R.drawable.image_template)
+                .into(placeImage);
     }
 }

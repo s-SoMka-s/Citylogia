@@ -5,43 +5,58 @@
     android:name="выф"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/place1"
-    android:padding="16dp"
     android:theme="@style/Theme.AppCompat.NoActionBar"
     tools:context=".activity_place_inside">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ImageView
+        android:id="@+id/image_inside"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/place1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/constraintLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView8"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/rechtangle_trans" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
 
         <TextView
-
             android:id="@+id/title_v1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            android:layout_marginTop="320dp"
+            android:layout_marginBottom="15dp"
             android:text=""
             android:textColor="#ffff"
             android:textSize="24sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintBottom_toTopOf="@+id/text_v1"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
-
             android:id="@+id/text_v1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            android:layout_marginTop="20dp"
+            android:layout_marginBottom="80dp"
             android:lineSpacingExtra="4dp"
             android:text=""
             android:textColor="#ffff"
             android:textSize="16sp"
             android:textStyle="normal"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title_v1" />
+            app:layout_constraintBottom_toTopOf="@+id/but_more"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <Button
             android:id="@+id/but_more"
@@ -49,7 +64,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
 
-            android:background="@drawable/custom_button_filter_2"
+            android:background="@drawable/but_style"
             android:text="Подробнее"
             android:textAllCaps="false"
 
