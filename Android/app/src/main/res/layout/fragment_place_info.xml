@@ -97,7 +97,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:id="@+id/imageView4"
+                    android:id="@+id/image_replace"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
@@ -172,7 +172,7 @@
 
                 <ImageButton
 
-                    android:id="@+id/imageButton"
+                    android:id="@+id/map_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="56dp"
                     android:layout_gravity="bottom"

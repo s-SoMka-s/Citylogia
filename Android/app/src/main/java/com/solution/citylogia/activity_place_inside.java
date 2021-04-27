@@ -11,10 +11,13 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -27,6 +30,7 @@ import com.solution.citylogia.models.Place;
 import com.solution.citylogia.models.ShortPlace;
 import com.solution.citylogia.network.RetrofitSingleton;
 import com.solution.citylogia.network.api.IPlaceApi;
+import com.squareup.picasso.Picasso;
 
 import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -81,6 +85,14 @@ public class activity_place_inside extends Fragment {
         shortDescription.setText(place.getShort_description());
 
         name.setText(title_v1);
+
+        ImageView placeImage = view.findViewById(R.id.image_inside);
+        String url_image = placeInfo.getPhoto().getElements().get(0).getPublic_url();
+        System.out.println(url_image);
+
+        Picasso.get().load(url_image)
+                .placeholder(R.drawable.image_template)
+                .into(placeImage);
     }
 
     @Override
@@ -91,8 +103,6 @@ public class activity_place_inside extends Fragment {
             this.setData(view, this.placeInfo);
         });
 
-
-
         final NavController navController = Navigation.findNavController(view);
 
         Button but_more = view.findViewById(R.id.but_more);
@@ -101,7 +111,7 @@ public class activity_place_inside extends Fragment {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             bundle.putSerializable("place", gson.toJson(placeInfo));
 
-            navController.navigate(R.id.action_activity_place_inside_to_place_info,bundle);
+            navController.navigate(R.id.action_activity_place_inside_to_place_info, bundle);
         });
 
         Button but_set_route = view.findViewById(R.id.set_route);
@@ -111,7 +121,5 @@ public class activity_place_inside extends Fragment {
                 getActivity().onBackPressed();
             }
         });
-
-
     }
 }

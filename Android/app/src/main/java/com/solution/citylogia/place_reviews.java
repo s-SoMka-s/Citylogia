@@ -22,7 +22,17 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.solution.citylogia.models.Place;
 import com.solution.citylogia.models.Review;
+import com.solution.citylogia.network.RetrofitSingleton;
+import com.solution.citylogia.network.api.IFavoritesApi;
+import com.solution.citylogia.network.api.IPlaceApi;
+import com.solution.citylogia.network.api.IReviewsApi;
 import com.squareup.picasso.Picasso;
+
+import java.util.HashMap;
+
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 import static com.solution.citylogia.utils.DateTimeExtensionsKt.FromTimestamp;
 
@@ -30,6 +40,7 @@ public class place_reviews extends Fragment {
 
     private Place place = null;
     private Boolean isPressed = false;
+    private IFavoritesApi favoritesApi = RetrofitSingleton.INSTANCE.getRetrofit().create(IFavoritesApi.class);
 
     public place_reviews() {
 
@@ -96,7 +107,7 @@ public class place_reviews extends Fragment {
 
         but_like.setOnClickListener(v -> {
             boolean isPressed = getLike();
-            if (!isPressed) {
+            if (!this.place.is_favorite()) {
                 but_like.setImageResource(R.drawable.heart_color);
                 // выставить флажок, в профиле у человека, что ему место понравилось. (В базе)
                 setLike(true);
@@ -113,7 +124,19 @@ public class place_reviews extends Fragment {
     }
 
     private void setLike(boolean state) {
-        isPressed = state;
+        if (state){
+            HashMap<String, Object> body = new HashMap<>();
+            body.put("place_id", this.place.getId());
+            body.put("user_id", 4);
+            this.favoritesApi.makeFavorite(body).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(res -> {
+                this.isPressed = res.getData() ? true : this.isPressed;
+            });
+        }
+        else {
+            this.favoritesApi.deleteFavorite(this.place.getId()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(res -> {
+                this.isPressed = res.getData() ? false : this.isPressed;
+            });
+        }
     }
 
     public void openDialog() {
@@ -133,11 +156,18 @@ public class place_reviews extends Fragment {
         title_v3_replace.setText(title_v2);
         address_v3_replace.setText(address_v2);
 
-        /*if (isLikePressed) {
-            ImageView but_like = view.findViewById(R.id.icon_heart);
-            but_like.setImageResource(R.drawable.heart_color);
-        }*/
+        ImageView but_like = view.findViewById(R.id.icon_heart);
+        but_like.setPressed(this.place.is_favorite());
 
+        if (but_like.isPressed()) {
+            but_like.setImageResource(R.drawable.heart_color);
+        }
+
+        ImageView placeImage = view.findViewById(R.id.image_replace);
+        String url_image = place.getPhoto().getElements().get(1).getPublic_url();
+        Picasso.get().load(url_image)
+                .placeholder(R.drawable.basic_person)
+                .into(placeImage);
     }
 
     private void fillReviews(ConstraintLayout reviewLayout, Review review) {
@@ -165,12 +195,7 @@ public class place_reviews extends Fragment {
         date.setText(dateReplace);
         //String date_review_v3_1 = review.getPublished_at().format(DateTimeFormatter.ISO_LOCAL_DATE);
 
-
-        // так как нет в коллекции фото выкидываем с нулл поинтером
-        //Photo image_v3_1 = place.getPhotos().getElements().get(1);
-        //String url_image = image_v3_1.getLink();;
-
-        String url_image = "https://sun9-15.userapi.com/impf/c631924/v631924846/245f1/0OxkD0nPXqY.jpg?size=762x1104&quality=96&sign=4ec3533e9b0e4edb1b058368ed04ec62&type=album";
+        String url_image = review.getAuthor().getAvatar().getPublic_url();
 
         Picasso.get().load(url_image)
                 .resize(150, 150)
