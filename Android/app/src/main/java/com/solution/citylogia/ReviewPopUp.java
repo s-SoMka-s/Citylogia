@@ -5,34 +5,24 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RatingBar;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
-import androidx.fragment.app.DialogFragment;
 
-import com.google.android.gms.dynamic.SupportFragmentWrapper;
-import com.solution.citylogia.models.Review;
 import com.solution.citylogia.network.RetrofitSingleton;
 import com.solution.citylogia.network.api.IReviewsApi;
 
 import java.util.HashMap;
 
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
-import kotlin.Pair;
+public class ReviewPopUp extends AppCompatDialogFragment {
 
-import static androidx.core.os.BundleKt.bundleOf;
-import static androidx.fragment.app.FragmentKt.setFragmentResult;
-
-public class ExampleDialog extends DialogFragment {
 
     private EditText editTextReview;
     private RatingBar ratingBar;

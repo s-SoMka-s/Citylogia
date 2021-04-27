@@ -24,48 +24,30 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+
+        <activity android:name=".IntroActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity android:name=".ProfileActivity" />
         <activity android:name=".RegisterActivity" />
+        <activity android:name=".LoginActivity" />
+        <activity android:name=".PermissionsActivity" />
+        <activity android:name=".PlaceInside" />
+        <activity android:name=".MainActivity" />
+        <activity android:name=".Search" />
 
         <uses-library
             android:name="com.google.android.wearable"
             android:required="false" />
-        <!--
-               Set to true if your app is Standalone, that is, it does not require the handheld
-               app to run.
-        -->
+
         <meta-data
             android:name="com.google.android.wearable.standalone"
             android:value="true" />
-
-        <activity
-            android:name=".LoginActivity"
-            android:label="@string/title_activity_register">
-
-            <!--<intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
-        </activity>
-        <activity android:name=".PermissionsActivity">
-            <!--<intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
-        </activity>
-        <activity
-            android:name=".PlaceInside">
-
-        <!-- <intent-filter>
-
-             <action android:name="android.intent.action.MAIN" />
-
-             <category android:name="android.intent.category.LAUNCHER" />
-         </intent-filter>-->
-
-     </activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -74,15 +56,7 @@
         <activity
             android:name=".MapActivity"
             android:label="@string/title_activity_maps">
-
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
         </activity>
-
-        <activity android:name=".Search" />
 
     </application>
 

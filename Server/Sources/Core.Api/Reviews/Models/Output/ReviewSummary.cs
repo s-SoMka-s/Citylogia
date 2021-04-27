@@ -1,4 +1,5 @@
 ﻿using Citylogia.Server.Core.Entityes;
+using Libraries.Time;
 using Newtonsoft.Json;
 using System;
 
@@ -8,14 +9,14 @@ namespace Core.Api
     {
         public ReviewSummary(Review source)
         {
-            this.PublishedAt = source.PublishedAt;
+            this.PublishedAt = source.PublishedAt.ToTimestamp();
             this.Mark = source.Mark;
             this.Body = source.Body;
             this.User = new UserSummary(source.Author);
         }
 
         [JsonProperty("published_at")]
-        public DateTimeOffset PublishedAt { get; set; }
+        public long PublishedAt { get; set; }
 
         [JsonProperty("mark")]
         public long Mark { get; set; }
