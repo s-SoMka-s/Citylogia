@@ -16,6 +16,7 @@ import com.solution.citylogia.models.Place;
 import com.solution.citylogia.models.ShortPlace;
 import com.solution.citylogia.network.RetrofitSingleton;
 import com.solution.citylogia.network.api.IFavoritesApi;
+import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
@@ -68,6 +69,23 @@ public class ProfileActivity extends AppCompatActivity {
         but_like.setPressed(true);
 
         but_like.setImageResource(R.drawable.heart_color);
+
+        ImageView placeImage = view.findViewById(R.id.placeLikedImage);
+        placeImage.setOnClickListener( v -> {
+            Long placeId = place.getId();
+            Intent i = new Intent(this, PlaceInside.class);
+            i.putExtra("id", placeId);
+            startActivity(i);
+            finish();
+        });
+        try {
+            String url_image = place.getPhoto().getElements().get(0).getPublic_url();
+            Picasso.get().load(url_image)
+                    .placeholder(R.drawable.image_template)
+                    .into(placeImage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 

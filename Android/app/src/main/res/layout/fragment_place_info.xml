@@ -142,17 +142,34 @@
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/text_intro"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
-                android:lineSpacingExtra="4dp"
-                android:text="@string/text_info"
-                android:textColor="@color/blackPrimary"
-                android:textSize="14sp"
-                android:textStyle="normal" />
-          
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/text_intro"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+
+                            android:lineSpacingExtra="4dp"
+                            android:text="@string/text_info"
+                            android:textColor="@color/blackPrimary"
+                            android:textSize="14sp"
+                            android:textStyle="normal" />
+                    </LinearLayout>
+                </ScrollView>
+            </LinearLayout>
+
         </LinearLayout>
 
         <RelativeLayout
