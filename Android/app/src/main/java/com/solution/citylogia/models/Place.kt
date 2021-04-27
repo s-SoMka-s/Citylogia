@@ -7,7 +7,7 @@ data class Place(
         val id: Long = 0,
         val mark: Long = 0,
         val name: String? = null,
-        val is_favorite: Boolean = false,
+        var is_favorite: Boolean = false,
         val description: String? = null,
         val short_description: String? = null,
         val type: PlaceType = PlaceType(),
