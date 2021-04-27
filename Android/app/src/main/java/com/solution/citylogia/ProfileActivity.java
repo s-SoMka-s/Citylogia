@@ -64,8 +64,8 @@ public class ProfileActivity extends AppCompatActivity {
 
         TextView address = view.findViewById(R.id.address_v);
         address.setText(place.getAddress());
-        ImageView but_like = view.findViewById(R.id.icon_heart);
-        but_like.setPressed(place.is_favorite());
+        ImageView but_like = view.findViewById(R.id.icon_like);
+        but_like.setPressed(true);
 
         but_like.setImageResource(R.drawable.heart_color);
 
