@@ -20,7 +20,7 @@ import io.reactivex.schedulers.Schedulers
 
 class FiltersFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
     private var selectedTypes: ArrayList<PlaceType>? = ArrayList()
-    private var radius: Double? = null
+    private var radius: Int = 10
 
     companion object {
         fun getNewInstance(args: Bundle?): FiltersFragment {
@@ -37,6 +37,7 @@ class FiltersFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         this.selectedTypes = arguments?.getSerializable("selected_types") as ArrayList<PlaceType>
+        this.radius = arguments?.getSerializable("selected_radius") as Int
         super.onViewCreated(view, savedInstanceState)
         this.setUpButtons(view);
         this.loadTypes(view);
@@ -89,6 +90,8 @@ class FiltersFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         }
 
         val rangeSeekBar = view.findViewById<SeekBar>(R.id.filter_seekBar)
+        view?.findViewById<TextView>(R.id.filter_distance)!!.text = this.radius.toString();
+        rangeSeekBar.progress = this.radius
         rangeSeekBar.setOnSeekBarChangeListener(this)
     }
 
@@ -106,7 +109,7 @@ class FiltersFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
     @SuppressLint("UseRequireInsteadOfGet")
     override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-        this.radius = progress.toDouble()
+        this.radius = progress
         this.view?.findViewById<TextView>(R.id.filter_distance)!!.text = progress.toString();
     }
 

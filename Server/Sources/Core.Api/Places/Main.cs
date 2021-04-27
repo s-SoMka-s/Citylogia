@@ -114,7 +114,7 @@ namespace Citylogia.Server.Core.Api
             var geoUser = new GeoCoordinate(latitude, longtitude);
             var distanceToPlace = geoUser.GetDistanceTo(geoPlace);
             Console.WriteLine(distanceToPlace);
-            return distanceToPlace <= radiusInKm;
+            return (distanceToPlace / 1000) <= radiusInKm;
         }
 
         private IQueryable<Place> Query()

@@ -46,7 +46,8 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
     private var geocoder: Geocoder? = null
     private var userLongitude: Double? = null
     private var userLatitude: Double? = null
-    private var selectedTyped: ArrayList<PlaceType> = ArrayList();
+    private var selectedTyped: ArrayList<PlaceType> = ArrayList()
+    private var selectedRadius: Int = 10
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,6 +66,7 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
         filter.setOnClickListener{
             var bundle = Bundle()
             bundle.putSerializable("selected_types", this.selectedTyped)
+            bundle.putSerializable("selected_radius", this.selectedRadius)
             var filtersFragment = FiltersFragment.getNewInstance(bundle);
             supportFragmentManager.beginTransaction()
                     .replace(R.id.map, filtersFragment)
@@ -74,9 +76,10 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
 
         supportFragmentManager.setFragmentResultListener("filters_fragment_apply", this) { _, bundle ->
                     val selectedTypes = bundle.get("selected_types") as ArrayList<PlaceType>?
-                    val radius = bundle.get("radius") as Double?
+                    val radius = bundle.get("radius") as Int
                     this.selectedTyped = selectedTyped
-                    this.loadPlaces(types = selectedTypes, radius = radius, longitude = this.userLongitude, latitude = this.userLatitude);
+                    this.selectedRadius = radius
+                    this.loadPlaces(types = selectedTypes, radius = radius.toDouble(), longitude = this.userLongitude, latitude = this.userLatitude);
                 }
     }
 
