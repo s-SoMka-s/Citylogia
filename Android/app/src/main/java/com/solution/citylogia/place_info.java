@@ -84,8 +84,8 @@ public class place_info extends Fragment {
         text_v2_replace.setText(text_v2);
 
         ImageView placeImage = view.findViewById(R.id.image_replace);
-        String url_image = place.getPhoto().getElements().get(1).getPublic_url();
         try {
+            String url_image = place.getPhoto().getElements().get(1).getPublic_url();
             Picasso.get().load(url_image)
                     .placeholder(R.drawable.image_template)
                     .into(placeImage);
