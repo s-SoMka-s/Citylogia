@@ -50,7 +50,7 @@ namespace Core.Api.Favoriites
             @new.User = user;
             @new.Place = place;
 
-            var existed = await this.context.FavoritePlaceLinks.FirstOrDefaultAsync(l => l.PlaceId == @new.PlaceId && l.UserId == @new.UserId);
+            var existed = await this.context.FavoritePlaceLinks.FirstOrDefaultAsync(l => l.PlaceId == place.Id && l.UserId == user.Id);
             if (existed != default)
             {
                 return false;
@@ -81,7 +81,16 @@ namespace Core.Api.Favoriites
 
         private IQueryable<FavoritePlaceLink> Query()
         {
-            return this.context.FavoritePlaceLinks.Include(l => l.Place).ThenInclude(p => p.Type).Include(l => l.User);
+            return this.context.FavoritePlaceLinks
+                               .Include(l => l.Place)
+                               .ThenInclude(p => p.Type)
+                               .Include(l => l.User)
+
+                               .Include(l => l.Place)
+                               .ThenInclude(p => p.Photos)
+
+                               .Include(l => l.Place)
+                               .ThenInclude(p => p.Reviews);
         } 
     }
 }
