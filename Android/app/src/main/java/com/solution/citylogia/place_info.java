@@ -2,13 +2,6 @@ package com.solution.citylogia;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,12 +10,19 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.solution.citylogia.models.Place;
 
 public class place_info extends Fragment {
     private Place place;
+    private Long id;
 
     public static place_info newInstance(Bundle bundle) {
         place_info fragment = new place_info();
@@ -32,13 +32,11 @@ public class place_info extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Bundle args = getArguments();
         super.onCreate(savedInstanceState);
+        Bundle args = getArguments();
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
         if (args != null) {
             this.place = gson.fromJson(String.valueOf(args.getSerializable("place")), Place.class);
-            System.out.println(this.place);
         }
     }
 

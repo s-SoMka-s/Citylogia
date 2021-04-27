@@ -53,7 +53,7 @@ public class IntroActivity extends AppCompatActivity {
                 if (introBoardingPager.getCurrentItem() + 1 < introBoardingAdapter.getItemCount()) {
                     introBoardingPager.setCurrentItem(introBoardingPager.getCurrentItem()+1);
                 } else {
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    startActivity(new Intent(getApplicationContext(), MapActivity.class));
                     finish();
                 }
             }

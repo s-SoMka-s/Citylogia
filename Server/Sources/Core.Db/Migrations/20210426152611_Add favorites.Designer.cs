@@ -3,15 +3,17 @@ using System;
 using Citylogia.Server.Core.Db.Implementations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Core.Db.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    partial class SqlContextModelSnapshot : ModelSnapshot
+    [Migration("20210426152611_Add favorites")]
+    partial class Addfavorites
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,11 +32,11 @@ namespace Core.Db.Migrations
                     b.Property<bool>("Deleted")
                         .HasColumnType("boolean");
 
-                    b.Property<long>("PlaceId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("PublicUrl")
+                    b.Property<string>("Link")
                         .HasColumnType("text");
+
+                    b.Property<long?>("PlaceId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -196,13 +198,10 @@ namespace Core.Db.Migrations
 
             modelBuilder.Entity("Citylogia.Server.Core.Entityes.Photo", b =>
                 {
-                    b.HasOne("Citylogia.Server.Core.Entityes.Place", "Place")
+                    b.HasOne("Citylogia.Server.Core.Entityes.Place", null)
                         .WithMany("Photos")
                         .HasForeignKey("PlaceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Place");
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Citylogia.Server.Core.Entityes.Place", b =>

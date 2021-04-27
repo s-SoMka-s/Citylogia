@@ -1,4 +1,5 @@
 ﻿using Citylogia.Server.Core.Entityes;
+using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Citylogia.Server.Core.Db.Implementations
@@ -10,8 +11,7 @@ namespace Citylogia.Server.Core.Db.Implementations
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Photo> Photos { get; set; }
         public DbSet<PlaceType> PlaceTypes { get; set; }
-
-
+        public DbSet<FavoritePlaceLink> FavoritePlaceLinks { get; set; }
 
         public SqlContext() : base() { }
 
@@ -27,10 +27,6 @@ namespace Citylogia.Server.Core.Db.Implementations
             #region Place
             {
                 var place = builder.Entity<Place>();
-
-                place.HasMany(p => p.Photos)
-                     .WithOne()
-                     .OnDelete(DeleteBehavior.Cascade);
 
                 place.HasOne(p => p.Type)
                      .WithMany()
@@ -51,6 +47,10 @@ namespace Citylogia.Server.Core.Db.Implementations
 
             var photo = builder.Entity<Photo>();
 
+            photo.HasOne(p => p.Place)
+                .WithMany(p => p.Photos)
+                .OnDelete(DeleteBehavior.Cascade);
+
             var placeType = builder.Entity<PlaceType>();
 
             var user = builder.Entity<User>();
@@ -58,6 +58,20 @@ namespace Citylogia.Server.Core.Db.Implementations
             user.HasOne(u => u.Avatar)
                 .WithOne()
                 .OnDelete(DeleteBehavior.Cascade);
+
+            #region Favorites
+            {
+                var link = builder.Entity<FavoritePlaceLink>();
+
+                link.HasOne(l => l.Place)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                link.HasOne(l => l.User)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Cascade);
+            }
+            #endregion Favorites
         }
     }
 }
