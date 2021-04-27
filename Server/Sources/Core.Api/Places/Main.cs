@@ -26,7 +26,7 @@ namespace Citylogia.Server.Core.Api
         }
 
         [HttpGet("")]
-        public async System.Threading.Tasks.Task<BaseCollectionResponse<ShortPlaceSummary>> GetAsync([FromQuery] PlaceSelectParameters parameters)
+        public async Task<BaseCollectionResponse<ShortPlaceSummary>> GetAsync([FromQuery] PlaceSelectParameters parameters)
         {
             var query = this.Query();
 
@@ -36,15 +36,22 @@ namespace Citylogia.Server.Core.Api
             }
 
             var places = query.ToList();
+            var needDistances = false;
             if (parameters.Longtitude != default && parameters.Latitude != default && parameters.RadiusInKm != default)
             {
+                needDistances = true;
                 places = places.Where(p => this.IsPlaceInRange(p, parameters.Longtitude, parameters.Latitude, parameters.RadiusInKm)).ToList();
             }
 
-            var summaries = places.Select(p => new ShortPlaceSummary(p)).ToList();
-
-            
-
+            var summaries = new List<ShortPlaceSummary>();
+            if (needDistances)
+            {
+                summaries = places.Select(p => new ShortPlaceSummary(p, this.countDistanceTo(p, parameters.Longtitude, parameters.Latitude))).ToList();
+            }
+            else
+            {
+                summaries = places.Select(p => new ShortPlaceSummary(p)).ToList();
+            }
             var baseCollectionResponse = new BaseCollectionResponse<ShortPlaceSummary>(summaries);
 
             return baseCollectionResponse;
@@ -142,11 +149,18 @@ namespace Citylogia.Server.Core.Api
 
         private bool IsPlaceInRange(Place place, double longtitude, double latitude, double radiusInKm)
         {
-            var geoPlace = new GeoCoordinate(place.Latitude, place.Longitude);
+            var distanceToPlaceInKm = this.countDistanceTo(place, longtitude, latitude);
+            
+            return distanceToPlaceInKm <= radiusInKm;
+        }
+
+        private double countDistanceTo(Place dst, double longtitude, double latitude)
+        {
+            var geoPlace = new GeoCoordinate(dst.Latitude, dst.Longitude);
             var geoUser = new GeoCoordinate(latitude, longtitude);
-            var distanceToPlace = geoUser.GetDistanceTo(geoPlace);
-            Console.WriteLine(distanceToPlace);
-            return (distanceToPlace / 1000) <= radiusInKm;
+
+            //NB in km
+            return geoUser.GetDistanceTo(geoPlace) / 1000;
         }
 
         private IQueryable<Place> Query()

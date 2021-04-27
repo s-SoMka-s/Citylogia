@@ -13,6 +13,13 @@ namespace Core.Api.Places.Models.Output
             this.Type = new PlaceTypeSummary(source.Type);
             this.Latitude = source.Latitude;
             this.Longtitude = source.Longitude;
+            this.Address = source.Address;
+            this.DistanceTo = null;
+        }
+
+        public ShortPlaceSummary(Place source, double distanceTo) : this(source)
+        {
+            this.DistanceTo = distanceTo;
         }
 
 
@@ -34,6 +41,11 @@ namespace Core.Api.Places.Models.Output
         [JsonProperty("longitude")]
         public double Longtitude { get; set; }
 
+        [JsonProperty("address")]
+        public string Address { get; set; }
+
+        [JsonProperty("distance_to")]
+        public double? DistanceTo { get; set; }
     }
 
 }
