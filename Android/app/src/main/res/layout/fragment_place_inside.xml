@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
 
-            android:background="@drawable/but_style"
+            android:background="@drawable/btn_style_accent_solid"
             android:text="Подробнее"
             android:textAllCaps="false"
 

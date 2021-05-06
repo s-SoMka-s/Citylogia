@@ -77,7 +77,7 @@ public class place_info extends Fragment {
     }
 
     private void fillData(View view) {
-        TextView title_v2_replace = view.findViewById(R.id.title_v2);
+        TextView title_v2_replace = view.findViewById(R.id.title_v3);
         TextView address_v2_replace = view.findViewById(R.id.address_v3);
         TextView text_v2_replace = view.findViewById(R.id.text_intro);
 
