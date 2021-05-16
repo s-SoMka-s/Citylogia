@@ -2,6 +2,7 @@
 using Core.Api.Auth.Models.Input;
 using Core.Api.Auth.Models.Output;
 using Core.Api.Models;
+using Core.Api.Services;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -16,33 +17,26 @@ namespace Core.Api.Auth
     public class Main : Controller
     {
         private readonly SqlContext context;
+        private readonly IUserService userService;
 
-        public Main(SqlContext context)
+        public Main(SqlContext context, IUserService userService)
         {
             this.context = context;
+            this.userService = userService;
         }
 
 
         [HttpPost("Email")]
-        public Token Login([FromBody] LoginParameters parameters)
+        public async Task<AuthenticateResponse> AuthenticateAsync([FromBody] LoginParameters parameters)
         {
-            var existed = this.context
-                              .Users
-                              .ToList()
-                              .Find(u => u.Email == parameters.Email);
+            var res = await this.userService.Authenticate(parameters);
 
-            if (existed == default)
+            if (res == null)
             {
                 return null;
             }
 
-            var hash = this.getHash(parameters.Password);
-            if (existed.Password != hash)
-            {
-                return null;
-            }
-
-            return new Token("1111");
+            return res;
         }
 
         [HttpPost("Register")]

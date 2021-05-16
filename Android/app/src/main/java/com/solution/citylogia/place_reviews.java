@@ -2,7 +2,6 @@ package com.solution.citylogia;
 
 import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
-import android.icu.lang.UCharacter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,13 +24,10 @@ import com.solution.citylogia.models.Place;
 import com.solution.citylogia.models.Review;
 import com.solution.citylogia.network.RetrofitSingleton;
 import com.solution.citylogia.network.api.IFavoritesApi;
-import com.solution.citylogia.network.api.IPlaceApi;
-import com.solution.citylogia.network.api.IReviewsApi;
 import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -82,7 +78,7 @@ public class place_reviews extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        LinearLayout reviewLayoutInsert = view.findViewById(R.id.LikedLayoutInsert);
+        LinearLayout reviewLayoutInsert = view.findViewById(R.id.ReviewsLayoutInsert);
         this.place.getReviews().getElements().forEach(review -> {
             final View cricketerView = getLayoutInflater().inflate(R.layout.review_row_add, null, false);
             reviewLayoutInsert.addView(cricketerView);

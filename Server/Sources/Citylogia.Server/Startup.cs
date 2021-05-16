@@ -6,6 +6,7 @@ using Citylogia.Server.Core.Tools.Implementations.AppSettings;
 using Citylogia.Server.Core.Tools.Interfaces.AppSettings;
 using Citylogia.Server.Initializations;
 using Citylogia.Server.Middleware;
+using Core.Api.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,6 +28,7 @@ namespace Citylogia.Server
         public void ConfigureServices(IServiceCollection services)
         {
             Injections.AddServices(services, appSettings);
+            services.AddScoped<IUserService, UserService>();
         }
 
         public void ConfigureContainer(ContainerBuilder builder)
@@ -42,7 +44,9 @@ namespace Citylogia.Server
             app.MigrateDb();
             app.UseApi();
 
-            
+            app.UseCors(x => x.AllowAnyOrigin()
+                              .AllowAnyMethod()
+                              .AllowAnyHeader());
 
             var applicationContainer = app.ApplicationServices.GetAutofacRoot();
             appLifetime.ApplicationStopped.Register(() =>
