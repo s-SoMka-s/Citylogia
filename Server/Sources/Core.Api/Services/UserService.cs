@@ -1,4 +1,5 @@
 ﻿using Citylogia.Server.Core.Db.Implementations;
+using Citylogia.Server.Core.Entityes;
 using Core.Api.Auth.Models.Input;
 using Core.Api.Auth.Models.Output;
 using Core.Api.Helpers;
@@ -36,6 +37,11 @@ namespace Core.Api.Services
             var token = configuration.GenerateJwtToken(existed);
 
             return new AuthenticateResponse(token);
+        }
+
+        async Task<User> IUserService.GetByIdAsync(int userId)
+        {
+            return await this.context.Users.FirstOrDefaultAsync(u => u.Id == userId);
         }
     }
 }

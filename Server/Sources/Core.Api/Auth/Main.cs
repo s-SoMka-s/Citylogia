@@ -3,6 +3,7 @@ using Core.Api.Auth.Models.Input;
 using Core.Api.Auth.Models.Output;
 using Core.Api.Models;
 using Core.Api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -59,7 +60,12 @@ namespace Core.Api.Auth
             return new Token(hash);
         }
 
-
+        [HttpGet("Test")]
+        [Authorize]
+        public bool Test()
+        {
+            return true;
+        }
         private string getHash(string password)
         {
             byte[] salt = new byte[128 / 8];
