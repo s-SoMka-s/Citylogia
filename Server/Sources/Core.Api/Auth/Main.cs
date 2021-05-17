@@ -14,7 +14,7 @@ namespace Core.Api.Auth
 {
     [ApiController]
     [Route("/api/Auth")]
-    public class Main : Controller
+    public class Main : ApiController
     {
         private readonly SqlContext context;
         private readonly IUserService userService;
@@ -63,7 +63,7 @@ namespace Core.Api.Auth
         [Authorize]
         public bool Test()
         {
-            var user = this.HttpContext.Items["User"];
+            var userId = GetUserId();
 
             return true;
         }
