@@ -1,9 +1,8 @@
 ﻿using Citylogia.Server.Core.Db.Implementations;
 using Core.Api.Auth.Models.Input;
 using Core.Api.Auth.Models.Output;
-using Core.Api.Models;
+using Core.Api.Helpers;
 using Core.Api.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -64,6 +63,8 @@ namespace Core.Api.Auth
         [Authorize]
         public bool Test()
         {
+            var user = this.HttpContext.Items["User"];
+
             return true;
         }
         private string getHash(string password)
