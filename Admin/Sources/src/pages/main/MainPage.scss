@@ -1,0 +1,41 @@
+$background-color: #f8f8fb;
+
+@mixin font-totals-title {
+    font-family: Gilroy;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 28px;
+    line-height: 24px;
+    letter-spacing: 0.01em;
+}
+
+@mixin font-totals-subtitle {
+    font-family: Gilroy;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+    letter-spacing: 0.01em;
+}
+
+.main-page {
+    width: 85%;
+    height: 100%;
+    background-color: $background-color;
+
+    &__container {
+        padding: 6rem;
+        height: 40rem;
+    }
+
+    &__info {
+        display: flex;
+        justify-content: space-between;
+
+        &-item {
+            height: 14rem;
+            width: 35.3rem;
+            background-color: green;
+        }
+    }
+}
