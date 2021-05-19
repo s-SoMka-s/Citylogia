@@ -13,6 +13,7 @@ import android.location.Location
 import android.os.Bundle
 import android.os.Looper
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
@@ -148,37 +149,32 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
                 setUserLocationMarker(locationResult.lastLocation)
 
                 btn_zoom_in.setOnClickListener {
-                    if (zoomLevel + 1.0f >= 21.0f)
+                    Toast.makeText(this@MapActivity, zoomLevel.toString(), Toast.LENGTH_SHORT).show()
+                    if (zoomLevel + 1.0f <= 21.0f)
                         zoomLevel++;
-                    val cameraPosition: CameraPosition = CameraPosition.Builder()
-                            .target(LatLng((locationResult.lastLocation.latitude), locationResult.lastLocation.longitude))
-                            .zoom(zoomLevel)
-                            .build()
-                    val cameraUpdate: CameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition)
-                    mMap!!.animateCamera(cameraUpdate)
+                    zoomMap(locationResult)
                 }
 
                 btn_zoom_out.setOnClickListener {
-                    if (zoomLevel - 1.0f <= 0.0f)
+                    if (zoomLevel - 1.0f >= 0.0f)
                         zoomLevel--;
-                    val cameraPosition: CameraPosition = CameraPosition.Builder()
-                            .target(LatLng((locationResult.lastLocation.latitude), locationResult.lastLocation.longitude))
-                            .zoom(zoomLevel)
-                            .build()
-                    val cameraUpdate: CameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition)
-                    mMap!!.animateCamera(cameraUpdate)
+                    zoomMap(locationResult)
                 }
 
                 btn_navigation.setOnClickListener {
-                    val cameraPosition: CameraPosition = CameraPosition.Builder()
-                            .target(LatLng((locationResult.lastLocation.latitude), locationResult.lastLocation.longitude))
-                            .zoom(zoomLevel)
-                            .build()
-                    val cameraUpdate: CameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition)
-                    mMap!!.animateCamera(cameraUpdate)
+                    zoomMap(locationResult)
                 }
             }
         }
+    }
+
+    private fun zoomMap(locationResult: LocationResult) {
+        val cameraPosition: CameraPosition = CameraPosition.Builder()
+                .target(LatLng((locationResult.lastLocation.latitude), locationResult.lastLocation.longitude))
+                .zoom(zoomLevel)
+                .build()
+        val cameraUpdate: CameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition)
+        mMap!!.animateCamera(cameraUpdate)
     }
 
     private fun offerPlace() {
