@@ -22,7 +22,6 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.solution.citylogia.models.Place;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,11 +85,11 @@ public class place_info extends Fragment {
         });
 
 
-        layoutCardIndicators = view.findViewById(R.id.layoutBoardingIndicators);
+        layoutCardIndicators = view.findViewById(R.id.layoutBoardingIndicatorsRev);
 
         setUpBoardingItems();
 
-        ViewPager2 infoCardPager = view.findViewById(R.id.screen_viewpager);
+        ViewPager2 infoCardPager = view.findViewById(R.id.screen_viewpager_rev);
         infoCardPager.setAdapter(infoCardAdapter);
 
         setCardIndicators();
