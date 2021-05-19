@@ -7,7 +7,12 @@ function App() {
     return (
         <div className="App">
             <Menu></Menu>
-            <MainPage></MainPage>
+            <div className="wrapper">
+                <div className="toolbar"></div>
+                <div className="page-container">
+                    <MainPage></MainPage>
+                </div>
+            </div>
         </div>
     )
 }

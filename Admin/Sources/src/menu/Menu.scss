@@ -1,5 +1,67 @@
+@mixin font-menu-item {
+    font-family: Lato;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 19px;
+    color: white;
+}
+
+@mixin font-menu-logo {
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 139.2%;
+    color: white;
+}
+
 .menu {
-    background: linear-gradient(to left, #de4469, #b200f1);
-    width: 27rem;
-    height: 100rem;
+    position: sticky;
+    background: linear-gradient(to right bottom, #de4469, #b200f1);
+    min-width: 14vw;
+    height: 100vh;
+
+    &__container {
+        width: 66%;
+        margin-top: 4rem;
+        margin-right: auto;
+        margin-left: auto;
+
+        & > * {
+            margin-bottom: 3rem;
+        }
+    }
+
+    &__logo {
+        display: flex;
+        align-items: center;
+
+        img {
+            object-fit: contain;
+            align-self: flex-start;
+        }
+
+        p {
+            @include font-menu-logo();
+            flex: 1 1 auto;
+            margin-left: 2rem;
+        }
+    }
+
+    &__item {
+        display: flex;
+        align-items: center;
+
+        img {
+            object-fit: contain;
+            align-self: flex-start;
+        }
+
+        p {
+            @include font-menu-item();
+            flex: 1 1 auto;
+            margin-left: 2rem;
+        }
+    }
 }

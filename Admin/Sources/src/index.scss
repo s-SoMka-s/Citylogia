@@ -1,0 +1,14 @@
+$root-font-size: 62.5%; // 1rem = 10px
+$max-width: 144rem;
+$font-family: Montserrat, serif;
+$transition-duration: 0.5s;
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    height: 100%;
+    font-size: $root-font-size;
+}

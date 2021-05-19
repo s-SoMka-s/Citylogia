@@ -1,0 +1,20 @@
+.main-page-info-block {
+    height: 14vh;
+    width: 18vw;
+    border-radius: 10px;
+    background-color: aquamarine;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &__container {
+        img {
+            max-width: 7rem;
+            max-height: 7rem;
+        }
+
+        p {
+            display: inline-block;
+        }
+    }
+}

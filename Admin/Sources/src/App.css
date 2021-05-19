@@ -1,3 +1,18 @@
 .App {
     display: flex;
 }
+
+.wrapper {
+    height: 100vh;
+    width: 100%;
+}
+
+.toolbar {
+    min-height: 10vh;
+    background-color: antiquewhite;
+}
+
+.page-container {
+    min-height: 90vh;
+    background-color: #f8f8fb;
+}
