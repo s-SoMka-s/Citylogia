@@ -149,7 +149,6 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
                 setUserLocationMarker(locationResult.lastLocation)
 
                 btn_zoom_in.setOnClickListener {
-                    Toast.makeText(this@MapActivity, zoomLevel.toString(), Toast.LENGTH_SHORT).show()
                     if (zoomLevel + 1.0f <= 21.0f)
                         zoomLevel++;
                     zoomMap(locationResult)
