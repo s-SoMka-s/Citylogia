@@ -15,12 +15,28 @@ export class MainPage extends Component {
         return (
             <div className="main-page">
                 <div className="main-page__container">
-                    {/* <div class="main-page__info-container">
-                        <InfoBlock></InfoBlock>
-                        <InfoBlock></InfoBlock>
-                        <InfoBlock></InfoBlock>
-                        <InfoBlock></InfoBlock>
-                    </div> */}
+                    <div class="main-page__info-container">
+                        <InfoBlock
+                            icon={UsersIcon}
+                            count={62}
+                            subtitle={'Пользователей'}
+                        ></InfoBlock>
+                        <InfoBlock
+                            icon={ReviewsIcon}
+                            count={134}
+                            subtitle={'Отзывов'}
+                        ></InfoBlock>
+                        <InfoBlock
+                            icon={PlacesIcon}
+                            count={25}
+                            subtitle={'Мест'}
+                        ></InfoBlock>
+                        <InfoBlock
+                            icon={ListIcon}
+                            count={180}
+                            subtitle={'Запросов'}
+                        ></InfoBlock>
+                    </div>
                 </div>
             </div>
         )

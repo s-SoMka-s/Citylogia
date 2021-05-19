@@ -2,6 +2,7 @@ $root-font-size: 62.5%; // 1rem = 10px
 $max-width: 144rem;
 $font-family: Montserrat, serif;
 $transition-duration: 0.5s;
+$background-color: #f8f8fb;
 
 * {
     margin: 0;
@@ -11,4 +12,8 @@ $transition-duration: 0.5s;
 html {
     height: 100%;
     font-size: $root-font-size;
+}
+
+body {
+    background-color: $background-color;
 }

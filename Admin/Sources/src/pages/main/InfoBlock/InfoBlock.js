@@ -13,7 +13,17 @@ export class InfoBlock extends Component {
         return (
             <div className="main-page-info-block">
                 <div className="main-page-info-block__container">
-                    <img src={UsersIcon} alt="users-icon"></img>
+                    <div className="main-page-info-block__icon">
+                        <img src={this.props.icon} alt="users-icon"></img>
+                    </div>
+                    <div className="main-page-info-block__text">
+                        <p className="main-page-info-block__text-title">
+                            {this.props.count}
+                        </p>
+                        <p className="main-page-info-block__text-subtitle">
+                            {this.props.subtitle}
+                        </p>
+                    </div>
                 </div>
             </div>
         )
