@@ -3,6 +3,7 @@ package com.solution.citylogia
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -11,8 +12,11 @@ import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.os.Looper
+import android.text.TextUtils
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
@@ -89,13 +93,17 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
             startActivity(Intent(this, ProfileActivity::class.java))
             finish()
         }
+
+        val btn_idea: ImageButton = findViewById(R.id.btn_idea)
+        btn_idea.setOnClickListener{
+            offerPlace()
+        }
     }
 
     override fun onStart() {
         super.onStart()
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             startLocationUpdates()
-        } else {
         }
     }
 
@@ -130,7 +138,11 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
             val btn_zoom_in: ImageButton = findViewById(R.id.btn_zoom_in)
             val btn_zoom_out: ImageButton = findViewById(R.id.btn_zoom_out)
             val btn_navigation: ImageButton = findViewById(R.id.btn_navigation)
+
+            /* Двигает камеру на юзера, но я не знаю куда это вставить, чтобы сразу карта грузилась на юзере
             val latLng = LatLng(locationResult.lastLocation.latitude, locationResult.lastLocation.longitude);
+            val point = CameraUpdateFactory.newLatLng(latLng)
+            mMap!!.moveCamera(point)*/
 
             if (mMap != null) {
                 setUserLocationMarker(locationResult.lastLocation)
@@ -169,6 +181,34 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
         }
     }
 
+    private fun offerPlace() {
+        val layoutInflater = LayoutInflater.from(applicationContext)
+        val view: View = layoutInflater.inflate(R.layout.layout_offer_place, null)
+
+        val alertDialogBuilder = AlertDialog.Builder(this@MapActivity)
+        alertDialogBuilder.setView(view)
+
+        val addressEditText = view.findViewById<EditText>(R.id.offerPlaceAddress)
+        alertDialogBuilder
+                .setCancelable(false)
+                .setPositiveButton("Отправить") { _: DialogInterface?, _: Int ->
+                    /*Send data to base*/
+                    Toast.makeText(this@MapActivity, "Спасибо! Ваш запрос отправлен!", Toast.LENGTH_LONG).show()}
+                .setNegativeButton("Отмена") { _: DialogInterface?, _: Int ->  }
+
+        val alertDialog: AlertDialog = alertDialogBuilder.create()
+        alertDialog.show()
+
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            if (TextUtils.isEmpty(addressEditText.text)) {
+                Toast.makeText(this@MapActivity, "Напишите адрес", Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            } else {
+                alertDialog.dismiss()
+            }
+        }
+    }
+
     @SuppressLint("MissingPermission")
     private fun startLocationUpdates() {
         fusedLocationProviderClient?.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
@@ -179,6 +219,7 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
         this.userLatitude = location.latitude
 
         val latLng = LatLng(location.latitude, location.longitude)
+
         if (userLocationMarker == null) {
             val markerOptions = MarkerOptions()
             markerOptions.position(latLng)
@@ -195,7 +236,6 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
                 this.refresh = false
             }
         }
-
     }
 
     private fun loadNearestPlace(place: ShortPlace) {

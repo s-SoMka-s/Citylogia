@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/offerPlaceTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="32dp"
+        android:lineSpacingExtra="10sp"
+        android:gravity="center"
+        android:text="Предложить место"
+        android:textColor="@color/blackPrimary"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/offerPlaceAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:hint="Адрес места"
+        android:textColor="@color/blackPrimary"
+        android:textSize="16sp" />
+
+    <EditText
+        android:id="@+id/offerPlaceComment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@android:color/transparent"
+        android:hint="Комментарий"
+        android:textColor="@color/blackPrimary"
+        android:textSize="16sp" />
+
+</LinearLayout>
