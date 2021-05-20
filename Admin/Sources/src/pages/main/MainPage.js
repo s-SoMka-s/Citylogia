@@ -14,36 +14,7 @@ export class MainPage extends Component {
     render() {
         return (
             <div className="main-page">
-                <div className="main-page__container">
-                    <div className="main-page__info-container">
-                        <InfoBlock
-                            icon={UsersIcon}
-                            count={62}
-                            subtitle={'Пользователей'}
-                        ></InfoBlock>
-                        <InfoBlock
-                            icon={ReviewsIcon}
-                            count={134}
-                            subtitle={'Отзывов'}
-                        ></InfoBlock>
-                        <InfoBlock
-                            icon={PlacesIcon}
-                            count={25}
-                            subtitle={'Мест'}
-                        ></InfoBlock>
-                        <InfoBlock
-                            icon={ListIcon}
-                            count={180}
-                            subtitle={'Запросов'}
-                        ></InfoBlock>
-                    </div>
-                    <div className="main-page__map-container">
-                        <div className="main-page__map">
-                            <img src={MapImg}></img>
-                        </div>
-                        <div className="main-page__form"></div>
-                    </div>
-                </div>
+                <h1>Main page works</h1>
             </div>
         )
     }

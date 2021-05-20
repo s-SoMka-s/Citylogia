@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import './Menu.scss'
 import CitylogiaIcon from '../assets/CitylogiaIcon.svg'
@@ -6,6 +7,7 @@ import MainPageIcon from '../assets/MainPageIcon.svg'
 import PlacesPageIcon from '../assets/PlacesPageIcon.svg'
 import UsersPageIcon from '../assets/UsersPageIcon.svg'
 import ReviwsPageIcon from '../assets/ReviewsPageIcon.svg'
+import LineIcon from '../assets/Line.svg'
 import Logout from '../assets/Logout.svg'
 
 const items = [
@@ -37,33 +39,44 @@ export class Menu extends Component {
     render() {
         return (
             <div className="menu">
-                <div className="menu__container">
-                    <div className="menu__logo">
-                        <img src={CitylogiaIcon}></img>
-                        <p>Citylogia</p>
-                    </div>
-                    <hr></hr>
-                    <div className="menu__item">
-                        <img src={MainPageIcon}></img>
-                        <p>Главная</p>
-                    </div>
-                    <div className="menu__item">
-                        <img src={PlacesPageIcon}></img>
-                        <p>Места</p>
-                    </div>
-                    <div className="menu__item">
-                        <img src={ReviwsPageIcon}></img>
-                        <p>Отзывы</p>
-                    </div>
-                    <div className="menu__item">
-                        <img src={UsersPageIcon}></img>
-                        <p>Пользователи</p>
-                    </div>
-                    <div className="menu__item logout">
-                        <img src={Logout}></img>
-                        <p>Выйти</p>
-                    </div>
-                </div>
+                <nav>
+                    <ul>
+                        <li className="menu-item">
+                            <Link to="/">
+                                <img src={CitylogiaIcon}></img>
+                                <span>Citylogia</span>
+                            </Link>
+                        </li>
+                        <img
+                            className="menu-item__delimeter"
+                            src={LineIcon}
+                        ></img>
+                        <li className="menu-item">
+                            <Link to="/">
+                                <img src={MainPageIcon}></img>
+                                <span>Главная</span>
+                            </Link>
+                        </li>
+                        <li className="menu-item">
+                            <Link to="/places">
+                                <img src={PlacesPageIcon}></img>
+                                <span>Места</span>
+                            </Link>
+                        </li>
+                        <li className="menu-item">
+                            <Link to="/reviews">
+                                <img src={ReviwsPageIcon}></img>
+                                <span>Отзывы</span>
+                            </Link>
+                        </li>
+                        <li className="menu-item">
+                            <Link to="/users">
+                                <img src={UsersPageIcon}></img>
+                                <span>Пользователи</span>
+                            </Link>
+                        </li>
+                    </ul>
+                </nav>
             </div>
         )
     }
