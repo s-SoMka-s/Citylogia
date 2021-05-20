@@ -1,19 +1,12 @@
-import logo from './logo.svg'
-import './App.css'
-import MainPage from './pages/main/MainPage'
-import Menu from './menu/Menu'
+import React from 'react'
+import { BrowserRouter } from 'react-router-dom'
+import Layout from './Layout'
 
 function App() {
     return (
-        <div className="App">
-            <Menu></Menu>
-            <div className="wrapper">
-                <div className="toolbar"></div>
-                <div className="page-container">
-                    <MainPage></MainPage>
-                </div>
-            </div>
-        </div>
+        <BrowserRouter>
+            <Layout />
+        </BrowserRouter>
     )
 }
 

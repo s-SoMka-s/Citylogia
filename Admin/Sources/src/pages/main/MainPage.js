@@ -15,7 +15,7 @@ export class MainPage extends Component {
         return (
             <div className="main-page">
                 <div className="main-page__container">
-                    <div class="main-page__info-container">
+                    <div className="main-page__info-container">
                         <InfoBlock
                             icon={UsersIcon}
                             count={62}
@@ -36,6 +36,12 @@ export class MainPage extends Component {
                             count={180}
                             subtitle={'Запросов'}
                         ></InfoBlock>
+                    </div>
+                    <div className="main-page__map-container">
+                        <div className="main-page__map">
+                            <img src={MapImg}></img>
+                        </div>
+                        <div className="main-page__form"></div>
                     </div>
                 </div>
             </div>

@@ -8,6 +8,29 @@ import UsersPageIcon from '../assets/UsersPageIcon.svg'
 import ReviwsPageIcon from '../assets/ReviewsPageIcon.svg'
 import Logout from '../assets/Logout.svg'
 
+const items = [
+    {
+        path: '/',
+        text: 'Главная',
+        icon: MainPageIcon,
+    },
+    {
+        path: '/places',
+        text: 'Места',
+        icon: PlacesPageIcon,
+    },
+    {
+        path: '/reviews',
+        text: 'Отзывы',
+        icon: ReviwsPageIcon,
+    },
+    {
+        path: '/users',
+        text: 'Пользователи',
+        icon: UsersPageIcon,
+    },
+]
+
 export class Menu extends Component {
     static propTypes = {}
 

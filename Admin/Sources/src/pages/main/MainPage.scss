@@ -10,16 +10,18 @@
 
     &__info-container {
         display: flex;
-        justify-content: space-between;
         background-color: aquamarine;
     }
 
     &__map-container {
         display: flex;
         justify-content: space-between;
+    }
+
+    &__map {
         img {
-            height: 67%;
-            width: 74%;
+            width: 60vw;
+            height: 61vh;
         }
     }
 
