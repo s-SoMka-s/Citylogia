@@ -1,38 +1,24 @@
 $menu-width: 15%;
 
 .app {
-    &__sidebar {
-        position: fixed;
-        height: 100%;
-        width: $menu-width;
-        margin: 0px;
+    display: flex;
 
-        background: lightblue;
-        border-radius: 7px;
+    &__sidebar {
+        width: $menu-width;
+        height: 100vh;
+        background: linear-gradient(to right bottom, #de4469, #b200f1);
     }
 
     &__wrapper {
         width: 100%-$menu-width;
         float: right;
 
-        background: aquamarine;
+        background: #f8f8fb;
     }
 
-    header {
-        position: fixed;
-
-        height: 100px;
-
-        background: lightSalmon;
-        border-radius: 7px;
-    }
-
-    &__content-box {
-        margin-top: 100px;
-        display: flex;
-        flex-flow: row wrap;
-        height: 400px;
-        order: 1;
-        flex: 0 1 100%;
+    &__header {
+        position: sticky;
+        background: #fff;
+        padding: 1.8rem 6rem;
     }
 }

@@ -17,34 +17,8 @@
 }
 
 .main-page-info-block {
-    height: 14vh;
-    width: 18vw;
     border-radius: 10px;
     background-color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    &__container {
-        display: flex;
-        align-items: center;
-    }
-
-    &__icon {
-        object-fit: contain;
-        align-self: flex-start;
-        margin-right: 3rem;
-    }
-
-    &__text {
-        flex: 1 1 auto;
-
-        &-title {
-            @include font-totals-title();
-        }
-
-        &-subtitle {
-            @include font-totals-subtitle();
-        }
-    }
+    padding: 3.5rem 4rem;
+    max-height: 14rem;
 }

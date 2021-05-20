@@ -1,0 +1,19 @@
+.main-page {
+    padding: 6rem;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    //grid-template-rows: repeat(5, 14rem);
+    grid-auto-rows: 2;
+    gap: 4rem;
+
+    &__map {
+        background-color: yellow;
+        grid-column-start: 1;
+        grid-column-end: 4;
+        height: 39.9rem;
+    }
+
+    &__form {
+        grid-column: 4;
+    }
+}

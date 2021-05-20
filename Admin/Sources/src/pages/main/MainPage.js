@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import './MainPage.scss'
 import UsersIcon from '../../assets/users-icon.png'
@@ -7,6 +8,7 @@ import PlacesIcon from '../../assets/PlacesIcon.png'
 import ListIcon from '../../assets/ListIcon.png'
 import InfoBlock from './InfoBlock/InfoBlock'
 import MapImg from '../../assets/map.png'
+import LineInputField from '../../components/line-input-field/LineInputField'
 
 export class MainPage extends Component {
     static propTypes = {}
@@ -14,7 +16,30 @@ export class MainPage extends Component {
     render() {
         return (
             <div className="main-page">
-                <h1>Main page works</h1>
+                <InfoBlock
+                    icon={UsersIcon}
+                    count={62}
+                    title={'Пользователей'}
+                ></InfoBlock>
+                <InfoBlock
+                    icon={ReviewsIcon}
+                    count={134}
+                    title={'Отзывов'}
+                ></InfoBlock>
+                <InfoBlock
+                    icon={PlacesIcon}
+                    count={25}
+                    title={'Мест'}
+                ></InfoBlock>
+                <InfoBlock
+                    icon={ListIcon}
+                    count={180}
+                    title={'Запросов'}
+                ></InfoBlock>
+                {/* <div className="main-page__map"></div> */}
+                <div className="main-page__form">
+                    <LineInputField></LineInputField>
+                </div>
             </div>
         )
     }

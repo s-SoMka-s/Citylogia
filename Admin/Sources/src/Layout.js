@@ -7,6 +7,7 @@ import UsersPageComponent from './pages/users/UsersPage'
 import ReviewsPageComponent from './pages/reviews/ReviewsPage'
 import PlacesPageCompoenent from './pages/places/PlacesPage'
 import './Layout.scss'
+import ToolBar from './components/toolbar/ToolBar'
 
 export default function Layout() {
     return (
@@ -15,14 +16,9 @@ export default function Layout() {
                 <Menu></Menu>
             </div>
             <div className="app__wrapper">
-                <header>
-                    <h1>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                        Curabitur lectus sem, pulvinar ut condimentum eget,
-                        faucibus sed nulla. Phasellus blandit metus quis dui
-                        accumsan, et rhoncus ex pretium
-                    </h1>
-                </header>
+                <div className="app__header">
+                    <ToolBar></ToolBar>
+                </div>
 
                 <div className="app__content-box">
                     <Switch>
