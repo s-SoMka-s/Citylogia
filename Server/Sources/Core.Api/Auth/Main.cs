@@ -1,8 +1,10 @@
 ﻿using Citylogia.Server.Core.Db.Implementations;
+using Citylogia.Server.Core.Entityes;
 using Core.Api.Auth.Models.Input;
 using Core.Api.Auth.Models.Output;
-using Core.Api.Helpers;
-using Core.Api.Services;
+using Core.Tools.Interfaces.Auth;
+using Libraries.Auth;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -17,30 +19,17 @@ namespace Core.Api.Auth
     public class Main : ApiController
     {
         private readonly SqlContext context;
-        private readonly IUserService userService;
+        private readonly IJwtManager jwtManager;
 
-        public Main(SqlContext context, IUserService userService)
+        public Main(SqlContext context, IJwtManager jwtManager)
         {
             this.context = context;
-            this.userService = userService;
+            this.jwtManager = jwtManager;
         }
 
-
-        [HttpPost("Email")]
-        public async Task<AuthenticateResponse> AuthenticateAsync([FromBody] LoginParameters parameters)
-        {
-            var res = await this.userService.Authenticate(parameters);
-
-            if (res == null)
-            {
-                return null;
-            }
-
-            return res;
-        }
 
         [HttpPost("Register")]
-        public async Task<Token> RegisterAsync([FromBody] RegisterParameters parameters)
+        public async Task<TokenPair> RegisterAsync([FromBody] RegisterParameters parameters)
         {
             var existed = this.context.Users.ToList().Any(u => u.Email == parameters.Email);
             if (existed)
@@ -48,39 +37,47 @@ namespace Core.Api.Auth
                 return null;
             }
 
-            var hash = this.getHash(parameters.Password);
-
-            var @new = parameters.Build(hash);
+            var @new = parameters.Build();
 
             var users = this.context.Users;
-            await users.AddAsync(@new);
+            var user = await users.AddAsync(@new);
             await this.context.SaveChangesAsync();
 
-            return new Token(hash);
+            var tokenPair = await jwtManager.GeneratePairAsync(user.Entity.Id);
+
+            return tokenPair;
         }
 
-        [HttpGet("Test")]
-        [Authorize]
-        public bool Test()
+        [HttpPost("Email")]
+        public async Task<TokenPair> AuthenticateAsync([FromBody] LoginParameters parameters)
         {
-            var userId = GetUserId();
+            var user = this.context.Users.FirstOrDefault(u => u.Email == parameters.Email);
 
-            return true;
-        }
-        private string getHash(string password)
-        {
-            byte[] salt = new byte[128 / 8];
-            using (var rng = RandomNumberGenerator.Create())
+            var res = CheckUser(user, parameters.Password);
+
+            if (!res)
             {
-                rng.GetBytes(salt);
+                return null;
             }
 
-            return Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                password: password,
-                salt: salt,
-                prf: KeyDerivationPrf.HMACSHA1,
-                iterationCount: 10000,
-                numBytesRequested: 256 / 8));
+            var tokenPair = await jwtManager.GeneratePairAsync(user.Id);
+
+            return tokenPair;
+        }
+
+        private bool CheckUser(User user, string password)
+        {
+            if (default == user)
+            {
+                return false;
+            }
+
+            if (!PasswordHandler.CheckPassword(password, user.Password))
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }
