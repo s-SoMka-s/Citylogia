@@ -42,7 +42,9 @@ namespace Citylogia.Server
             app.MigrateDb();
             app.UseApi();
 
-            
+            app.UseCors(x => x.AllowAnyOrigin()
+                              .AllowAnyMethod()
+                              .AllowAnyHeader());
 
             var applicationContainer = app.ApplicationServices.GetAutofacRoot();
             appLifetime.ApplicationStopped.Register(() =>
