@@ -13,12 +13,10 @@ namespace Citylogia.Server.Middleware
     public class BaseResponseMiddleware
     {
         private readonly RequestDelegate nextAsync;
-        private readonly ILogger logger;
 
-        public BaseResponseMiddleware(RequestDelegate nextAsync, ILoggerFactory loggerFactory)
+        public BaseResponseMiddleware(RequestDelegate nextAsync)
         {
             this.nextAsync = nextAsync;
-            this.logger = loggerFactory.CreateLogger<BaseResponseMiddleware>();
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -41,11 +39,6 @@ namespace Citylogia.Server.Middleware
             var response = JsonConvert.SerializeObject(@new);
             await CompleteResponseAsync(context, response, defaultBody);
 
-            this.logger.LogInformation(
-            "Request {method} {url} => {statusCode}",
-            context.Request?.Method,
-            context.Request?.Path.Value,
-            context.Response?.StatusCode);
         }
 
         private async Task CompleteResponseAsync(HttpContext context, string response, Stream defaultBody)
