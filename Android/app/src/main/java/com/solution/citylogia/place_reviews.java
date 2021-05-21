@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.solution.citylogia.models.Place;
@@ -68,7 +69,7 @@ public class place_reviews extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_place_reviews, container, false);
 
-        ImageView open_review_v3_1 = view.findViewById(R.id.openReview);
+        FloatingActionButton open_review_v3_1 = view.findViewById(R.id.openReview);
         open_review_v3_1.setOnClickListener(v -> openDialog());
 
         return view;
@@ -168,7 +169,7 @@ public class place_reviews extends Fragment {
         try {
             String url_image = place.getPhoto().getElements().get(1).getPublic_url();
             Picasso.get().load(url_image)
-                    .placeholder(R.drawable.image_template)
+                    .placeholder(R.drawable.tm_info)
                     .into(placeImage);
         } catch (Exception e) {
             e.printStackTrace();

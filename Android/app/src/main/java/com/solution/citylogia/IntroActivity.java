@@ -145,7 +145,5 @@ public class IntroActivity extends AppCompatActivity {
         } else {
             buttonAction.setText("Свайпай");
         }
-
-
     }
 }

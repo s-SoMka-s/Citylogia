@@ -13,6 +13,8 @@
         android:id="@+id/place_inside_viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/image_template"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -67,7 +69,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
 
-            android:background="@drawable/but_style"
+            android:background="@drawable/btn_style_accent_solid"
             android:text="Подробнее"
             android:textAllCaps="false"
 
