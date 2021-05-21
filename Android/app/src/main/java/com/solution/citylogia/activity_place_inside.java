@@ -84,7 +84,7 @@ public class activity_place_inside extends Fragment {
         try {
             String url_image = placeInfo.getPhoto().getElements().get(0).getPublic_url();
             Picasso.get().load(url_image)
-                    .placeholder(R.drawable.image_template)
+                    .placeholder(R.drawable.tm_info)
                     .into(placeImage);
         } catch (Exception e) {
             e.printStackTrace();
