@@ -4,7 +4,7 @@ import SeachIcon from '../../assets/search.svg'
 import VerticalLine from '../../assets/VerticalLine.svg'
 import Avatar from '../../assets/avatar.png'
 import NotificationsIcon from '../../assets/notifications.svg'
-import LogoutIcon from '../../assets/logout.svg'
+import LogoutIcon from '../../assets/Logout.svg'
 import './ToolBar.scss'
 
 export class ToolBar extends Component {
