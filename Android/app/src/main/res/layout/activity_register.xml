@@ -88,7 +88,7 @@
         android:layout_marginTop="35dp"
 
         android:layout_marginEnd="16dp"
-        android:background="@color/colorAccent"
+        android:background="@drawable/btn_style_accent_solid"
         android:text="Создать аккаунт"
         android:textAllCaps="false"
         android:textColor="@color/white"
@@ -143,7 +143,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="25dp"
         android:layout_marginEnd="16dp"
-        android:background="@color/graySecondary"
+        android:background="@drawable/btn_style_gray_solid"
         android:text="Войти"
         android:textAllCaps="false"
         android:textColor="@color/blackPrimary"
@@ -161,7 +161,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/logo" />
+        app:srcCompat="@drawable/city_logia_logo" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

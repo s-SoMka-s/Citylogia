@@ -6,12 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -20,13 +22,16 @@ import com.solution.citylogia.network.RetrofitSingleton;
 import com.solution.citylogia.network.api.IPlaceApi;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 
 
 public class activity_place_inside extends Fragment {
-
+    private PlaceInsideAdapter placeInsideAdapter;
     private final IPlaceApi placeApi;
     private Place placeInfo = null;
     private Long id;
@@ -50,6 +55,8 @@ public class activity_place_inside extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setUpBoardingItems();
+
         this.id = (Long)requireActivity().getIntent().getExtras().get("id");
         System.out.println("идентификатор места" + id);
     }
@@ -71,17 +78,19 @@ public class activity_place_inside extends Fragment {
         shortDescription.setText(place.getShort_description());
 
         name.setText(title_v1);
-
+        /*
         ImageView placeImage = view.findViewById(R.id.image_inside);
 
         try {
             String url_image = placeInfo.getPhoto().getElements().get(0).getPublic_url();
             Picasso.get().load(url_image)
-                    .placeholder(R.drawable.image_template)
+                    .placeholder(R.drawable.tm_info)
                     .into(placeImage);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+         */
     }
 
     @Override
@@ -91,7 +100,14 @@ public class activity_place_inside extends Fragment {
             this.placeInfo = place.getData();
             this.setData(view, this.placeInfo);
         });
-
+        ViewPager2 placeInsidePager = view.findViewById(R.id.place_inside_viewpager);
+        placeInsidePager.setAdapter(placeInsideAdapter);
+        placeInsidePager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+            }
+        });
         final NavController navController = Navigation.findNavController(view);
 
         Button but_more = view.findViewById(R.id.but_more);
@@ -110,5 +126,15 @@ public class activity_place_inside extends Fragment {
                 getActivity().onBackPressed();
             }
         });
+    }
+
+    private void setUpBoardingItems() {
+        List<PlaceInsideItem> mList = new ArrayList<>();
+
+        mList.add(new PlaceInsideItem(R.drawable.nsu_1));
+        mList.add(new PlaceInsideItem( R.drawable.park_2));
+        mList.add(new PlaceInsideItem(R.drawable.theater_3));
+
+        placeInsideAdapter = new PlaceInsideAdapter(mList);
     }
 }

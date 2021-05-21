@@ -87,7 +87,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
-                    android:background="@drawable/custom_button_filter"
+                    android:background="@drawable/btn_style_accent_solid"
                     android:radius="10dp"
                     android:text="Фильтр"
                     android:textAllCaps="false"

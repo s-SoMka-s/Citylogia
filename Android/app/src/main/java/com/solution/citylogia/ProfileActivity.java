@@ -1,8 +1,8 @@
 package com.solution.citylogia;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -13,14 +13,10 @@ import android.widget.TextView;
 
 import com.solution.citylogia.models.Favorite;
 import com.solution.citylogia.models.Place;
-import com.solution.citylogia.models.ShortPlace;
 import com.solution.citylogia.network.RetrofitSingleton;
 import com.solution.citylogia.network.api.IFavoritesApi;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
-import java.util.HashMap;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -89,14 +85,15 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
+    @SuppressLint("CheckResult")
     private void loadFavorites() {
         this.favoritesApi.getFavorites().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(res -> {
             List<Favorite> favorites = res.getData().getElements();
-            LinearLayout LikedLayoutInsert = findViewById(R.id.LikedLayoutInsert);
+            LinearLayout likedLayoutInsert = this.findViewById(R.id.LikedLayoutInsert);
             favorites.forEach(favorite -> {
-                final View likedPlace = getLayoutInflater().inflate(R.layout.liked_place_add, null, false);
-                fillLikedPlaces(favorite.getPlace(), likedPlace);
-                LikedLayoutInsert.addView(likedPlace);
+                View cricketerView = getLayoutInflater().inflate(R.layout.liked_place_add, null, false);
+                fillLikedPlaces(favorite.getPlace(), cricketerView.findViewById(R.id.LikedWholeContainer));
+                likedLayoutInsert.addView(cricketerView);
             });
         });
     }

@@ -2,7 +2,6 @@ package com.solution.citylogia;
 
 import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
-import android.icu.lang.UCharacter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,19 +18,17 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.solution.citylogia.models.Place;
 import com.solution.citylogia.models.Review;
 import com.solution.citylogia.network.RetrofitSingleton;
 import com.solution.citylogia.network.api.IFavoritesApi;
-import com.solution.citylogia.network.api.IPlaceApi;
-import com.solution.citylogia.network.api.IReviewsApi;
 import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -72,7 +69,7 @@ public class place_reviews extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_place_reviews, container, false);
 
-        ImageView open_review_v3_1 = view.findViewById(R.id.openReview);
+        FloatingActionButton open_review_v3_1 = view.findViewById(R.id.openReview);
         open_review_v3_1.setOnClickListener(v -> openDialog());
 
         return view;
@@ -82,7 +79,7 @@ public class place_reviews extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        LinearLayout reviewLayoutInsert = view.findViewById(R.id.LikedLayoutInsert);
+        LinearLayout reviewLayoutInsert = view.findViewById(R.id.ReviewsLayoutInsert);
         this.place.getReviews().getElements().forEach(review -> {
             final View cricketerView = getLayoutInflater().inflate(R.layout.review_row_add, null, false);
             reviewLayoutInsert.addView(cricketerView);
@@ -172,7 +169,7 @@ public class place_reviews extends Fragment {
         try {
             String url_image = place.getPhoto().getElements().get(1).getPublic_url();
             Picasso.get().load(url_image)
-                    .placeholder(R.drawable.image_template)
+                    .placeholder(R.drawable.tm_info)
                     .into(placeImage);
         } catch (Exception e) {
             e.printStackTrace();

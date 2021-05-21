@@ -4,6 +4,7 @@ using Core.Api.Favoriites.Models.Output;
 using Core.Api.Models;
 using Core.Api.Places.Models.Output;
 using Core.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -24,6 +25,7 @@ namespace Core.Api.Favoriites
 
 
         [HttpGet("")]
+        [Authorize]
         public async Task<BaseCollectionResponse<FavoriteSummary>> GetFavoritesAsync()
         {
             var summaries = await this.Query().Select(l => new FavoriteSummary(l)).ToListAsync();
@@ -32,6 +34,7 @@ namespace Core.Api.Favoriites
         }
 
         [HttpPost("")]
+        [Authorize]
         public async Task<bool> AddAsync([FromBody] NewFavoritePlaceLinkParameters parameters)
         {
             var @new = parameters.Build();
@@ -64,6 +67,7 @@ namespace Core.Api.Favoriites
 
 
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<bool> DeleteAsync(long id)
         {
             var link = await this.context.FavoritePlaceLinks.FirstOrDefaultAsync(l => l.Id == id);

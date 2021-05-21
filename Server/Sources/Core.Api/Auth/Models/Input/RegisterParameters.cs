@@ -1,4 +1,5 @@
 ﻿using Citylogia.Server.Core.Entityes;
+using Libraries.Auth;
 using Newtonsoft.Json;
 
 namespace Core.Api.Auth.Models.Input
@@ -14,13 +15,13 @@ namespace Core.Api.Auth.Models.Input
         [JsonProperty("password")]
         public string Password { get; set; }
 
-        public User Build(string hash)
+        public User Build()
         {
             return new User()
             {
                 Name = Name,
                 Email = Email,
-                Password = hash
+                Password = PasswordHandler.PasswordHash(Password)
             };
         }
     }
