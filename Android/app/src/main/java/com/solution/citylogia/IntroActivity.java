@@ -41,12 +41,12 @@ public class IntroActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
 
-        layoutBoardingIndicators = findViewById(R.id.layoutBoardingIndicators);
+        layoutBoardingIndicators = findViewById(R.id.layoutBoardingIndicatorsRev);
         buttonAction = findViewById(R.id.button);
 
         setUpBoardingItems();
 
-        ViewPager2 introBoardingPager = findViewById(R.id.screen_viewpager);
+        ViewPager2 introBoardingPager = findViewById(R.id.screen_viewpager_rev);
         introBoardingPager.setAdapter(introBoardingAdapter);
 
         setBoardingIndicators();

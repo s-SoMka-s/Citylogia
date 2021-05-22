@@ -3,6 +3,7 @@ package com.solution.citylogia
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -11,16 +12,18 @@ import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.os.Looper
+import android.text.TextUtils
+import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.setFragmentResultListener
 import com.google.android.gms.location.*
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.solution.citylogia.models.BaseCollectionResponse
 import com.solution.citylogia.models.PlaceType
@@ -49,6 +52,8 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
     private var userLatitude: Double? = null
     private var selectedTyped: ArrayList<PlaceType> = ArrayList()
     private var selectedRadius: Int = 10
+
+    private var zoomLevel = 17.0f //This goes up to 21
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,13 +94,17 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
             startActivity(Intent(this, ProfileActivity::class.java))
             finish()
         }
+
+        val btn_idea: ImageButton = findViewById(R.id.btn_idea)
+        btn_idea.setOnClickListener{
+            offerPlace()
+        }
     }
 
     override fun onStart() {
         super.onStart()
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             startLocationUpdates()
-        } else {
         }
     }
 
@@ -126,8 +135,71 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
     private var locationCallback: LocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             super.onLocationResult(locationResult)
+
+            val btn_zoom_in: ImageButton = findViewById(R.id.btn_zoom_in)
+            val btn_zoom_out: ImageButton = findViewById(R.id.btn_zoom_out)
+            val btn_navigation: ImageButton = findViewById(R.id.btn_navigation)
+
+            /* Двигает камеру на юзера, но я не знаю куда это вставить, чтобы сразу карта грузилась на юзере
+            val latLng = LatLng(locationResult.lastLocation.latitude, locationResult.lastLocation.longitude);
+            val point = CameraUpdateFactory.newLatLng(latLng)
+            mMap!!.moveCamera(point)*/
+
             if (mMap != null) {
                 setUserLocationMarker(locationResult.lastLocation)
+
+                btn_zoom_in.setOnClickListener {
+                    if (zoomLevel + 1.0f <= 21.0f)
+                        zoomLevel++;
+                    zoomMap(locationResult)
+                }
+
+                btn_zoom_out.setOnClickListener {
+                    if (zoomLevel - 1.0f >= 0.0f)
+                        zoomLevel--;
+                    zoomMap(locationResult)
+                }
+
+                btn_navigation.setOnClickListener {
+                    zoomMap(locationResult)
+                }
+            }
+        }
+    }
+
+    private fun zoomMap(locationResult: LocationResult) {
+        val cameraPosition: CameraPosition = CameraPosition.Builder()
+                .target(LatLng((locationResult.lastLocation.latitude), locationResult.lastLocation.longitude))
+                .zoom(zoomLevel)
+                .build()
+        val cameraUpdate: CameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition)
+        mMap!!.animateCamera(cameraUpdate)
+    }
+
+    private fun offerPlace() {
+        val layoutInflater = LayoutInflater.from(applicationContext)
+        val view: View = layoutInflater.inflate(R.layout.layout_offer_place, null)
+
+        val alertDialogBuilder = AlertDialog.Builder(this@MapActivity)
+        alertDialogBuilder.setView(view)
+
+        val addressEditText = view.findViewById<EditText>(R.id.offerPlaceAddress)
+        alertDialogBuilder
+                .setCancelable(false)
+                .setPositiveButton("Отправить") { _: DialogInterface?, _: Int ->
+                    /*Send data to base*/
+                    Toast.makeText(this@MapActivity, "Спасибо! Ваш запрос отправлен!", Toast.LENGTH_LONG).show()}
+                .setNegativeButton("Отмена") { _: DialogInterface?, _: Int ->  }
+
+        val alertDialog: AlertDialog = alertDialogBuilder.create()
+        alertDialog.show()
+
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            if (TextUtils.isEmpty(addressEditText.text)) {
+                Toast.makeText(this@MapActivity, "Напишите адрес", Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            } else {
+                alertDialog.dismiss()
             }
         }
     }
@@ -142,19 +214,20 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
         this.userLatitude = location.latitude
 
         val latLng = LatLng(location.latitude, location.longitude)
+
         if (userLocationMarker == null) {
             val markerOptions = MarkerOptions()
             markerOptions.position(latLng)
-            markerOptions.icon(this.bitmapDescriptorFromVector(this, R.drawable.ic_baseline_my_location_24))
+            markerOptions.icon(this.bitmapDescriptorFromVector(this, R.drawable.ic_my_navigation))
             userLocationMarker = mMap!!.addMarker(markerOptions)
             if (this.refresh) {
-                mMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
+                mMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel))
                 this.refresh = false
             }
         } else {
             userLocationMarker!!.position = latLng
             if (this.refresh) {
-                mMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
+                mMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel))
                 this.refresh = false
             }
         }
