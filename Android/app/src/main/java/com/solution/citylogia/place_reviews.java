@@ -86,7 +86,7 @@ public class place_reviews extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        LinearLayout reviewLayoutInsert = view.findViewById(R.id.ReviewsLayoutInsert);
+        LinearLayout reviewLayoutInsert = view.findViewById(R.id.LikedLayoutInsert);
         this.place.getReviews().getElements().forEach(review -> {
             final View cricketerView = getLayoutInflater().inflate(R.layout.review_row_add, null, false);
             reviewLayoutInsert.addView(cricketerView);

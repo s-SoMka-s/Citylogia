@@ -14,6 +14,9 @@ import com.mancj.materialsearchbar.MaterialSearchBar;
 import java.util.List;
 import java.util.Locale;
 
+
+import dagger.hilt.android.AndroidEntryPoint;
+
 public class MainActivity extends Activity {
     Button filter;
 
