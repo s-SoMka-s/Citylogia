@@ -16,11 +16,9 @@ import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.setFragmentResultListener
 import com.google.android.gms.location.*
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.solution.citylogia.models.BaseCollectionResponse
 import com.solution.citylogia.models.PlaceType
@@ -49,6 +47,8 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
     private var userLatitude: Double? = null
     private var selectedTyped: ArrayList<PlaceType> = ArrayList()
     private var selectedRadius: Int = 10
+
+    private var zoomLevel = 17.0f //This goes up to 21
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -126,8 +126,45 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
     private var locationCallback: LocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             super.onLocationResult(locationResult)
+
+            val btn_zoom_in: ImageButton = findViewById(R.id.btn_zoom_in)
+            val btn_zoom_out: ImageButton = findViewById(R.id.btn_zoom_out)
+            val btn_navigation: ImageButton = findViewById(R.id.btn_navigation)
+            val latLng = LatLng(locationResult.lastLocation.latitude, locationResult.lastLocation.longitude);
+
             if (mMap != null) {
                 setUserLocationMarker(locationResult.lastLocation)
+
+                btn_zoom_in.setOnClickListener {
+                    if (zoomLevel + 1.0f >= 21.0f)
+                        zoomLevel++;
+                    val cameraPosition: CameraPosition = CameraPosition.Builder()
+                            .target(LatLng((locationResult.lastLocation.latitude), locationResult.lastLocation.longitude))
+                            .zoom(zoomLevel)
+                            .build()
+                    val cameraUpdate: CameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition)
+                    mMap!!.animateCamera(cameraUpdate)
+                }
+
+                btn_zoom_out.setOnClickListener {
+                    if (zoomLevel - 1.0f <= 0.0f)
+                        zoomLevel--;
+                    val cameraPosition: CameraPosition = CameraPosition.Builder()
+                            .target(LatLng((locationResult.lastLocation.latitude), locationResult.lastLocation.longitude))
+                            .zoom(zoomLevel)
+                            .build()
+                    val cameraUpdate: CameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition)
+                    mMap!!.animateCamera(cameraUpdate)
+                }
+
+                btn_navigation.setOnClickListener {
+                    val cameraPosition: CameraPosition = CameraPosition.Builder()
+                            .target(LatLng((locationResult.lastLocation.latitude), locationResult.lastLocation.longitude))
+                            .zoom(zoomLevel)
+                            .build()
+                    val cameraUpdate: CameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition)
+                    mMap!!.animateCamera(cameraUpdate)
+                }
             }
         }
     }
@@ -145,19 +182,20 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
         if (userLocationMarker == null) {
             val markerOptions = MarkerOptions()
             markerOptions.position(latLng)
-            markerOptions.icon(this.bitmapDescriptorFromVector(this, R.drawable.ic_baseline_my_location_24))
+            markerOptions.icon(this.bitmapDescriptorFromVector(this, R.drawable.ic_my_navigation))
             userLocationMarker = mMap!!.addMarker(markerOptions)
             if (this.refresh) {
-                mMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
+                mMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel))
                 this.refresh = false
             }
         } else {
             userLocationMarker!!.position = latLng
             if (this.refresh) {
-                mMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
+                mMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel))
                 this.refresh = false
             }
         }
+
     }
 
     private fun loadNearestPlace(place: ShortPlace) {
