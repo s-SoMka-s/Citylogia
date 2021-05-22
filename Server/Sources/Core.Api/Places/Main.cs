@@ -5,6 +5,7 @@ using Core.Api.Places.Models.Input;
 using Core.Api.Places.Models.Output;
 using Core.Entities;
 using GeoCoordinatePortable;
+using Libraries.Db.Reposiitory.Interfaces;
 using Libraries.Updates;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,18 +17,24 @@ using System.Threading.Tasks;
 namespace Citylogia.Server.Core.Api
 {
     [ApiController]
-    [Route("/api/Map/Places")]
+    [Route("api/Map/Places")]
     public class Main : Controller
     {
         private readonly SqlContext context;
-        public Main(SqlContext context)
+        private readonly ICrudRepository<Place> places;
+
+        public Main(SqlContext context, ICrudFactory factory)
         {
             this.context = context;
+
+            this.places = factory.Get<Place>();
         }
 
         [HttpGet("")]
         public async Task<BaseCollectionResponse<ShortPlaceSummary>> GetAsync([FromQuery] PlaceSelectParameters parameters)
         {
+            var p = await this.places.FindAsync(p=> p.Id == 7);
+
             var query = this.Query();
 
             if (parameters.TypeIds.Any())

@@ -1,15 +1,10 @@
 ﻿using Citylogia.Server.Core.Db.Implementations;
 using Citylogia.Server.Core.Entityes;
 using Core.Api.Auth.Models.Input;
-using Core.Api.Auth.Models.Output;
 using Core.Tools.Interfaces.Auth;
 using Libraries.Auth;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace Core.Api.Auth
@@ -49,7 +44,7 @@ namespace Core.Api.Auth
         }
 
         [HttpPost("Email")]
-        public async Task<TokenPair> AuthenticateAsync([FromBody] LoginParameters parameters)
+        public async Task<TokenPair> LoginAsync([FromBody] LoginParameters parameters)
         {
             var user = this.context.Users.FirstOrDefault(u => u.Email == parameters.Email);
 
@@ -64,6 +59,9 @@ namespace Core.Api.Auth
 
             return tokenPair;
         }
+
+
+
 
         private bool CheckUser(User user, string password)
         {

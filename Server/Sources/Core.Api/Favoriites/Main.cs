@@ -14,7 +14,7 @@ namespace Core.Api.Favoriites
 {
     [ApiController]
     [Route("/api/Favorites")]
-    public class Main : Controller
+    public class Main : ApiController
     {
         private readonly SqlContext context;
 
@@ -28,7 +28,11 @@ namespace Core.Api.Favoriites
         [Authorize]
         public async Task<BaseCollectionResponse<FavoriteSummary>> GetFavoritesAsync()
         {
-            var summaries = await this.Query().Select(l => new FavoriteSummary(l)).ToListAsync();
+            var userId = GetUserId();
+
+            var summaries = await Query().Where(l => l.UserId == userId)
+                                         .Select(l => new FavoriteSummary(l))
+                                         .ToListAsync();
 
             return new BaseCollectionResponse<FavoriteSummary>(summaries);
         }
@@ -37,14 +41,20 @@ namespace Core.Api.Favoriites
         [Authorize]
         public async Task<bool> AddAsync([FromBody] NewFavoritePlaceLinkParameters parameters)
         {
+            var userId = GetUserId();
+
             var @new = parameters.Build();
-            var place = await this.context.Places.FirstOrDefaultAsync(p => p.Id == parameters.PlaceId);
+            var place = await context.Places
+                                     .FirstOrDefaultAsync(p => p.Id == parameters.PlaceId);
+
             if (default == place)
             {
                 return false;
             }
 
-            var user = await this.context.Users.FirstOrDefaultAsync(u => u.Id == parameters.UserId);
+            var user = await context.Users
+                                    .FirstOrDefaultAsync(u => u.Id == userId);
+
             if (default == user)
             {
                 return false;
@@ -53,14 +63,16 @@ namespace Core.Api.Favoriites
             @new.User = user;
             @new.Place = place;
 
-            var existed = await this.context.FavoritePlaceLinks.FirstOrDefaultAsync(l => l.PlaceId == place.Id && l.UserId == user.Id);
+            var existed = await context.FavoritePlaceLinks
+                                       .FirstOrDefaultAsync(l => l.PlaceId == place.Id && l.UserId == user.Id);
+
             if (existed != default)
             {
                 return false;
             }
 
-            await this.context.AddAsync(@new);
-            await this.context.SaveChangesAsync();
+            await context.AddAsync(@new);
+            await context.SaveChangesAsync();
 
             return true;
         }
@@ -70,16 +82,18 @@ namespace Core.Api.Favoriites
         [Authorize]
         public async Task<bool> DeleteAsync(long id)
         {
-            var link = await this.context.FavoritePlaceLinks.FirstOrDefaultAsync(l => l.Id == id);
+            var link = await context.FavoritePlaceLinks
+                                    .FirstOrDefaultAsync(l => l.Id == id);
+
             if (link == default)
             {
                 return false;
             }
 
-            this.context.Remove(link);
-            await this.context.SaveChangesAsync();
+            context.Remove(link);
+            await context.SaveChangesAsync();
 
-            return true;    
+            return true;
         }
 
 
@@ -95,6 +109,6 @@ namespace Core.Api.Favoriites
 
                                .Include(l => l.Place)
                                .ThenInclude(p => p.Reviews);
-        } 
+        }
     }
 }
