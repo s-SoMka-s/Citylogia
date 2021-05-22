@@ -1,12 +1,9 @@
 ﻿using Core.Api.Models;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Microsoft.Extensions.Logging;
 
 namespace Citylogia.Server.Middleware
 {
@@ -38,7 +35,6 @@ namespace Citylogia.Server.Middleware
 
             var response = JsonConvert.SerializeObject(@new);
             await CompleteResponseAsync(context, response, defaultBody);
-
         }
 
         private async Task CompleteResponseAsync(HttpContext context, string response, Stream defaultBody)

@@ -19,7 +19,6 @@ namespace Citylogia.Server
                        {
                            logging.ClearProviders();
                            logging.AddConsole();
-                           logging.AddEventLog();
                        })
                        .UseServiceProviderFactory(new AutofacServiceProviderFactory())
                        .ConfigureWebHostDefaults(b =>
