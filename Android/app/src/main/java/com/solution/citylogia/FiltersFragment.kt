@@ -10,13 +10,17 @@ import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
+import androidx.lifecycle.lifecycleScope
 import com.solution.citylogia.models.PlaceType
 import com.solution.citylogia.network.RetrofitSingleton.retrofit
 import com.solution.citylogia.network.api.IPlaceApi
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 class FiltersFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
     private var selectedTypes: ArrayList<PlaceType>? = ArrayList()
@@ -32,15 +36,19 @@ class FiltersFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.filter_layout, container, false);
+        val view = inflater.inflate(R.layout.filter_layout, container, false)
+
+        visiblePanels(false)
+
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         this.selectedTypes = arguments?.getSerializable("selected_types") as ArrayList<PlaceType>
         this.radius = arguments?.getSerializable("selected_radius") as Int
         super.onViewCreated(view, savedInstanceState)
-        this.setUpButtons(view);
-        this.loadTypes(view);
+        this.setUpButtons(view)
+        this.loadTypes(view)
     }
 
     @SuppressLint("CheckResult")
@@ -103,8 +111,16 @@ class FiltersFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
                 .beginTransaction()
                 .remove(this)
                 .commit()
+        visiblePanels(true)
+    }
 
-
+    private fun visiblePanels(isVisible: Boolean) {
+        val filterPanel: LinearLayout = requireActivity().findViewById(R.id.maps_tools)
+        filterPanel.isVisible = isVisible
+        val menuPanel: LinearLayout = requireActivity().findViewById(R.id.menu)
+        menuPanel.isVisible = isVisible
+        val btnPanel: LinearLayout = requireActivity().findViewById(R.id.btn_panel)
+        btnPanel.isVisible = isVisible
     }
 
     @SuppressLint("UseRequireInsteadOfGet")

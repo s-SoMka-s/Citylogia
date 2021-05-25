@@ -2,8 +2,11 @@ package com.solution.citylogia;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -17,6 +20,7 @@ import com.solution.citylogia.network.RetrofitSingleton;
 import com.solution.citylogia.network.api.IFavoritesApi;
 import com.squareup.picasso.Picasso;
 
+import java.security.Permission;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -24,8 +28,11 @@ import io.reactivex.schedulers.Schedulers;
 
 public class ProfileActivity extends AppCompatActivity {
 
+    private final int PICK_IMAGE = 100;
+
     private Boolean isPressed = false;
     private IFavoritesApi favoritesApi = RetrofitSingleton.INSTANCE.getRetrofit().create(IFavoritesApi.class);
+    private ImageView profileImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +48,12 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
         ImageView but_like = findViewById(R.id.icon_like);
+        ImageButton addProfileImg = findViewById(R.id.add_img_btn);
+        profileImage = findViewById(R.id.profile_img);
+
+        addProfileImg.setOnClickListener(v -> {
+            imageFromGallery();
+        });
 
         /*but_like.setOnClickListener(v -> {
             if (!this.place.is_favorite()) {
@@ -117,4 +130,25 @@ public class ProfileActivity extends AppCompatActivity {
             });
         }
     }*/
+
+    private void imageFromGallery() {
+        Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        getIntent.setType("image/*");
+
+        Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        pickIntent.setType("image/*");
+
+        Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
+
+        startActivityForResult(chooserIntent, PICK_IMAGE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK) {
+            profileImage.setImageURI(data.getData());
+        }
+    }
 }

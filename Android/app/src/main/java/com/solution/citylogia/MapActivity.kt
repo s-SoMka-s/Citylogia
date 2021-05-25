@@ -13,13 +13,13 @@ import android.location.Location
 import android.os.Bundle
 import android.os.Looper
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.setFragmentResultListener
 import com.google.android.gms.location.*
@@ -55,6 +55,10 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
 
     private var zoomLevel = 17.0f //This goes up to 21
 
+    private lateinit var filterPanel: LinearLayout
+    private lateinit var menuPanel: LinearLayout
+    private lateinit var btnPanel: LinearLayout
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
@@ -67,12 +71,17 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
         this.locationRequest?.fastestInterval = 500
         locationRequest?.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
 
+        filterPanel = findViewById(R.id.maps_tools)
+        menuPanel = findViewById(R.id.menu)
+        btnPanel = findViewById(R.id.btn_panel)
+
         var filter = findViewById<Button>(R.id.bt_filter)
 
         filter.setOnClickListener{
             var bundle = Bundle()
             bundle.putSerializable("selected_types", this.selectedTyped)
             bundle.putSerializable("selected_radius", this.selectedRadius)
+
             var filtersFragment = FiltersFragment.getNewInstance(bundle);
             supportFragmentManager.beginTransaction()
                     .replace(R.id.map, filtersFragment)
@@ -86,17 +95,16 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
                     this.selectedTyped = selectedTyped
                     this.selectedRadius = radius
                     this.loadPlaces(types = selectedTypes, radius = radius.toDouble(), longitude = this.userLongitude, latitude = this.userLatitude)
-
                 }
 
-        val profile_but: ImageButton = findViewById(R.id.but_profile)
-        profile_but.setOnClickListener { v: View? ->
+        val profileBtn: ImageButton = findViewById(R.id.but_profile)
+        profileBtn.setOnClickListener { v: View? ->
             startActivity(Intent(this, ProfileActivity::class.java))
             finish()
         }
 
-        val btn_idea: ImageButton = findViewById(R.id.btn_idea)
-        btn_idea.setOnClickListener{
+        val offerBtn: ImageButton = findViewById(R.id.btn_idea)
+        offerBtn.setOnClickListener{
             offerPlace()
         }
     }
