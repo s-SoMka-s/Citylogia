@@ -17,6 +17,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
+        android:id="@+id/btn_panel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
@@ -29,25 +30,25 @@
             android:id="@+id/btn_zoom_in"
             android:layout_width="25dp"
             android:layout_height="25dp"
+            android:layout_marginBottom="12dp"
             android:background="@drawable/btn_style_black_solid"
-            android:src="@drawable/ic_zoom_in"
-            android:layout_marginBottom="12dp"/>
+            android:src="@drawable/ic_zoom_in" />
 
         <ImageButton
             android:id="@+id/btn_zoom_out"
             android:layout_width="25dp"
             android:layout_height="25dp"
+            android:layout_marginBottom="12dp"
             android:background="@drawable/btn_style_black_solid"
-            android:src="@drawable/ic_zoom_out"
-            android:layout_marginBottom="12dp"/>
+            android:src="@drawable/ic_zoom_out" />
 
         <ImageButton
             android:id="@+id/btn_navigation"
             android:layout_width="25dp"
             android:layout_height="25dp"
+            android:layout_marginBottom="12dp"
             android:background="@drawable/btn_style_black_solid"
-            android:src="@drawable/ic_cur_navigation"
-            android:layout_marginBottom="12dp"/>
+            android:src="@drawable/ic_cur_navigation" />
 
         <ImageButton
             android:id="@+id/btn_idea"
