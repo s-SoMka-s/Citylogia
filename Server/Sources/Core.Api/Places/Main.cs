@@ -20,14 +20,15 @@ namespace Citylogia.Server.Core.Api
     [Route("api/Map/Places")]
     public class Main : Controller
     {
-        private readonly SqlContext context;
         private readonly ICrudRepository<Place> places;
+        private readonly ICrudRepository<PlaceType> placeTypes;
+        private readonly ICrudRepository<FavoritePlaceLink> links;
 
         public Main(SqlContext context, ICrudFactory factory)
         {
-            this.context = context;
-
             this.places = factory.Get<Place>();
+            this.placeTypes = factory.Get<PlaceType>();
+            this.links = factory.Get<FavoritePlaceLink>();
         }
 
         [HttpGet("")]
@@ -65,12 +66,11 @@ namespace Citylogia.Server.Core.Api
         }
 
         [HttpPost("")]
-        public bool AddPlace([FromBody] NewPlaceParameters parameters)
+        public async Task<bool> AddPlaceAsync([FromBody] NewPlaceParameters parameters)
         {
             var place = parameters.Build();
 
-            this.context.Places.Add(place);
-            this.context.SaveChanges();
+            await places.AddAsync(place);
 
             return true;
         }
@@ -126,15 +126,14 @@ namespace Citylogia.Server.Core.Api
         }
 
         [HttpPost("Types")]
-        public bool AddPlaceType([FromBody] NewPlaceTypeParameters parameters)
+        public async Task<bool> AddPlaceTypeAsync([FromBody] NewPlaceTypeParameters parameters)
         {
             var type = new PlaceType()
             {
                 Name = parameters.Name
             };
 
-            this.context.PlaceTypes.Add(type);
-            this.context.SaveChanges();
+            await placeTypes.AddAsync(type);
 
             return true;
         }
@@ -142,7 +141,7 @@ namespace Citylogia.Server.Core.Api
         [HttpDelete("Types/{id}")]
         public async Task<bool> DeleteTypeAsync(long id)
         {
-            var type = await this.context.PlaceTypes.FirstOrDefaultAsync(t => t.Id == id);
+            var type = await placeTypes.FindAsync(t => t.Id == id);
             if (type == default)
             {
                 return false;
@@ -172,8 +171,7 @@ namespace Citylogia.Server.Core.Api
 
         private IQueryable<Place> Query()
         {
-            return this.context
-                       .Places
+            return places
 
                        .Include(p => p.Reviews)
                        .ThenInclude(r => r.Author)

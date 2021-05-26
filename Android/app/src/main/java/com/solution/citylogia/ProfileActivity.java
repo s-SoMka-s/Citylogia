@@ -1,12 +1,7 @@
 package com.solution.citylogia;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -14,15 +9,19 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.solution.citylogia.models.Favorite;
 import com.solution.citylogia.models.Place;
 import com.solution.citylogia.network.RetrofitSingleton;
 import com.solution.citylogia.network.api.IFavoritesApi;
 import com.squareup.picasso.Picasso;
 
-import java.security.Permission;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.AndroidEntryPoint;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -31,14 +30,15 @@ public class ProfileActivity extends AppCompatActivity {
     private final int PICK_IMAGE = 100;
 
     private Boolean isPressed = false;
-    private IFavoritesApi favoritesApi = RetrofitSingleton.INSTANCE.getRetrofit().create(IFavoritesApi.class);
+    private RetrofitSingleton retrofit;
+    private IFavoritesApi favoritesApi;
     private ImageView profileImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-
+        this.favoritesApi = retrofit.getRetrofit().create(IFavoritesApi.class);
         this.loadFavorites();
 
         ImageButton map_but = findViewById(R.id.map_icon);

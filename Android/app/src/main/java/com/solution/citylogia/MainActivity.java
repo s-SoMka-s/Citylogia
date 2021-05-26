@@ -1,10 +1,11 @@
 package com.solution.citylogia;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.widget.Button;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.gson.Gson;
@@ -14,10 +15,7 @@ import com.mancj.materialsearchbar.MaterialSearchBar;
 import java.util.List;
 import java.util.Locale;
 
-
-import dagger.hilt.android.AndroidEntryPoint;
-
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity{
     Button filter;
 
     private MaterialSearchBar materialSearchBar;

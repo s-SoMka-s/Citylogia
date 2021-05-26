@@ -5,9 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -20,15 +19,15 @@ import com.google.gson.GsonBuilder;
 import com.solution.citylogia.models.Place;
 import com.solution.citylogia.network.RetrofitSingleton;
 import com.solution.citylogia.network.api.IPlaceApi;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.AndroidEntryPoint;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
-import retrofit2.Retrofit;
-
 
 public class activity_place_inside extends Fragment {
     private PlaceInsideAdapter placeInsideAdapter;
@@ -36,11 +35,12 @@ public class activity_place_inside extends Fragment {
     private Place placeInfo = null;
     private Long id;
 
+    private RetrofitSingleton retrofit;
+
 
     public activity_place_inside() {
         // Required empty public constructor
-        Retrofit retrofit = RetrofitSingleton.INSTANCE.getRetrofit();
-        this.placeApi = retrofit.create(IPlaceApi.class);
+        this.placeApi = retrofit.getRetrofit().create(IPlaceApi.class);
     }
 
     public activity_place_inside newInstance() {
