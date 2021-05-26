@@ -11,7 +11,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
- public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
+import com.solution.citylogia.network.RetrofitSingleton;
+import com.solution.citylogia.network.api.IAuthorizationApi;
+import com.solution.citylogia.network.models.output.RegistrationParameters;
+
+import javax.inject.Inject;
+
+import dagger.hilt.android.AndroidEntryPoint;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+
+@AndroidEntryPoint
+public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
      EditText reg_name;
      EditText reg_email;
@@ -21,6 +32,9 @@ import android.widget.ProgressBar;
      Button reg_create;
 
      ProgressBar progressBar;
+
+     @Inject
+     RetrofitSingleton retrofit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +103,17 @@ import android.widget.ProgressBar;
 
          // здесь метод, который отправит данные в базу данных
          // далее перенаправление на Activity log-in или Profile
+
+         RegistrationParameters registerParameter = new RegistrationParameters(reg_name.toString(), reg_email.toString(), reg_password.toString());
+         IAuthorizationApi api = retrofit.getRetrofit().create(IAuthorizationApi.class);
+
+         api.register(registerParameter)
+                 .subscribeOn(Schedulers.io())
+                 .observeOn(AndroidSchedulers.mainThread())
+                 .subscribe(res -> {
+                     System.out.println(res);
+                 });
+
 
          progressBar.setVisibility(View.VISIBLE);
 
