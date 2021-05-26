@@ -20,12 +20,14 @@ namespace Citylogia.Server.Core.Api
     [Route("api/Map/Places")]
     public class Main : Controller
     {
+        private readonly SqlContext context;
         private readonly ICrudRepository<Place> places;
         private readonly ICrudRepository<PlaceType> placeTypes;
         private readonly ICrudRepository<FavoritePlaceLink> links;
 
         public Main(SqlContext context, ICrudFactory factory)
         {
+            this.context = context;
             this.places = factory.Get<Place>();
             this.placeTypes = factory.Get<PlaceType>();
             this.links = factory.Get<FavoritePlaceLink>();
@@ -171,7 +173,7 @@ namespace Citylogia.Server.Core.Api
 
         private IQueryable<Place> Query()
         {
-            return places
+            return this.context.Places
 
                        .Include(p => p.Reviews)
                        .ThenInclude(r => r.Author)

@@ -22,7 +22,8 @@ class RetrofitSingleton @Inject constructor(private val authInterceptor: AuthInt
                 .build();
 
         return Retrofit.Builder()
-                .baseUrl("http://35.209.124.144:8000/api/")
+                //.baseUrl("http://35.209.124.144:8000/api/")
+                .baseUrl("http://37.192.40.168:5000/api/")
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())

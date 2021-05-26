@@ -13,7 +13,7 @@ namespace Core.Api.Places.Models.Output
             this.Type = new PlaceTypeSummary(source.Type);
             this.Latitude = source.Latitude;
             this.Longtitude = source.Longitude;
-            this.Address = source.Address;
+            this.Address = "";
             this.DistanceTo = null;
         }
 

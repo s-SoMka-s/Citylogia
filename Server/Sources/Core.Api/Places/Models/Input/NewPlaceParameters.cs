@@ -30,7 +30,6 @@ namespace Core.Api.Places.Models.Input
                 Name = Name,
                 Description = Description,
                 TypeId = TypeId,
-                Address = Address,
                 Longitude = Longtitude,
                 Latitude = Latitude
             };
