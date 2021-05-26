@@ -1,6 +1,8 @@
 name: .NET
 
 on:
+  push:
+    branches: [android-auth]
   pull_request:
     branches: [master]
     types: [closed]
