@@ -11,9 +11,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
+import com.google.gson.Gson;
 import com.solution.citylogia.network.RetrofitSingleton;
+import com.solution.citylogia.network.StorageService;
 import com.solution.citylogia.network.api.IAuthorizationApi;
+import com.solution.citylogia.network.models.input.TokenResponse;
 import com.solution.citylogia.network.models.output.RegistrationParameters;
+import com.solution.citylogia.services.ClientAuthData;
+import com.solution.citylogia.services.Token;
+import com.solution.citylogia.services.Tokens;
 
 import javax.inject.Inject;
 
@@ -35,6 +41,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
      @Inject
      RetrofitSingleton retrofit;
+     @Inject
+        StorageService storage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,20 +111,30 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
          // здесь метод, который отправит данные в базу данных
          // далее перенаправление на Activity log-in или Profile
+        this.register(name, email, password);
+         progressBar.setVisibility(View.VISIBLE);
+     }
 
-         RegistrationParameters registerParameter = new RegistrationParameters(reg_name.toString(), reg_email.toString(), reg_password.toString());
+     private void register(String name, String email, String password) {
+         RegistrationParameters registerParameter = new RegistrationParameters(name, email, password);
          IAuthorizationApi api = retrofit.getRetrofit().create(IAuthorizationApi.class);
-
          api.register(registerParameter)
                  .subscribeOn(Schedulers.io())
                  .observeOn(AndroidSchedulers.mainThread())
                  .subscribe(res -> {
                      System.out.println(res);
+                     TokenResponse access = res.getData().getAccess();
+                     TokenResponse refresh = res.getData().getRefresh();
+                     Token a = new Token(access.getToken(), access.getExpiry());
+                     Token r = new Token(refresh.getToken(), refresh.getExpiry());
+                     Tokens tokens = new Tokens(a, r);
+                     ClientAuthData data = new ClientAuthData(false, tokens);
+                     Gson gson = new Gson();
+                     String jsonData = gson.toJson(data);
+                     storage.putItem("STORAGE_TOKENS_KEY", jsonData);
+
+                     startActivity(new Intent(this, MapActivity.class));
+                     finish();
                  });
-
-
-         progressBar.setVisibility(View.VISIBLE);
-
-
      }
  }

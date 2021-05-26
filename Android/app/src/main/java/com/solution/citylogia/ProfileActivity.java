@@ -21,18 +21,22 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import dagger.hilt.EntryPoint;
 import dagger.hilt.android.AndroidEntryPoint;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
+@AndroidEntryPoint
 public class ProfileActivity extends AppCompatActivity {
 
     private final int PICK_IMAGE = 100;
 
     private Boolean isPressed = false;
-    private RetrofitSingleton retrofit;
     private IFavoritesApi favoritesApi;
     private ImageView profileImage;
+
+    @Inject
+    RetrofitSingleton retrofit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
