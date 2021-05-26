@@ -10,7 +10,5 @@ namespace Core.Api.Places
         {
 
         }
-
-        [HttpGet("")]
     }
 }
