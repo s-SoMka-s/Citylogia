@@ -1,0 +1,53 @@
+import axios from 'axios'
+
+export class ApiService {
+    constructor() {
+        this.client = axios.create({
+            baseURL: `http://localhost:5000/api`,
+            timeout: 10000,
+        })
+
+        this.client.interceptors.request.use(
+            (request) => this.#processRequst(request),
+            (error) => this.proceessError(error)
+        )
+
+        this.client.interceptors.response.use(
+            (response) => this.#processResponse(response),
+            (error) => this.proceessError(error)
+        )
+    }
+
+    login(data) {
+        return this.client.post('/Auth/Email', data)
+    }
+
+    #processResponse(response) {
+        if (response.data == null || response.data == '') {
+            throw 'Error response'
+        }
+
+        if (response.data.status_code != 200) {
+            throw `Status code not 200! Status code: ${response.data.status_code}`
+        }
+
+        // get response data
+        return response.data.data
+    }
+
+    #processRequst(request) {
+        if (this.#canSkip(request?.url)) {
+            console.log('skipped')
+            return request
+        }
+
+        console.log('token added')
+        request.headers.authorization = 'Bearer my secret token'
+        return request
+    }
+
+    #canSkip(url) {
+        const urls = ['/Auth/Email']
+        return urls.some((u) => url.match(url))
+    }
+}
