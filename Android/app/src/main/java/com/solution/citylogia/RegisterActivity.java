@@ -30,14 +30,11 @@ import io.reactivex.schedulers.Schedulers;
 @AndroidEntryPoint
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
-     EditText reg_name;
-     EditText reg_email;
-     EditText reg_password;
+     private EditText reg_name;
+     private EditText reg_email;
+     private EditText reg_password;
 
-     Button reg_sign_in;
-     Button reg_create;
-
-     ProgressBar progressBar;
+     private ProgressBar progressBar;
 
      @Inject
      RetrofitSingleton retrofit;
@@ -53,9 +50,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         reg_email = findViewById(R.id.reg_email);
         reg_password = findViewById(R.id.reg_password);
 
-        reg_sign_in = findViewById(R.id.reg_sign_in);
+        Button reg_sign_in = findViewById(R.id.reg_sign_in);
         reg_sign_in.setOnClickListener(this);
-        reg_create = findViewById(R.id.reg_create);
+        Button reg_create = findViewById(R.id.reg_create);
         reg_create.setOnClickListener(this);
 
         progressBar = findViewById(R.id.reg_pbar);
@@ -111,10 +108,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
          // здесь метод, который отправит данные в базу данных
          // далее перенаправление на Activity log-in или Profile
-        this.register(name, email, password);
+         this.register(name, email, password);
          progressBar.setVisibility(View.VISIBLE);
      }
 
+     @SuppressLint("CheckResult")
      private void register(String name, String email, String password) {
          RegistrationParameters registerParameter = new RegistrationParameters(name, email, password);
          IAuthorizationApi api = retrofit.getRetrofit().create(IAuthorizationApi.class);

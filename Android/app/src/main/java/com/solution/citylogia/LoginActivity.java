@@ -1,33 +1,97 @@
 package com.solution.citylogia;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.gson.Gson;
+import com.solution.citylogia.network.api.IAuthorizationApi;
+import com.solution.citylogia.network.models.input.TokenResponse;
+import com.solution.citylogia.network.models.output.RegistrationParameters;
+import com.solution.citylogia.services.ClientAuthData;
+import com.solution.citylogia.services.Token;
+import com.solution.citylogia.services.Tokens;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button register;
+    private EditText loginEmail;
+    private EditText loginPassword;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        register = findViewById(R.id.reg_sign_in);
+        loginEmail = findViewById(R.id.login_email);
+        loginPassword = findViewById(R.id.login_password);
+
+        Button register = findViewById(R.id.reg_btn);
+        Button loginBtn = findViewById(R.id.login_btn);
         register.setOnClickListener(this);
+        loginBtn.setOnClickListener(this);
+
+        progressBar = findViewById(R.id.login_prb);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.reg_sign_in:
+            case R.id.reg_btn:
                 startActivity(new Intent(this, RegisterActivity.class));
                 break;
+            case R.id.login_btn:
+                loginUser();
+                /*if (it is succes) {
+                    startActivity(new Intent(this, MapActivity.class));
+                } else {
+                    Toast.makeText(this, "Возможно вы вели неправильные данные либо такого пользователя не существует", Toast.LENGTH_LONG).show();
+                }*/
         }
     }
+
+    private void loginUser() {
+        String email = loginEmail.getText().toString().trim();
+        String password = loginPassword.getText().toString().trim();
+
+        if (email.isEmpty()) {
+            loginEmail.setError("Это обязательное поле!");
+            loginEmail.requestFocus();
+            return;
+        }
+
+        if (password.isEmpty()) {
+            loginPassword.setError("Это обязательное поле!");
+            loginPassword.requestFocus();
+            return;
+        }
+
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            loginEmail.setError("Неправильный формат почты!");
+            loginEmail.requestFocus();
+            return;
+        }
+        
+        this.login(email, password);
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @SuppressLint("CheckResult")
+    private void login(String email, String password) {
+        // Have fun
+    }
+
 }
