@@ -42,7 +42,7 @@ export class Menu extends Component {
                 <nav>
                     <ul>
                         <li className="menu-item">
-                            <Link to="/">
+                            <Link to="/pages">
                                 <img src={CitylogiaIcon}></img>
                                 <span>Citylogia</span>
                             </Link>
@@ -52,25 +52,25 @@ export class Menu extends Component {
                             src={LineIcon}
                         ></img>
                         <li className="menu-item">
-                            <Link to="/">
+                            <Link to="/pages">
                                 <img src={MainPageIcon}></img>
                                 <span>Главная</span>
                             </Link>
                         </li>
                         <li className="menu-item">
-                            <Link to="/places">
+                            <Link to="/pages/places">
                                 <img src={PlacesPageIcon}></img>
                                 <span>Места</span>
                             </Link>
                         </li>
                         <li className="menu-item">
-                            <Link to="/reviews">
+                            <Link to="/pages/reviews">
                                 <img src={ReviwsPageIcon}></img>
                                 <span>Отзывы</span>
                             </Link>
                         </li>
                         <li className="menu-item">
-                            <Link to="/users">
+                            <Link to="/pages/users">
                                 <img src={UsersPageIcon}></img>
                                 <span>Пользователи</span>
                             </Link>

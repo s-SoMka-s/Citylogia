@@ -8,34 +8,15 @@ import ReviewsPageComponent from './pages/reviews/ReviewsPage'
 import PlacesPageCompoenent from './pages/places/PlacesPage'
 import './Layout.scss'
 import ToolBar from './components/toolbar/ToolBar'
+import PagesComponent from './pages/PagesComponent'
 
 export default function Layout() {
     return (
         <div className="app">
-            <div className="app__sidebar">
-                <Menu></Menu>
-            </div>
-            <div className="app__wrapper">
-                <div className="app__header">
-                    <ToolBar></ToolBar>
-                </div>
-
-                <div className="app__content-box">
-                    <Switch>
-                        <Route path="/auth" component={AuthPageComponent} />
-                        <Route
-                            path="/places"
-                            component={PlacesPageCompoenent}
-                        />
-                        <Route
-                            path="/reviews"
-                            component={ReviewsPageComponent}
-                        />
-                        <Route path="/users" component={UsersPageComponent} />
-                        <Route path="/" component={MainPageComponent} />
-                    </Switch>
-                </div>
-            </div>
+            <Switch>
+                <Route path="/auth" component={AuthPageComponent} />
+                <Route path="/pages" component={PagesComponent}></Route>
+            </Switch>
         </div>
     )
 }

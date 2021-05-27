@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@bit/ans.base-ui.checkbox": "^0.1.4",
+    "@bit/reactstrap.reactstrap.input": "^8.4.1",
+    "@material-ui/core": "^4.11.4",
     "@testing-library/jest-dom": "^5.12.0",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
