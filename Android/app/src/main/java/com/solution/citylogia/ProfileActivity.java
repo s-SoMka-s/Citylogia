@@ -1,12 +1,7 @@
 package com.solution.citylogia;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -14,31 +9,44 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.solution.citylogia.models.Favorite;
 import com.solution.citylogia.models.Place;
 import com.solution.citylogia.network.RetrofitSingleton;
 import com.solution.citylogia.network.api.IFavoritesApi;
+import com.solution.citylogia.network.api.IProfileApi;
 import com.squareup.picasso.Picasso;
 
-import java.security.Permission;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.hilt.EntryPoint;
+import dagger.hilt.android.AndroidEntryPoint;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
+@AndroidEntryPoint
 public class ProfileActivity extends AppCompatActivity {
 
     private final int PICK_IMAGE = 100;
 
     private Boolean isPressed = false;
-    private IFavoritesApi favoritesApi = RetrofitSingleton.INSTANCE.getRetrofit().create(IFavoritesApi.class);
+    private IFavoritesApi favoritesApi;
+    private IProfileApi profileApi;
     private ImageView profileImage;
+
+    @Inject
+    RetrofitSingleton retrofit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-
+        this.favoritesApi = retrofit.getRetrofit().create(IFavoritesApi.class);
+        this.profileApi = retrofit.getRetrofit().create(IProfileApi.class);
+        this.loadProfile();
         this.loadFavorites();
 
         ImageButton map_but = findViewById(R.id.map_icon);
@@ -66,6 +74,13 @@ public class ProfileActivity extends AppCompatActivity {
                 setLike(false);
             }
         });*/
+    }
+
+    private void loadProfile() {
+        this.profileApi.get().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(res -> {
+            TextView name = this.findViewById(R.id.profile_name);
+            name.setText(res.getData().getName());
+        });
     }
 
     private void fillLikedPlaces(Place place, View view) {

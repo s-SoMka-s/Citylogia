@@ -19,7 +19,6 @@ import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.setFragmentResultListener
 import com.google.android.gms.location.*
@@ -28,17 +27,20 @@ import com.google.android.gms.maps.model.*
 import com.solution.citylogia.models.BaseCollectionResponse
 import com.solution.citylogia.models.PlaceType
 import com.solution.citylogia.models.ShortPlace
-import com.solution.citylogia.network.RetrofitSingleton.retrofit
+import com.solution.citylogia.network.RetrofitSingleton
 import com.solution.citylogia.network.api.IPlaceApi
+import com.solution.citylogia.services.AuthorizationService
 import com.solution.citylogia.services.MapService
 import com.solution.citylogia.utils.getNearest
 import com.squareup.picasso.Picasso
+import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class MapActivity : FragmentActivity(), OnMapReadyCallback {
-    private val placeApi = retrofit.create(IPlaceApi::class.java)
+    lateinit var placeApi: IPlaceApi
     private var mMap: GoogleMap? = null
     private val mapService = MapService()
     private var markers: List<Marker>? = null
@@ -58,10 +60,18 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
     private lateinit var filterPanel: LinearLayout
     private lateinit var menuPanel: LinearLayout
     private lateinit var btnPanel: LinearLayout
+    @Inject
+    lateinit var retrofitNew: RetrofitSingleton
+    @Inject
+    lateinit var authService: AuthorizationService
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
+
+        this.placeApi = retrofitNew.retrofit.create(IPlaceApi::class.java)
+
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
         this.geocoder = Geocoder(this)
@@ -98,8 +108,14 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
                 }
 
         val profileBtn: ImageButton = findViewById(R.id.but_profile)
-        profileBtn.setOnClickListener { v: View? ->
-            startActivity(Intent(this, ProfileActivity::class.java))
+        profileBtn.setOnClickListener {
+            if (authService.isLoggedIn()) {
+                startActivity(Intent(this, ProfileActivity::class.java))
+            }
+            else {
+                startActivity(Intent(this, LoginActivity::class.java))
+
+            }
             finish()
         }
 

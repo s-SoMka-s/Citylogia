@@ -13,18 +13,20 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
-import androidx.lifecycle.lifecycleScope
 import com.solution.citylogia.models.PlaceType
-import com.solution.citylogia.network.RetrofitSingleton.retrofit
+import com.solution.citylogia.network.RetrofitSingleton
 import com.solution.citylogia.network.api.IPlaceApi
+import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class FiltersFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
+
     private var selectedTypes: ArrayList<PlaceType>? = ArrayList()
     private var radius: Int = 10
+
+    lateinit var retrofit: RetrofitSingleton
 
     companion object {
         fun getNewInstance(args: Bundle?): FiltersFragment {
@@ -53,7 +55,7 @@ class FiltersFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
     @SuppressLint("CheckResult")
     private fun loadTypes(view: View) {
-        val placeApi = retrofit.create(IPlaceApi::class.java)
+        val placeApi = retrofit.retrofit.create(IPlaceApi::class.java)
 
         placeApi.getPlaceTypes().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe({ response ->
             val types = response.data.elements;

@@ -12,30 +12,6 @@ namespace Core.Db.Migrations
                 name: "citylogia");
 
             migrationBuilder.CreateTable(
-                name: "Address",
-                schema: "citylogia",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Latitude = table.Column<double>(type: "double precision", nullable: false),
-                    Longitude = table.Column<double>(type: "double precision", nullable: false),
-                    Country = table.Column<string>(type: "text", nullable: true),
-                    Province = table.Column<string>(type: "text", nullable: true),
-                    City = table.Column<string>(type: "text", nullable: true),
-                    District = table.Column<string>(type: "text", nullable: true),
-                    Street = table.Column<string>(type: "text", nullable: true),
-                    House = table.Column<long>(type: "bigint", nullable: false),
-                    Flat = table.Column<long>(type: "bigint", nullable: true),
-                    Postcode = table.Column<long>(type: "bigint", nullable: false),
-                    Deleted = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Address", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Places-Types",
                 schema: "citylogia",
                 columns: table => new
@@ -51,34 +27,90 @@ namespace Core.Db.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Users",
+                schema: "citylogia",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    Surname = table.Column<string>(type: "text", nullable: true),
+                    Email = table.Column<string>(type: "text", nullable: true),
+                    Password = table.Column<string>(type: "text", nullable: true),
+                    PhotoId = table.Column<long>(type: "bigint", nullable: true),
+                    Deleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Places",
                 schema: "citylogia",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    IsApproved = table.Column<bool>(type: "boolean", nullable: false),
+                    UserId = table.Column<long>(type: "bigint", nullable: false),
                     Mark = table.Column<long>(type: "bigint", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: true),
+                    ShortDescription = table.Column<string>(type: "text", nullable: true),
                     Description = table.Column<string>(type: "text", nullable: true),
                     TypeId = table.Column<long>(type: "bigint", nullable: false),
-                    AddressId = table.Column<long>(type: "bigint", nullable: false),
+                    Latitude = table.Column<double>(type: "double precision", nullable: false),
+                    Longitude = table.Column<double>(type: "double precision", nullable: false),
+                    City = table.Column<string>(type: "text", nullable: true),
+                    Street = table.Column<string>(type: "text", nullable: true),
+                    House = table.Column<long>(type: "bigint", nullable: false),
                     Deleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Places", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Places_Address_AddressId",
-                        column: x => x.AddressId,
-                        principalSchema: "citylogia",
-                        principalTable: "Address",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_Places_Places-Types_TypeId",
                         column: x => x.TypeId,
                         principalSchema: "citylogia",
                         principalTable: "Places-Types",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Places_Users_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "citylogia",
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Favorite-Place-Links",
+                schema: "citylogia",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserId = table.Column<long>(type: "bigint", nullable: false),
+                    PlaceId = table.Column<long>(type: "bigint", nullable: false),
+                    Deleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Favorite-Place-Links", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Favorite-Place-Links_Places_PlaceId",
+                        column: x => x.PlaceId,
+                        principalSchema: "citylogia",
+                        principalTable: "Places",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Favorite-Place-Links_Users_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "citylogia",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -90,8 +122,8 @@ namespace Core.Db.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Link = table.Column<string>(type: "text", nullable: true),
-                    PlaceId = table.Column<long>(type: "bigint", nullable: true),
+                    PublicUrl = table.Column<string>(type: "text", nullable: true),
+                    PlaceId = table.Column<long>(type: "bigint", nullable: false),
                     Deleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
@@ -107,43 +139,18 @@ namespace Core.Db.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Users",
-                schema: "citylogia",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: true),
-                    Surname = table.Column<string>(type: "text", nullable: true),
-                    Email = table.Column<string>(type: "text", nullable: true),
-                    Password = table.Column<string>(type: "text", nullable: true),
-                    PhotoId = table.Column<long>(type: "bigint", nullable: false),
-                    Deleted = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Users", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Users_Photos_PhotoId",
-                        column: x => x.PhotoId,
-                        principalSchema: "citylogia",
-                        principalTable: "Photos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Reviews",
                 schema: "citylogia",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    IsApproved = table.Column<bool>(type: "boolean", nullable: false),
                     Body = table.Column<string>(type: "text", nullable: true),
                     Mark = table.Column<long>(type: "bigint", nullable: false),
                     PublishedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     UserId = table.Column<long>(type: "bigint", nullable: false),
-                    PlaceId = table.Column<long>(type: "bigint", nullable: true),
+                    PlaceId = table.Column<long>(type: "bigint", nullable: false),
                     Deleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
@@ -166,23 +173,34 @@ namespace Core.Db.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Favorite-Place-Links_PlaceId",
+                schema: "citylogia",
+                table: "Favorite-Place-Links",
+                column: "PlaceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Favorite-Place-Links_UserId",
+                schema: "citylogia",
+                table: "Favorite-Place-Links",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Photos_PlaceId",
                 schema: "citylogia",
                 table: "Photos",
                 column: "PlaceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Places_AddressId",
-                schema: "citylogia",
-                table: "Places",
-                column: "AddressId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Places_TypeId",
                 schema: "citylogia",
                 table: "Places",
                 column: "TypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Places_UserId",
+                schema: "citylogia",
+                table: "Places",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reviews_PlaceId",
@@ -194,8 +212,7 @@ namespace Core.Db.Migrations
                 name: "IX_Reviews_UserId",
                 schema: "citylogia",
                 table: "Reviews",
-                column: "UserId",
-                unique: true);
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_PhotoId",
@@ -203,12 +220,39 @@ namespace Core.Db.Migrations
                 table: "Users",
                 column: "PhotoId",
                 unique: true);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Users_Photos_PhotoId",
+                schema: "citylogia",
+                table: "Users",
+                column: "PhotoId",
+                principalSchema: "citylogia",
+                principalTable: "Photos",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Photos_Places_PlaceId",
+                schema: "citylogia",
+                table: "Photos");
+
+            migrationBuilder.DropTable(
+                name: "Favorite-Place-Links",
+                schema: "citylogia");
+
             migrationBuilder.DropTable(
                 name: "Reviews",
+                schema: "citylogia");
+
+            migrationBuilder.DropTable(
+                name: "Places",
+                schema: "citylogia");
+
+            migrationBuilder.DropTable(
+                name: "Places-Types",
                 schema: "citylogia");
 
             migrationBuilder.DropTable(
@@ -217,18 +261,6 @@ namespace Core.Db.Migrations
 
             migrationBuilder.DropTable(
                 name: "Photos",
-                schema: "citylogia");
-
-            migrationBuilder.DropTable(
-                name: "Places",
-                schema: "citylogia");
-
-            migrationBuilder.DropTable(
-                name: "Address",
-                schema: "citylogia");
-
-            migrationBuilder.DropTable(
-                name: "Places-Types",
                 schema: "citylogia");
         }
     }

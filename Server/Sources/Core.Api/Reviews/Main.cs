@@ -1,6 +1,7 @@
 ﻿using Citylogia.Server.Core.Db.Implementations;
 using Citylogia.Server.Core.Entityes;
 using Core.Api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace Core.Api.Reviews
 {
     [ApiController]
     [Route("/api/Reviews")]
-    public class Main
+    public class Main : ApiController
     {
         private readonly SqlContext context;
         public Main(SqlContext context)
@@ -40,15 +41,18 @@ namespace Core.Api.Reviews
         }
 
         [HttpPost("{placeId}")]
+        [Authorize]
         public async Task<bool> AddReviewAsync(long placeId, [FromBody] ReviewInputParameters parameters)
         {
+            var userId = GetUserId();
+
             var @new = parameters.Build();
-            var place = this.context.Places.FirstOrDefault(p => p.Id == placeId);
-            var author = this.context.Users.FirstOrDefault(u => u.Id == parameters.UserId);
+            var place = context.Places.FirstOrDefault(p => p.Id == placeId);
+            var author = context.Users.FirstOrDefault(u => u.Id == userId);
             @new.PlaceId = place.Id;
             @new.UserId = author.Id;
-            await this.context.Reviews.AddAsync(@new);
-            await this.context.SaveChangesAsync();
+            await context.Reviews.AddAsync(@new);
+            await context.SaveChangesAsync();
 
             return true;
         }

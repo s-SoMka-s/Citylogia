@@ -33,6 +33,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.AndroidEntryPoint;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -42,7 +45,8 @@ public class place_reviews extends Fragment {
 
     private Place place = null;
     private Boolean isPressed = false;
-    private IFavoritesApi favoritesApi = RetrofitSingleton.INSTANCE.getRetrofit().create(IFavoritesApi.class);
+    private RetrofitSingleton retrofit;
+    private IFavoritesApi favoritesApi;
 
     private InfoCardAdapter infoCardAdapter;
     private LinearLayout layoutCardIndicators;
@@ -61,7 +65,7 @@ public class place_reviews extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        this.favoritesApi = retrofit.getRetrofit().create(IFavoritesApi.class);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         Bundle args = getArguments();
         if (args != null) {

@@ -4,13 +4,17 @@ namespace Core.Api.Auth.Models.Output
 {
     public class Token
     {
-        public Token(string token)
+        public Token(string token, long expiry)
         {
-            this.AccessToken = token;
+            this.TokenValue = token;
+            this.Expiry = expiry;
         }
 
 
-        [JsonProperty("access_token")]
-        public string AccessToken { get; set; }
+        [JsonProperty("token")]
+        public string TokenValue { get; set; }
+
+        [JsonProperty("expiry")]
+        public long Expiry { get; }
     }
 }

@@ -4,6 +4,7 @@ using Citylogia.Server.Core.Db;
 using Citylogia.Server.Core.Tools;
 using Citylogia.Server.Core.Tools.Interfaces.AppSettings;
 using Microsoft.Extensions.DependencyInjection;
+using Repositories;
 
 namespace Citylogia.Server.Initializations
 {
@@ -19,7 +20,8 @@ namespace Citylogia.Server.Initializations
         public static void AddServices(ContainerBuilder builder,
             IAppSettings settings)
         {
-            builder.AddTools(settings);
+            builder.AddTools(settings)
+                   .AddRepositories();
         }
     }
 }
