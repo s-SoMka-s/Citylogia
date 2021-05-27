@@ -16,6 +16,7 @@ import com.solution.citylogia.models.Place;
 import com.solution.citylogia.network.RetrofitSingleton;
 import com.solution.citylogia.network.api.IFavoritesApi;
 import com.solution.citylogia.network.api.IProfileApi;
+import com.solution.citylogia.services.AuthorizationService;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -41,6 +42,9 @@ public class ProfileActivity extends AppCompatActivity {
     @Inject
     RetrofitSingleton retrofit;
 
+    @Inject
+    AuthorizationService authorizationService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,9 +69,7 @@ public class ProfileActivity extends AppCompatActivity {
             imageFromGallery();
         });
 
-        logoutBtn.setOnClickListener(v -> {
-
-        });
+        logoutBtn.setOnClickListener(v -> authorizationService.logOut());
 
         /*but_like.setOnClickListener(v -> {
             if (!this.place.is_favorite()) {
