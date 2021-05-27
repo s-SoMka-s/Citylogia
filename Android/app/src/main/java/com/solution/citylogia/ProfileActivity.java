@@ -16,6 +16,7 @@ import com.solution.citylogia.models.Place;
 import com.solution.citylogia.network.RetrofitSingleton;
 import com.solution.citylogia.network.api.IFavoritesApi;
 import com.solution.citylogia.network.api.IProfileApi;
+import com.solution.citylogia.services.AuthorizationService;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -37,8 +38,13 @@ public class ProfileActivity extends AppCompatActivity {
     private IProfileApi profileApi;
     private ImageView profileImage;
 
+    private TextView tipFav;
+
     @Inject
     RetrofitSingleton retrofit;
+
+    @Inject
+    AuthorizationService authorizationService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,9 +64,18 @@ public class ProfileActivity extends AppCompatActivity {
         ImageView but_like = findViewById(R.id.icon_like);
         ImageButton addProfileImg = findViewById(R.id.add_img_btn);
         profileImage = findViewById(R.id.profile_img);
+        ImageButton logoutBtn = findViewById(R.id.btn_logout);
+        tipFav = findViewById(R.id.tipFav);
 
         addProfileImg.setOnClickListener(v -> {
             imageFromGallery();
+        });
+
+        logoutBtn.setOnClickListener(v -> {
+            authorizationService.logOut();
+            Intent i = new Intent(this, LoginActivity.class);
+            startActivity(i);
+            finish();
         });
 
         /*but_like.setOnClickListener(v -> {
@@ -76,6 +91,7 @@ public class ProfileActivity extends AppCompatActivity {
         });*/
     }
 
+    @SuppressLint("CheckResult")
     private void loadProfile() {
         this.profileApi.get().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(res -> {
             TextView name = this.findViewById(R.id.profile_name);
@@ -117,6 +133,11 @@ public class ProfileActivity extends AppCompatActivity {
     private void loadFavorites() {
         this.favoritesApi.getFavorites().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(res -> {
             List<Favorite> favorites = res.getData().getElements();
+            if (favorites.size() > 0) {
+                tipFav.setVisibility(View.INVISIBLE);
+            } else {
+                tipFav.setVisibility(View.VISIBLE);
+            }
             LinearLayout likedLayoutInsert = this.findViewById(R.id.LikedLayoutInsert);
             favorites.forEach(favorite -> {
                 View cricketerView = getLayoutInflater().inflate(R.layout.liked_place_add, null, false);
