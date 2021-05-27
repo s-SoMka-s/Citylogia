@@ -2,7 +2,6 @@ package com.solution.citylogia;
 
 import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
-import android.icu.lang.UCharacter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,23 +14,28 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.solution.citylogia.models.Place;
 import com.solution.citylogia.models.Review;
 import com.solution.citylogia.network.RetrofitSingleton;
 import com.solution.citylogia.network.api.IFavoritesApi;
-import com.solution.citylogia.network.api.IPlaceApi;
-import com.solution.citylogia.network.api.IReviewsApi;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-import io.reactivex.Scheduler;
+import javax.inject.Inject;
+
+import dagger.hilt.android.AndroidEntryPoint;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -41,7 +45,11 @@ public class place_reviews extends Fragment {
 
     private Place place = null;
     private Boolean isPressed = false;
-    private IFavoritesApi favoritesApi = RetrofitSingleton.INSTANCE.getRetrofit().create(IFavoritesApi.class);
+    private RetrofitSingleton retrofit;
+    private IFavoritesApi favoritesApi;
+
+    private InfoCardAdapter infoCardAdapter;
+    private LinearLayout layoutCardIndicators;
 
     public place_reviews() {
 
@@ -57,7 +65,7 @@ public class place_reviews extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        this.favoritesApi = retrofit.getRetrofit().create(IFavoritesApi.class);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         Bundle args = getArguments();
         if (args != null) {
@@ -72,7 +80,7 @@ public class place_reviews extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_place_reviews, container, false);
 
-        ImageView open_review_v3_1 = view.findViewById(R.id.openReview);
+        FloatingActionButton open_review_v3_1 = view.findViewById(R.id.openReview);
         open_review_v3_1.setOnClickListener(v -> openDialog());
 
         return view;
@@ -117,6 +125,65 @@ public class place_reviews extends Fragment {
                 setLike(false);
             }
         });
+
+
+        layoutCardIndicators = view.findViewById(R.id.layoutBoardingIndicatorsRev);
+
+        setUpBoardingItems();
+
+        ViewPager2 infoCardPager = view.findViewById(R.id.screen_viewpager_rev);
+        infoCardPager.setAdapter(infoCardAdapter);
+
+        setCardIndicators();
+        setCurrentIndicator(0);
+
+        infoCardPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                setCurrentIndicator(position);
+            }
+        });
+    }
+
+    private void setUpBoardingItems() {
+        List<InfoCardItem> mList = new ArrayList<>();
+
+        infoCardAdapter = new InfoCardAdapter(mList);
+
+        for (int i = 0; i < place.getPhoto().getElements().size(); i++) {
+            String url_image = place.getPhoto().getElements().get(i).getPublic_url();
+            mList.add(new InfoCardItem(url_image));
+        }
+    }
+
+    private void setCardIndicators() {
+        ImageView[] indicators = new ImageView[infoCardAdapter.getItemCount()];
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        layoutParams.setMargins(32,0,0,0);
+
+        for (int i = 0; i < indicators.length; i++) {
+            indicators[i] = new ImageView(getActivity().getApplicationContext());
+            indicators[i].setImageDrawable(ContextCompat.getDrawable(
+                    getActivity().getApplicationContext(), R.drawable.indicator_info_inactive
+            ));
+            indicators[i].setLayoutParams(layoutParams);
+            layoutCardIndicators.addView(indicators[i]);
+        }
+    }
+
+    private void setCurrentIndicator(int index) {
+        int childCount = layoutCardIndicators.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            ImageView imageView = (ImageView) layoutCardIndicators.getChildAt(i);
+            if (i == index) {
+                imageView.setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.indicator_info_active));
+            } else {
+                imageView.setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.indicator_info_inactive));
+            }
+        }
     }
 
     private boolean getLike() {
@@ -172,7 +239,7 @@ public class place_reviews extends Fragment {
         try {
             String url_image = place.getPhoto().getElements().get(1).getPublic_url();
             Picasso.get().load(url_image)
-                    .placeholder(R.drawable.image_template)
+                    .placeholder(R.drawable.tm_info)
                     .into(placeImage);
         } catch (Exception e) {
             e.printStackTrace();

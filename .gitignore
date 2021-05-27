@@ -1,0 +1,41 @@
+# Admin
+
+# dependencies
+/Admin/Sources/node_modules
+/Admin/Sources/*.pnp
+/Admin/Sources/*.pnp.js
+
+# testing
+/Admin/Sources/coverage
+
+# production
+/Admin/Sources/build
+
+# misc
+/Admin/Sources/*.DS_Store
+/Admin/Sources/*.env.local
+/Admin/Sources/*.env.development.local
+/Admin/Sources/*.env.test.local
+/Admin/Sources/*.env.production.local
+
+/Admin/Sources/npm-debug.log*
+/Admin/Sources/yarn-debug.log*
+/Admin/Sources/yarn-error.log*
+
+
+# Android
+
+/Android/*.iml
+/Android/.gradle
+/Android/local.properties
+/Android/.idea/caches
+/Android/.idea/libraries
+/Android/.idea/modules.xml
+/Android/.idea/workspace.xml
+/Android/.idea/navEditor.xml
+/Android/.idea/assetWizardSettings.xml
+/Android/.DS_Store
+/Android/build
+/Android/captures
+/Android.externalNativeBuild
+/Android.cxx

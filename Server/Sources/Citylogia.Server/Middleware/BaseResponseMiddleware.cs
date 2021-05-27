@@ -1,7 +1,5 @@
 ﻿using Core.Api.Models;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,7 +22,7 @@ namespace Citylogia.Server.Middleware
             using var reader = new StreamReader(stream, Encoding.Default);
 
             var defaultBody = context.Response.Body;
-            
+
             context.Response.Body = stream;
 
             await nextAsync(context);

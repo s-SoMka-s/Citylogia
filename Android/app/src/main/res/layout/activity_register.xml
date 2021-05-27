@@ -18,7 +18,7 @@
         android:backgroundTint="@color/nonActive"
         android:drawableStart="@drawable/user__3_"
         android:drawablePadding="20dp"
-        android:text="Введите ваше имя"
+        android:hint="Введите ваше имя"
         android:textColorHint="@color/blackPrimary"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -37,7 +37,7 @@
         android:backgroundTint="@color/nonActive"
         android:drawableStart="@drawable/email__1_"
         android:drawablePadding="20dp"
-        android:text="Введите ваш почтовый адрес"
+        android:hint="Введите ваш почтовый адрес"
         android:textColorHint="@color/blackPrimary"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -55,7 +55,7 @@
         android:backgroundTint="@color/nonActive"
         android:drawableStart="@drawable/password"
         android:drawablePadding="20dp"
-        android:text="Введите пароль"
+        android:hint="Введите пароль"
         android:textColorHint="@color/blackPrimary"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -88,7 +88,7 @@
         android:layout_marginTop="35dp"
 
         android:layout_marginEnd="16dp"
-        android:background="@color/colorAccent"
+        android:background="@drawable/btn_style_accent_solid"
         android:text="Создать аккаунт"
         android:textAllCaps="false"
         android:textColor="@color/white"
@@ -143,7 +143,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="25dp"
         android:layout_marginEnd="16dp"
-        android:background="@color/graySecondary"
+        android:background="@drawable/btn_style_gray_solid"
         android:text="Войти"
         android:textAllCaps="false"
         android:textColor="@color/blackPrimary"
@@ -161,7 +161,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/logo" />
+        app:srcCompat="@drawable/city_logia_logo" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,11 +1,14 @@
 ﻿using Citylogia.Server.Core.Db.Implementations;
 using Citylogia.Server.Core.Entityes;
+using Core.Api;
 using Core.Api.Models;
 using Core.Api.Places.Models.Input;
 using Core.Api.Places.Models.Output;
 using Core.Entities;
 using GeoCoordinatePortable;
+using Libraries.Db.Reposiitory.Interfaces;
 using Libraries.Updates;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -16,18 +19,29 @@ using System.Threading.Tasks;
 namespace Citylogia.Server.Core.Api
 {
     [ApiController]
-    [Route("/api/Map/Places")]
-    public class Main : Controller
+    [Route("api/Map/Places")]
+    public class Main : ApiController
     {
         private readonly SqlContext context;
-        public Main(SqlContext context)
+        private readonly ICrudRepository<Place> places;
+        private readonly ICrudRepository<PlaceType> placeTypes;
+        private readonly ICrudRepository<FavoritePlaceLink> links;
+        private readonly ICrudRepository<User> users;
+
+        public Main(SqlContext context, ICrudFactory factory)
         {
             this.context = context;
+            this.places = factory.Get<Place>();
+            this.placeTypes = factory.Get<PlaceType>();
+            this.links = factory.Get<FavoritePlaceLink>();
+            this.users = factory.Get<User>();
         }
 
         [HttpGet("")]
         public async Task<BaseCollectionResponse<ShortPlaceSummary>> GetAsync([FromQuery] PlaceSelectParameters parameters)
         {
+            var p = await this.places.FindAsync(p=> p.Id == 7);
+
             var query = this.Query();
 
             if (parameters.TypeIds.Any())
@@ -58,12 +72,16 @@ namespace Citylogia.Server.Core.Api
         }
 
         [HttpPost("")]
-        public bool AddPlace([FromBody] NewPlaceParameters parameters)
+        [Authorize]
+        public async Task<bool> AddPlaceAsync([FromBody] NewPlaceParameters parameters)
         {
-            var place = parameters.Build();
+            var userId = GetUserId();
 
-            this.context.Places.Add(place);
-            this.context.SaveChanges();
+            var place = parameters.Build();
+            place.UserId = userId;
+            place.IsApproved = true;
+
+            await places.AddAsync(place);
 
             return true;
         }
@@ -119,15 +137,14 @@ namespace Citylogia.Server.Core.Api
         }
 
         [HttpPost("Types")]
-        public bool AddPlaceType([FromBody] NewPlaceTypeParameters parameters)
+        public async Task<bool> AddPlaceTypeAsync([FromBody] NewPlaceTypeParameters parameters)
         {
             var type = new PlaceType()
             {
                 Name = parameters.Name
             };
 
-            this.context.PlaceTypes.Add(type);
-            this.context.SaveChanges();
+            await placeTypes.AddAsync(type);
 
             return true;
         }
@@ -135,7 +152,7 @@ namespace Citylogia.Server.Core.Api
         [HttpDelete("Types/{id}")]
         public async Task<bool> DeleteTypeAsync(long id)
         {
-            var type = await this.context.PlaceTypes.FirstOrDefaultAsync(t => t.Id == id);
+            var type = await placeTypes.FindAsync(t => t.Id == id);
             if (type == default)
             {
                 return false;
@@ -165,8 +182,7 @@ namespace Citylogia.Server.Core.Api
 
         private IQueryable<Place> Query()
         {
-            return this.context
-                       .Places
+            return this.context.Places
 
                        .Include(p => p.Reviews)
                        .ThenInclude(r => r.Author)

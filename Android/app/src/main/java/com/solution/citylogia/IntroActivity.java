@@ -41,12 +41,12 @@ public class IntroActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
 
-        layoutBoardingIndicators = findViewById(R.id.layoutBoardingIndicators);
+        layoutBoardingIndicators = findViewById(R.id.layoutBoardingIndicatorsRev);
         buttonAction = findViewById(R.id.button);
 
         setUpBoardingItems();
 
-        ViewPager2 introBoardingPager = findViewById(R.id.screen_viewpager);
+        ViewPager2 introBoardingPager = findViewById(R.id.screen_viewpager_rev);
         introBoardingPager.setAdapter(introBoardingAdapter);
 
         setBoardingIndicators();
@@ -106,9 +106,9 @@ public class IntroActivity extends AppCompatActivity {
     private void setUpBoardingItems() {
         List<IntroBoardingItem> mList = new ArrayList<>();
 
-        mList.add(new IntroBoardingItem("Умная рекомендация мест", "Карточки с предлагаемыми интересными местами создаются на основе ваших предпочтений и истории посещений мест.", R.drawable.nsu_1));
-        mList.add(new IntroBoardingItem("Умный поиск по карте", "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit.", R.drawable.park_2));
-        mList.add(new IntroBoardingItem("Взаимодействуйте со своими друзьями", "Вы можете добавлять друзей, просматривать их недавние посещения, а также общаться в мессенджере и отслеживать их текущее местоположение.", R.drawable.theater_3));
+        mList.add(new IntroBoardingItem("Находите крутые места", "Карта, поиск и фильтры помогут вам найти то самое подходящее место для предстоящей прогулки", R.drawable.nsu_1));
+        mList.add(new IntroBoardingItem("Делитесь впечатлениями", "Посетив какое-либо место, вы можете поставить ему оценку и написать о нём отзыв.", R.drawable.park_2));
+        mList.add(new IntroBoardingItem("Сохраняйте классные места", "Зацепило место и хотели бы в ближайшее время его посетить - добавьте его в избранное, чтобы точно его не потерять.", R.drawable.theater_3));
 
         introBoardingAdapter = new IntroBoardingAdapter(mList);
     }
@@ -145,7 +145,5 @@ public class IntroActivity extends AppCompatActivity {
         } else {
             buttonAction.setText("Свайпай");
         }
-
-
     }
 }

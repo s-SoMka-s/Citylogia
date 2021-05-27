@@ -50,7 +50,7 @@ namespace Core.Db.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<string>("Address")
+                    b.Property<string>("City")
                         .HasColumnType("text");
 
                     b.Property<bool>("Deleted")
@@ -58,6 +58,12 @@ namespace Core.Db.Migrations
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
+
+                    b.Property<long>("House")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsApproved")
+                        .HasColumnType("boolean");
 
                     b.Property<double>("Latitude")
                         .HasColumnType("double precision");
@@ -74,12 +80,20 @@ namespace Core.Db.Migrations
                     b.Property<string>("ShortDescription")
                         .HasColumnType("text");
 
+                    b.Property<string>("Street")
+                        .HasColumnType("text");
+
                     b.Property<long>("TypeId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("UserId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
                     b.HasIndex("TypeId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Places");
                 });
@@ -113,6 +127,9 @@ namespace Core.Db.Migrations
                         .HasColumnType("text");
 
                     b.Property<bool>("Deleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsApproved")
                         .HasColumnType("boolean");
 
                     b.Property<long>("Mark")
@@ -212,6 +229,14 @@ namespace Core.Db.Migrations
                         .HasForeignKey("TypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Citylogia.Server.Core.Entityes.User", "Author")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Author");
 
                     b.Navigation("Type");
                 });

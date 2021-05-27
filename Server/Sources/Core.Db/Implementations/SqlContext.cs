@@ -31,6 +31,10 @@ namespace Citylogia.Server.Core.Db.Implementations
                 place.HasOne(p => p.Type)
                      .WithMany()
                      .OnDelete(DeleteBehavior.Cascade);
+
+                place.HasOne(p => p.Author)
+                     .WithMany()
+                     .OnDelete(DeleteBehavior.Cascade);
             }
             #endregion Place
 

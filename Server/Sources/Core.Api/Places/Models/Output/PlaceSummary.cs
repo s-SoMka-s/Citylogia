@@ -18,7 +18,7 @@ namespace Core.Api.Places.Models.Output
 
             this.Description = source.Description;
             this.Type = new PlaceTypeSummary(source.Type);
-            this.Address = source.Address;
+            this.Address = "";
             this.Latitude = source.Latitude;
             this.Longtitude = source.Longitude;
 

@@ -9,6 +9,7 @@ namespace Citylogia.Server.Core.Entityes
     {
         public Review() : base()
         {
+            this.IsApproved = false;
             this.Body = string.Empty;
             this.Mark = 0;
             this.PublishedAt = DateTimeOffset.Now;
@@ -16,7 +17,7 @@ namespace Citylogia.Server.Core.Entityes
             this.Place = default;
         }
 
-        
+        public bool IsApproved { get; set; }
         public string Body { get; set; }
         
         public long Mark { get; set; }

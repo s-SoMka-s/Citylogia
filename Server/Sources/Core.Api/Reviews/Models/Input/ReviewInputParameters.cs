@@ -14,18 +14,13 @@ namespace Core.Api
         [JsonProperty("body")]
         public string Body { get; set; }
 
-        [Required]
-        [JsonProperty("user_id")]
-        public long UserId { get; set; }
-
 
         public Review Build()
         {
             return new Review()
             {
                 Mark = Mark,
-                Body = Body,
-                UserId = UserId
+                Body = Body
             };
         }
     }
