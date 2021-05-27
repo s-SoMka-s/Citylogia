@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 namespace Citylogia.Server.Core.Api
 {
     [ApiController]
-    [Route("api/Map/Places")]
+    [Route("api/Places")]
     public class Main : ApiController
     {
         private readonly SqlContext context;
@@ -38,10 +38,8 @@ namespace Citylogia.Server.Core.Api
         }
 
         [HttpGet("")]
-        public async Task<BaseCollectionResponse<ShortPlaceSummary>> GetAsync([FromQuery] PlaceSelectParameters parameters)
+        public BaseCollectionResponse<ShortPlaceSummary> Select([FromQuery] PlaceSelectParameters parameters)
         {
-            var p = await this.places.FindAsync(p=> p.Id == 7);
-
             var query = this.Query();
 
             if (parameters.TypeIds.Any())
@@ -49,23 +47,8 @@ namespace Citylogia.Server.Core.Api
                 query = query.Where(p => parameters.TypeIds.Contains(p.TypeId));
             }
 
-            var places = query.ToList();
-            var needDistances = false;
-            if (parameters.Longtitude != default && parameters.Latitude != default && parameters.RadiusInKm != default)
-            {
-                needDistances = true;
-                places = places.Where(p => this.IsPlaceInRange(p, parameters.Longtitude, parameters.Latitude, parameters.RadiusInKm)).ToList();
-            }
+            var summaries = query.Select(p => new ShortPlaceSummary(p, false)).ToList();
 
-            var summaries = new List<ShortPlaceSummary>();
-            if (needDistances)
-            {
-                summaries = places.Select(p => new ShortPlaceSummary(p, this.countDistanceTo(p, parameters.Longtitude, parameters.Latitude))).ToList();
-            }
-            else
-            {
-                summaries = places.Select(p => new ShortPlaceSummary(p)).ToList();
-            }
             var baseCollectionResponse = new BaseCollectionResponse<ShortPlaceSummary>(summaries);
 
             return baseCollectionResponse;
@@ -89,9 +72,17 @@ namespace Citylogia.Server.Core.Api
         [HttpGet("{id}")]
         public PlaceSummary GetPlace(long id)
         {
+            var userId = GetUserId();
+
             var place = this.Query().FirstOrDefault(p => p.Id == id);
 
-            var favorites = this.FavoritesQuery().Where(l => l.UserId == 4).Select(l => l.PlaceId).ToHashSet<long>();
+            var favorites = new HashSet<long>();
+
+            if (userId != default)
+            {
+                favorites = this.FavoritesQuery().Where(l => l.UserId == userId).Select(l => l.PlaceId).ToHashSet<long>();
+            }
+
             var res = new PlaceSummary(place, favorites);
 
             return res;
