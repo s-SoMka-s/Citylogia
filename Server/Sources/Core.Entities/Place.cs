@@ -11,7 +11,7 @@ namespace Citylogia.Server.Core.Entityes
         public Place() : base()
         {
             this.IsApproved = false;
-            this.User = default;
+            this.Author = default;
             this.Mark = 0;
             this.Name = string.Empty;
             this.ShortDescription = string.Empty;
@@ -30,7 +30,7 @@ namespace Citylogia.Server.Core.Entityes
         // тот кто предложил место
         [ForeignKey(nameof(User))]
         public long UserId { get; set; }
-        public User User { get; set; }
+        public User Author { get; set; }
 
         public long Mark { get; set; }
         public string Name { get; set; }

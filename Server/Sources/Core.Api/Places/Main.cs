@@ -1,5 +1,6 @@
 ﻿using Citylogia.Server.Core.Db.Implementations;
 using Citylogia.Server.Core.Entityes;
+using Core.Api;
 using Core.Api.Models;
 using Core.Api.Places.Models.Input;
 using Core.Api.Places.Models.Output;
@@ -7,6 +8,7 @@ using Core.Entities;
 using GeoCoordinatePortable;
 using Libraries.Db.Reposiitory.Interfaces;
 using Libraries.Updates;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -18,12 +20,13 @@ namespace Citylogia.Server.Core.Api
 {
     [ApiController]
     [Route("api/Map/Places")]
-    public class Main : Controller
+    public class Main : ApiController
     {
         private readonly SqlContext context;
         private readonly ICrudRepository<Place> places;
         private readonly ICrudRepository<PlaceType> placeTypes;
         private readonly ICrudRepository<FavoritePlaceLink> links;
+        private readonly ICrudRepository<User> users;
 
         public Main(SqlContext context, ICrudFactory factory)
         {
@@ -31,6 +34,7 @@ namespace Citylogia.Server.Core.Api
             this.places = factory.Get<Place>();
             this.placeTypes = factory.Get<PlaceType>();
             this.links = factory.Get<FavoritePlaceLink>();
+            this.users = factory.Get<User>();
         }
 
         [HttpGet("")]
@@ -68,9 +72,14 @@ namespace Citylogia.Server.Core.Api
         }
 
         [HttpPost("")]
+        [Authorize]
         public async Task<bool> AddPlaceAsync([FromBody] NewPlaceParameters parameters)
         {
+            var userId = GetUserId();
+
             var place = parameters.Build();
+            place.UserId = userId;
+            place.IsApproved = true;
 
             await places.AddAsync(place);
 

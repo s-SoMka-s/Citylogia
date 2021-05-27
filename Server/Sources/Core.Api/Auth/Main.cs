@@ -61,9 +61,6 @@ namespace Core.Api.Auth
             return new AuthenticateResponse(tokenPair);
         }
 
-
-
-
         private bool CheckUser(User user, string password)
         {
             if (default == user)

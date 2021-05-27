@@ -1,9 +1,10 @@
 ﻿using Citylogia.Server.Core.Db.Implementations;
+using Citylogia.Server.Core.Entityes;
 using Core.Api.Favoriites.Models.Input;
 using Core.Api.Favoriites.Models.Output;
 using Core.Api.Models;
-using Core.Api.Places.Models.Output;
 using Core.Entities;
+using Libraries.Db.Reposiitory.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,11 +17,15 @@ namespace Core.Api.Favoriites
     [Route("/api/Favorites")]
     public class Main : ApiController
     {
-        private readonly SqlContext context;
+        private readonly ICrudRepository<FavoritePlaceLink> links;
+        private readonly ICrudRepository<User> users;
+        private readonly ICrudRepository<Place> places;
 
-        public Main(SqlContext context)
+        public Main(ICrudFactory factory)
         {
-            this.context = context;
+            this.links = factory.Get<FavoritePlaceLink>();
+            this.users = factory.Get<User>();
+            this.places = factory.Get<Place>();
         }
 
 
@@ -44,35 +49,31 @@ namespace Core.Api.Favoriites
             var userId = GetUserId();
 
             var @new = parameters.Build();
-            var place = await context.Places
-                                     .FirstOrDefaultAsync(p => p.Id == parameters.PlaceId);
+            var place = await places.FindAsync(p => p.Id == parameters.PlaceId);
 
             if (default == place)
             {
                 return false;
             }
 
-            var user = await context.Users
-                                    .FirstOrDefaultAsync(u => u.Id == userId);
+            var user = await users.FindAsync(u => u.Id == userId);
 
             if (default == user)
             {
                 return false;
             }
 
-            @new.User = user;
-            @new.Place = place;
+            @new.UserId = userId;
+            @new.PlaceId = parameters.PlaceId;
 
-            var existed = await context.FavoritePlaceLinks
-                                       .FirstOrDefaultAsync(l => l.PlaceId == place.Id && l.UserId == user.Id);
+            var existed = await links.FindAsync(l => l.PlaceId == place.Id && l.UserId == user.Id);
 
             if (existed != default)
             {
                 return false;
             }
 
-            await context.AddAsync(@new);
-            await context.SaveChangesAsync();
+            await links.AddAsync(@new);
 
             return true;
         }
@@ -82,33 +83,29 @@ namespace Core.Api.Favoriites
         [Authorize]
         public async Task<bool> DeleteAsync(long id)
         {
-            var link = await context.FavoritePlaceLinks
-                                    .FirstOrDefaultAsync(l => l.Id == id);
+            var link = await links.FindAsync(l => l.Id == id);
 
             if (link == default)
             {
                 return false;
             }
 
-            context.Remove(link);
-            await context.SaveChangesAsync();
-
-            return true;
+            return await links.DeleteAsync(link);
         }
 
 
         private IQueryable<FavoritePlaceLink> Query()
         {
-            return this.context.FavoritePlaceLinks
-                               .Include(l => l.Place)
-                               .ThenInclude(p => p.Type)
-                               .Include(l => l.User)
+            return this.links.Query()
+                             .Include(l => l.Place)
+                             .ThenInclude(p => p.Type)
+                             .Include(l => l.User)
 
-                               .Include(l => l.Place)
-                               .ThenInclude(p => p.Photos)
+                             .Include(l => l.Place)
+                             .ThenInclude(p => p.Photos)
 
-                               .Include(l => l.Place)
-                               .ThenInclude(p => p.Reviews);
+                             .Include(l => l.Place)
+                             .ThenInclude(p => p.Reviews);
         }
     }
 }

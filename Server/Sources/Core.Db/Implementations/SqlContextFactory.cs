@@ -15,10 +15,10 @@ namespace Citylogia.Server.Core.Db.Implementations
 
         private static string BuildPostgresConnectionString()
         {
-            var host = "178.154.212.96";
+            var host = "34.134.77.166";
             var port = "5432";
             var db = "citylogia";
-            var login = "citylogia";
+            var login = "postgres";
             var password = "citylogia";
 
             var builder = new StringBuilder();

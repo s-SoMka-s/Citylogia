@@ -14,8 +14,14 @@ namespace Core.Api.Places.Models.Input
         [JsonProperty("type_id")]
         public long TypeId { get; set; }
 
-        [JsonProperty("address")]
-        public string Address { get; set; }
+        [JsonProperty("city")]
+        public string City { get; set; }
+
+        [JsonProperty("street")]
+        public string Street { get; set; }
+
+        [JsonProperty("house")]
+        public long House { get; set; }
 
         [JsonProperty("latitude")]
         public double Latitude { get; set; }
@@ -30,8 +36,11 @@ namespace Core.Api.Places.Models.Input
                 Name = Name,
                 Description = Description,
                 TypeId = TypeId,
-                Longitude = Longtitude,
-                Latitude = Latitude
+                City = City,
+                Street = Street,
+                House = House,
+                Latitude = Latitude,
+                Longitude = Longtitude
             };
         }
     }
