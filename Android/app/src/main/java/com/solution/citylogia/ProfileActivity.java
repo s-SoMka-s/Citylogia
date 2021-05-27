@@ -36,6 +36,7 @@ public class ProfileActivity extends AppCompatActivity {
     private IFavoritesApi favoritesApi;
     private IProfileApi profileApi;
     private ImageView profileImage;
+    private ImageButton logoutBtn;
 
     @Inject
     RetrofitSingleton retrofit;
@@ -58,9 +59,14 @@ public class ProfileActivity extends AppCompatActivity {
         ImageView but_like = findViewById(R.id.icon_like);
         ImageButton addProfileImg = findViewById(R.id.add_img_btn);
         profileImage = findViewById(R.id.profile_img);
+        logoutBtn = findViewById(R.id.btn_logout);
 
         addProfileImg.setOnClickListener(v -> {
             imageFromGallery();
+        });
+
+        logoutBtn.setOnClickListener(v -> {
+
         });
 
         /*but_like.setOnClickListener(v -> {
@@ -76,6 +82,7 @@ public class ProfileActivity extends AppCompatActivity {
         });*/
     }
 
+    @SuppressLint("CheckResult")
     private void loadProfile() {
         this.profileApi.get().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(res -> {
             TextView name = this.findViewById(R.id.profile_name);
