@@ -54,7 +54,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/profile_photo" />
+                    android:src="@drawable/image_template" />
 
                 <ImageButton
                     android:id="@+id/add_img_btn"
@@ -98,7 +98,7 @@
                 android:textSize="18sp"
                 android:textStyle="normal"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView6" />
+                app:layout_constraintTop_toBottomOf="@+id/profile_name" />
 
             <LinearLayout
                 android:id="@+id/LikedLayoutInsert"
@@ -110,7 +110,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView9"></LinearLayout>
+                app:layout_constraintTop_toBottomOf="@+id/textView9"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
