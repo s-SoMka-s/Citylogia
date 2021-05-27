@@ -4,9 +4,18 @@ import './AuthPage.scss'
 import Input from '@bit/reactstrap.reactstrap.input'
 import Checkbox from '@bit/ans.base-ui.checkbox'
 import Button from '@material-ui/core/Button'
+import axios from 'axios'
 
 export class AuthPage extends Component {
     static propTypes = {}
+
+    login() {
+        let data = {
+            email: 'mail@mail.com',
+            password: 'qwerty',
+        }
+        axios.post('http://localhost:5000/api/Auth/Email', data)
+    }
 
     render() {
         return (
@@ -40,7 +49,9 @@ export class AuthPage extends Component {
                         Я ознакомился с политикой конфиденциальности
                     </Checkbox>
 
-                    <Button variant="outlined">Авторизоваться</Button>
+                    <Button onClick={this.login()} variant="outlined">
+                        Авторизоваться
+                    </Button>
                 </div>
             </div>
         )
