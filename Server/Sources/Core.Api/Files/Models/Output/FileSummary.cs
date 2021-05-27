@@ -8,13 +8,13 @@ namespace Core.Api
         public FileSummary(Photo source)
         {
             this.Id = source.Id;
-            this.PublicUrl = source.PublicUrl;
+            this.Link = source.PublicUrl;
         }
 
         [JsonProperty("id")]
         public long Id { get; set; }
 
-        [JsonProperty("public_url")]
-        public string PublicUrl { get; set; }
+        [JsonProperty("link")]
+        public string Link { get; set; }
     }
 }

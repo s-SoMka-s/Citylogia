@@ -1,6 +1,7 @@
 ﻿using Citylogia.Server.Core.Db.Implementations;
 using Citylogia.Server.Core.Entityes;
 using Core.Api.Profile.Models.Output;
+using Core.Entities;
 using Libraries.Db.Reposiitory.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,11 +16,14 @@ namespace Core.Api.Profile
     public class Main : ApiController
     {
         private readonly SqlContext context;
+        private readonly ICrudRepository<User> users;
+        private ICrudRepository<FavoritePlaceLink> links;
 
         public Main(SqlContext context, ICrudFactory factory)
         {
             this.context = context;
-            var e = factory.Get<User>();
+            this.users = factory.Get<User>();
+            this.links = factory.Get<FavoritePlaceLink>();
         }
 
 
@@ -35,12 +39,28 @@ namespace Core.Api.Profile
                 return null;
             }
 
-            return new ProfileSummary(user);
+            var favorites = FavoritesQuery().Where(p => p.UserId == userId).ToHashSet();
+
+            return new ProfileSummary(user, favorites);
         }
 
         private IQueryable<User> Query()
         {
-            return this.context.Users;
+            return users.Query();
+        }
+
+        private IQueryable<FavoritePlaceLink> FavoritesQuery()
+        {
+            return links.Query()
+                             .Include(l => l.Place)
+                             .ThenInclude(p => p.Type)
+                             .Include(l => l.User)
+
+                             .Include(l => l.Place)
+                             .ThenInclude(p => p.Photos)
+
+                             .Include(l => l.Place)
+                             .ThenInclude(p => p.Reviews);
         }
     }
 }
