@@ -15,21 +15,35 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
+import com.solution.citylogia.network.RetrofitSingleton;
+import com.solution.citylogia.network.StorageService;
 import com.solution.citylogia.network.api.IAuthorizationApi;
+import com.solution.citylogia.network.api.IProfileApi;
 import com.solution.citylogia.network.models.input.TokenResponse;
+import com.solution.citylogia.network.models.output.LoginParameters;
 import com.solution.citylogia.network.models.output.RegistrationParameters;
 import com.solution.citylogia.services.ClientAuthData;
 import com.solution.citylogia.services.Token;
 import com.solution.citylogia.services.Tokens;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.AndroidEntryPoint;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
+@AndroidEntryPoint
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText loginEmail;
     private EditText loginPassword;
     private ProgressBar progressBar;
+
+    @Inject
+    RetrofitSingleton retrofit;
+
+    @Inject
+    StorageService storage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +106,26 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @SuppressLint("CheckResult")
     private void login(String email, String password) {
         // Have fun
+        IAuthorizationApi api = this.retrofit.getRetrofit().create(IAuthorizationApi.class);
+        LoginParameters parameters = new LoginParameters(email, password);
+        api.login(parameters)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(res -> {
+                    System.out.println(res);
+                    TokenResponse access = res.getData().getAccess();
+                    TokenResponse refresh = res.getData().getRefresh();
+                    Token a = new Token(access.getToken(), access.getExpiry());
+                    Token r = new Token(refresh.getToken(), refresh.getExpiry());
+                    Tokens tokens = new Tokens(a, r);
+                    ClientAuthData data = new ClientAuthData(false, tokens);
+                    Gson gson = new Gson();
+                    String jsonData = gson.toJson(data);
+                    storage.putItem("STORAGE_TOKENS_KEY", jsonData);
+
+                    startActivity(new Intent(this, MapActivity.class));
+                    finish();
+                });
     }
 
 }

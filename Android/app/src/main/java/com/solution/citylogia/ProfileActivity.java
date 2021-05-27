@@ -15,6 +15,7 @@ import com.solution.citylogia.models.Favorite;
 import com.solution.citylogia.models.Place;
 import com.solution.citylogia.network.RetrofitSingleton;
 import com.solution.citylogia.network.api.IFavoritesApi;
+import com.solution.citylogia.network.api.IProfileApi;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -33,6 +34,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private Boolean isPressed = false;
     private IFavoritesApi favoritesApi;
+    private IProfileApi profileApi;
     private ImageView profileImage;
 
     @Inject
@@ -43,6 +45,8 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         this.favoritesApi = retrofit.getRetrofit().create(IFavoritesApi.class);
+        this.profileApi = retrofit.getRetrofit().create(IProfileApi.class);
+        this.loadProfile();
         this.loadFavorites();
 
         ImageButton map_but = findViewById(R.id.map_icon);
@@ -70,6 +74,13 @@ public class ProfileActivity extends AppCompatActivity {
                 setLike(false);
             }
         });*/
+    }
+
+    private void loadProfile() {
+        this.profileApi.get().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(res -> {
+            TextView name = this.findViewById(R.id.profile_name);
+            name.setText(res.getData().getName());
+        });
     }
 
     private void fillLikedPlaces(Place place, View view) {
