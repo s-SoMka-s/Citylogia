@@ -37,7 +37,8 @@ public class ProfileActivity extends AppCompatActivity {
     private IFavoritesApi favoritesApi;
     private IProfileApi profileApi;
     private ImageView profileImage;
-    private ImageButton logoutBtn;
+
+    private TextView tipFav;
 
     @Inject
     RetrofitSingleton retrofit;
@@ -63,13 +64,19 @@ public class ProfileActivity extends AppCompatActivity {
         ImageView but_like = findViewById(R.id.icon_like);
         ImageButton addProfileImg = findViewById(R.id.add_img_btn);
         profileImage = findViewById(R.id.profile_img);
-        logoutBtn = findViewById(R.id.btn_logout);
+        ImageButton logoutBtn = findViewById(R.id.btn_logout);
+        tipFav = findViewById(R.id.tipFav);
 
         addProfileImg.setOnClickListener(v -> {
             imageFromGallery();
         });
 
-        logoutBtn.setOnClickListener(v -> authorizationService.logOut());
+        logoutBtn.setOnClickListener(v -> {
+            authorizationService.logOut();
+            Intent i = new Intent(this, LoginActivity.class);
+            startActivity(i);
+            finish();
+        });
 
         /*but_like.setOnClickListener(v -> {
             if (!this.place.is_favorite()) {
@@ -126,6 +133,11 @@ public class ProfileActivity extends AppCompatActivity {
     private void loadFavorites() {
         this.favoritesApi.getFavorites().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(res -> {
             List<Favorite> favorites = res.getData().getElements();
+            if (favorites.size() > 0) {
+                tipFav.setVisibility(View.INVISIBLE);
+            } else {
+                tipFav.setVisibility(View.VISIBLE);
+            }
             LinearLayout likedLayoutInsert = this.findViewById(R.id.LikedLayoutInsert);
             favorites.forEach(favorite -> {
                 View cricketerView = getLayoutInflater().inflate(R.layout.liked_place_add, null, false);
