@@ -204,9 +204,12 @@ public class place_reviews extends Fragment {
             });
         }
         else {
-            this.favoritesApi.deleteFavoriteByPlaceId(body).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(res -> {
-                this.isPressed = res.getData() ? false : this.isPressed;
-                this.place.set_favorite(this.isPressed);
+            this.favoritesApi.getFavorites().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(response -> {
+                Long id = response.getData().getElements().stream().filter(f -> f.getPlace().getId() == this.place.getId()).findFirst().get().getId();
+                this.favoritesApi.deleteFavorite(id).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(res -> {
+                    this.isPressed = res.getData() ? false : this.isPressed;
+                    this.place.set_favorite(this.isPressed);
+                });
             });
         }
 

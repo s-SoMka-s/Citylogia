@@ -25,20 +25,28 @@ import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
+import com.solution.citylogia.services.AuthorizationService;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class IntroActivity extends AppCompatActivity {
 
     private IntroBoardingAdapter introBoardingAdapter;
     private LinearLayout layoutBoardingIndicators;
     private Button buttonAction;
-
+    @Inject
+    AuthorizationService authorizationService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.authorizationService.logOut();
         setContentView(R.layout.activity_intro);
 
         layoutBoardingIndicators = findViewById(R.id.layoutBoardingIndicatorsRev);
