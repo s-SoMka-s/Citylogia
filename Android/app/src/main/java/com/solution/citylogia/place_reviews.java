@@ -195,17 +195,16 @@ public class place_reviews extends Fragment {
     }
 
     private void setLike(boolean state) {
+        HashMap<String, Object> body = new HashMap<>();
+        body.put("place_id", this.place.getId());
         if (state){
-            HashMap<String, Object> body = new HashMap<>();
-            body.put("place_id", this.place.getId());
-            body.put("user_id", 4);
             this.favoritesApi.makeFavorite(body).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(res -> {
                 this.isPressed = res.getData() ? true : this.isPressed;
                 this.place.set_favorite(this.isPressed);
             });
         }
         else {
-            this.favoritesApi.deleteFavorite(this.place.getId()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(res -> {
+            this.favoritesApi.deleteFavoriteByPlaceId(body).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(res -> {
                 this.isPressed = res.getData() ? false : this.isPressed;
                 this.place.set_favorite(this.isPressed);
             });
