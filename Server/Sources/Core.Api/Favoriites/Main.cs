@@ -103,6 +103,7 @@ namespace Core.Api.Favoriites
 
                              .Include(l => l.Place)
                              .ThenInclude(p => p.Photos)
+                             .ThenInclude(p => p.Photo)
 
                              .Include(l => l.Place)
                              .ThenInclude(p => p.Reviews);
