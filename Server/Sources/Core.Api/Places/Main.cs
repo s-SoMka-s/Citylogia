@@ -179,7 +179,9 @@ namespace Citylogia.Server.Core.Api
                        .ThenInclude(r => r.Author)
 
                        .Include(p => p.Type)
-                       .Include(p => p.Photos);
+
+                       .Include(p => p.Photos)
+                       .ThenInclude(p => p.Photo);
         }
 
         private IQueryable<FavoritePlaceLink> FavoritesQuery()
