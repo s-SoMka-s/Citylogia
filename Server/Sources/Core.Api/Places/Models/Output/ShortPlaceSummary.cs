@@ -15,7 +15,7 @@ namespace Core.Api.Places.Models.Output
             this.MainPhoto = source.Photos
                                    .Where(p => p.IsMain)
                                    .Select(p => new FileSummary(p.Photo))
-                                   .First();
+                                   .FirstOrDefault();
 
             this.Type = new PlaceTypeSummary(source.Type);
 
