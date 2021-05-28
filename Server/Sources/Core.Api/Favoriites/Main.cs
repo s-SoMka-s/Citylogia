@@ -93,6 +93,20 @@ namespace Core.Api.Favoriites
             return await links.DeleteAsync(link);
         }
 
+        [HttpDelete("")]
+        [Authorize]
+        public async Task<bool> DeleteAsync([FromBody] NewFavoritePlaceLinkParameters parameters)
+        {
+            var link = await links.FindAsync(l => l.PlaceId == parameters.PlaceId);
+
+            if (link == default)
+            {
+                return false;
+            }
+
+            return await links.DeleteAsync(link);
+        }
+
 
         private IQueryable<FavoritePlaceLink> Query()
         {
