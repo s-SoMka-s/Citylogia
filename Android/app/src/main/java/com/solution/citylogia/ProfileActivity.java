@@ -23,7 +23,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import dagger.hilt.EntryPoint;
 import dagger.hilt.android.AndroidEntryPoint;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -119,7 +118,7 @@ public class ProfileActivity extends AppCompatActivity {
             finish();
         });
         try {
-            String url_image = place.getPhoto().getElements().get(0).getPublic_url();
+            String url_image = place.getPhotos().getElements().get(0).getLink();
             Picasso.get().load(url_image)
                     .placeholder(R.drawable.image_template)
                     .into(placeImage);

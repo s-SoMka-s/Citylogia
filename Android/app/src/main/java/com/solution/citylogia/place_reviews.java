@@ -155,8 +155,8 @@ public class place_reviews extends Fragment {
 
         infoCardAdapter = new InfoCardAdapter(mList);
 
-        for (int i = 0; i < place.getPhoto().getElements().size(); i++) {
-            String url_image = place.getPhoto().getElements().get(i).getPublic_url();
+        for (int i = 0; i < place.getPhotos().getElements().size(); i++) {
+            String url_image = place.getPhotos().getElements().get(i).getLink();
             mList.add(new InfoCardItem(url_image));
         }
     }
@@ -241,7 +241,7 @@ public class place_reviews extends Fragment {
         ImageView placeImage = view.findViewById(R.id.image_replace);
 
         try {
-            String url_image = place.getPhoto().getElements().get(1).getPublic_url();
+            String url_image = place.getPhotos().getElements().get(1).getLink();
             Picasso.get().load(url_image)
                     .placeholder(R.drawable.tm_info)
                     .into(placeImage);
@@ -275,7 +275,7 @@ public class place_reviews extends Fragment {
         date.setText(dateReplace);
         
         try {
-            String url_image = review.getAuthor().getAvatar().getPublic_url();
+            String url_image = review.getAuthor().getAvatar().getLink();
             Picasso.get().load(url_image)
                     .resize(150, 150)
                     .centerCrop()
