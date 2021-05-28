@@ -75,7 +75,7 @@ namespace Core.Api.Places.Models.Output
         [JsonProperty("longitude")]
         public double Longtitude { get; set; }
 
-        [JsonProperty("photo")]
+        [JsonProperty("photos")]
         public BaseCollectionResponse<FileSummary> Photos { get; set; }
 
         [JsonProperty("reviews")]

@@ -2,12 +2,9 @@
 using Google.Cloud.Storage.V1;
 using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Drawing;
 
 namespace Libraries.GoogleStorage
 {
@@ -29,16 +26,23 @@ namespace Libraries.GoogleStorage
             await storageClient.DeleteObjectAsync(bucketName, fileNameForStorage);
         }
 
-        async Task<string> ICloudStorage.UploadFileAsync(string base64File, string fileNameForStorage)
+        async Task<string> ICloudStorage.UploadFileAsync(string name, string extension, string content)
         {
+            var bytes = ParseBase64(content);
+            var fileNameForStorage = BuildName(name, extension);
 
-            var bytes = ParseBase64(base64File);
+            using var stream = new MemoryStream(bytes);
 
-            using var memoryStream = new MemoryStream(bytes);
-            var img = System.Drawing.Image.FromStream(memoryStream);
-            var dataObject = await storageClient.UploadObjectAsync(bucketName, fileNameForStorage, null, memoryStream);
+            var dataObject = await storageClient.UploadObjectAsync(bucketName, fileNameForStorage, "text/plain", stream);
 
             return dataObject.MediaLink;
+        }
+
+        private string BuildName(string name, string extension)
+        {
+            var key = Guid.NewGuid();
+            
+            return key.ToString() + name + extension;
         }
 
         private byte[] ParseBase64(string rawContent)
