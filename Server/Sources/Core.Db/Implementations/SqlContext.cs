@@ -51,9 +51,15 @@ namespace Citylogia.Server.Core.Db.Implementations
 
             var photo = builder.Entity<Photo>();
 
-            photo.HasOne(p => p.Place)
-                .WithMany(p => p.Photos)
-                .OnDelete(DeleteBehavior.Cascade);
+            var placePhoto = builder.Entity<PlacePhoto>();
+
+            placePhoto.HasOne(p => p.Place)
+                      .WithMany(p => p.Photos)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+            placePhoto.HasOne(p => p.Photo)
+                      .WithOne()
+                      .OnDelete(DeleteBehavior.Cascade);
 
             var placeType = builder.Entity<PlaceType>();
 
