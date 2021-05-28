@@ -29,18 +29,19 @@ import dagger.hilt.android.AndroidEntryPoint;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
+@AndroidEntryPoint
 public class activity_place_inside extends Fragment {
     private PlaceInsideAdapter placeInsideAdapter;
-    private final IPlaceApi placeApi;
+    private IPlaceApi placeApi;
     private Place placeInfo = null;
     private Long id;
 
-    private RetrofitSingleton retrofit;
+    @Inject
+    RetrofitSingleton retrofit;
 
 
     public activity_place_inside() {
         // Required empty public constructor
-        this.placeApi = retrofit.getRetrofit().create(IPlaceApi.class);
     }
 
     public activity_place_inside newInstance() {
@@ -55,6 +56,9 @@ public class activity_place_inside extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        this.placeApi = retrofit.getRetrofit().create(IPlaceApi.class);
+
         setUpBoardingItems();
 
         this.id = (Long)requireActivity().getIntent().getExtras().get("id");

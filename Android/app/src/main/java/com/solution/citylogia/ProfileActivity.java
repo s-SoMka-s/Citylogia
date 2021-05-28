@@ -104,7 +104,7 @@ public class ProfileActivity extends AppCompatActivity {
         name.setText(place.getName());
 
         TextView address = view.findViewById(R.id.address_v);
-        address.setText(place.getAddress());
+        address.setText(place.getCity());
         ImageView but_like = view.findViewById(R.id.icon_like);
         but_like.setPressed(true);
 
