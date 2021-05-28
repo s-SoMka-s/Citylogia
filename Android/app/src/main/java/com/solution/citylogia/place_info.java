@@ -109,8 +109,8 @@ public class place_info extends Fragment {
 
         infoCardAdapter = new InfoCardAdapter(mList);
 
-        for (int i = 0; i < place.getPhoto().getElements().size(); i++) {
-            String url_image = place.getPhoto().getElements().get(i).getPublic_url();
+        for (int i = 0; i < place.getPhotos().getElements().size(); i++) {
+            String url_image = place.getPhotos().getElements().get(i).getLink();
             mList.add(new InfoCardItem(url_image));
         }
     }

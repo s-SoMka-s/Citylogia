@@ -16,7 +16,7 @@ data class Place(
         var house: Long = 0,
         val latitude: Double = 0.0,
         val longitude: Double = 0.0,
-        val photo: BaseCollectionClass<Photo> = BaseCollectionClass(),
+        val photos: BaseCollectionClass<Photo> = BaseCollectionClass(),
         val reviews: BaseCollectionClass<Review> = BaseCollectionClass(),
 ) {
     companion object Factory {

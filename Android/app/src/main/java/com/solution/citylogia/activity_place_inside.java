@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,6 +20,7 @@ import com.google.gson.GsonBuilder;
 import com.solution.citylogia.models.Place;
 import com.solution.citylogia.network.RetrofitSingleton;
 import com.solution.citylogia.network.api.IPlaceApi;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,11 +84,10 @@ public class activity_place_inside extends Fragment {
         shortDescription.setText(place.getShort_description());
 
         name.setText(title_v1);
-        /*
-        ImageView placeImage = view.findViewById(R.id.image_inside);
+        ImageView placeImage = view.findViewById(R.id.imageView8);
 
         try {
-            String url_image = placeInfo.getPhoto().getElements().get(0).getPublic_url();
+            String url_image = placeInfo.getPhotos().getElements().get(1).getLink();
             Picasso.get().load(url_image)
                     .placeholder(R.drawable.tm_info)
                     .into(placeImage);
@@ -94,7 +95,6 @@ public class activity_place_inside extends Fragment {
             e.printStackTrace();
         }
 
-         */
     }
 
     @Override
