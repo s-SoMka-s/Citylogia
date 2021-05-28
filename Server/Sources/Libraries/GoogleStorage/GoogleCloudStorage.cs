@@ -26,7 +26,7 @@ namespace Libraries.GoogleStorage
             await storageClient.DeleteObjectAsync(bucketName, fileNameForStorage);
         }
 
-        async Task<string> ICloudStorage.UploadFileAsync(string name, string extension, string content)
+        async Task<StorageUploadResultContainer> ICloudStorage.UploadFileAsync(string name, string extension, string content)
         {
             var bytes = ParseBase64(content);
             var fileNameForStorage = BuildName(name, extension);
@@ -35,7 +35,9 @@ namespace Libraries.GoogleStorage
 
             var dataObject = await storageClient.UploadObjectAsync(bucketName, fileNameForStorage, "text/plain", stream);
 
-            return dataObject.MediaLink;
+            var res = new StorageUploadResultContainer(dataObject.MediaLink, dataObject.Name);
+
+            return res;
         }
 
         private string BuildName(string name, string extension)

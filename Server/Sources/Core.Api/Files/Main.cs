@@ -37,11 +37,12 @@ namespace Core.Api.Files
         [HttpPost("")]
         public async Task<long> UploadAsync([FromBody] NewFileParameters parameters)
         {
-            var link = await this.storage.UploadFileAsync(parameters.Name, parameters.Extension, parameters.Content);
+            var res = await this.storage.UploadFileAsync(parameters.Name, parameters.Extension, parameters.Content);
 
             var @new = new Photo()
             {
-                PublicUrl = link
+                PublicUrl = res.PublicUrl,
+                Name = res.Name
             };
 
             var uplouded = await photos.AddAsync(@new);

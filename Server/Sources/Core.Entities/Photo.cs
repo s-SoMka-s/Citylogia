@@ -9,9 +9,11 @@ namespace Citylogia.Server.Core.Entityes
         public Photo()
         {
             this.PublicUrl = string.Empty;
+            this.Name = string.Empty;
         }
 
 
         public string PublicUrl { get; set; }
+        public string Name { get; set; }
     }
 }
