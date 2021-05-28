@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Core.Api.Places
 {
     [ApiController]
-    [Route("api/Admin/Places/")]
+    [Route("api/Places/")]
     public class Admin : ApiController
     {
         private readonly ICrudRepository<Photo> photos;
@@ -28,11 +28,12 @@ namespace Core.Api.Places
         [HttpPost("{place_id}/Photo")]
         public async Task<bool> AttachPhotoAsync(long place_id, [FromBody] NewPlacePhotoParameters parameters)
         {
-            var link = await storage.UploadFileAsync(parameters.Name, parameters.Extension, parameters.Content);
+            var res = await storage.UploadFileAsync(parameters.Name, parameters.Extension, parameters.Content);
 
             var @new = new Photo()
             {
-                PublicUrl = link
+                PublicUrl = res.PublicUrl,
+                Name = res.Name
             };
 
             var uplouded = await photos.AddAsync(@new);
