@@ -262,7 +262,7 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
         val cricketerView = layoutInflater.inflate(R.layout.near_place, null, false)
 
         cricketerView.findViewById<TextView>(R.id.place_name).text = place.name
-        cricketerView.findViewById<TextView>(R.id.place_address).text = place.address
+        cricketerView.findViewById<TextView>(R.id.place_address).text = place.city
         var nearPlaceImage = cricketerView.findViewById<ImageView>(R.id.near_place_img)
         Picasso.get().load(R.drawable.near_place_template)
                      .into(nearPlaceImage)

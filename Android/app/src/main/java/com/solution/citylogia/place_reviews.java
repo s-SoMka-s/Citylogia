@@ -41,15 +41,19 @@ import io.reactivex.schedulers.Schedulers;
 
 import static com.solution.citylogia.utils.DateTimeExtensionsKt.FromTimestamp;
 
+@AndroidEntryPoint
 public class place_reviews extends Fragment {
 
     private Place place = null;
     private Boolean isPressed = false;
-    private RetrofitSingleton retrofit;
+
     private IFavoritesApi favoritesApi;
 
     private InfoCardAdapter infoCardAdapter;
     private LinearLayout layoutCardIndicators;
+
+    @Inject
+    RetrofitSingleton retrofit;
 
     public place_reviews() {
 
@@ -221,7 +225,7 @@ public class place_reviews extends Fragment {
         TextView address_v3_replace = view.findViewById(R.id.address_v3);
 
         String title_v2 = this.place.getName();
-        String address_v2 = this.place.getAddress();
+        String address_v2 = this.place.getCity();
         // Boolean isLikePressed = ...
 
         title_v3_replace.setText(title_v2);

@@ -150,7 +150,7 @@ public class place_info extends Fragment {
         TextView text_v2_replace = view.findViewById(R.id.text_intro);
 
         String title_v2 = this.place.getName();
-        String address_v2 = this.place.getAddress();
+        String address_v2 = this.place.getCity();
         String text_v2 = this.place.getDescription();
 
         title_v2_replace.setText(title_v2);
