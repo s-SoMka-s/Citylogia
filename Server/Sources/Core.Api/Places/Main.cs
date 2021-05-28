@@ -70,6 +70,8 @@ namespace Citylogia.Server.Core.Api
         }
 
         [HttpGet("{id}")]
+        [Authorize]
+        [AllowAnonymous]
         public PlaceSummary GetPlace(long id)
         {
             var userId = GetUserId();
