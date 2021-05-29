@@ -98,7 +98,9 @@ public class ProfileActivity extends AppCompatActivity {
             Photo avatar = res.getData().getAvatar();
 
             if (avatar != null){
-                // Установить фотку профиля
+                Picasso.get().load(avatar.getLink())
+                        .placeholder(R.drawable.image_template)
+                        .into(profileImage);
             }
         });
     }
