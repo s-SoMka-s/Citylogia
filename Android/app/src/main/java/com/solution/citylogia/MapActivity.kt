@@ -156,6 +156,7 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
                 val placeId = marker.snippet.toLong()
                 val i = Intent(this@MapActivity, PlaceInside::class.java)
                 i.putExtra("id", placeId)
+                i.getSerializableExtra("place_types")
                 startActivity(i)
             } catch (e: Exception) {
                 e.printStackTrace()

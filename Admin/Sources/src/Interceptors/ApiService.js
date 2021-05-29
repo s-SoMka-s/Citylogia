@@ -41,7 +41,7 @@ export class ApiService {
         params.push(`only_approved=${onlyApproved}`)
         params.push(`only_not_reviewed=${onlyNotReviewed}`)
 
-        return this.client.post(`/Places?${params.join('&')}`)
+        return this.client.get(`/Places?${params.join('&')}`)
     }
 
     #processResponse(response) {

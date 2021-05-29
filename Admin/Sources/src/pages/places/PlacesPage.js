@@ -24,71 +24,15 @@ const statuses = {
     APPROVED: 2,
 }
 
-function createData(author, placeName, type, address, status) {
-    return { author, placeName, type, address, status }
-}
-
-const rows = [
-    createData(
-        'Calvin Steward',
-        'Какое-то место длинной в два предложения,  а то мало ли',
-        'Архитектура',
-        'г. Новосибирск Площадь Карла макса 17',
-        statuses.APPROVED
-    ),
-    createData(
-        'Calvin Steward',
-        'Какое-то место длинной в два предложения,  а то мало ли',
-        'Архитектура',
-        'г. Новосибирск Площадь Карла макса 17',
-        statuses.APPROVED
-    ),
-    createData(
-        'Calvin Steward',
-        'Какое-то место длинной в два предложения,  а то мало ли',
-        'Архитектура',
-        'г. Новосибирск Площадь Карла макса 17',
-        statuses.NOT_REVIEWED
-    ),
-    createData(
-        'Calvin Steward',
-        'Какое-то место длинной в два предложения,  а то мало ли',
-        'Архитектура',
-        'г. Новосибирск Площадь Карла макса 17',
-        statuses.NOT_REVIEWED
-    ),
-    createData(
-        'Calvin Steward',
-        'Какое-то место длинной в два предложения,  а то мало ли',
-        'Архитектура',
-        'г. Новосибирск Площадь Карла макса 17',
-        statuses.APPROVED
-    ),
-    createData(
-        'Calvin Steward',
-        'Какое-то место длинной в два предложения,  а то мало ли',
-        'Архитектура',
-        'г. Новосибирск Площадь Карла макса 17',
-        statuses.APPROVED
-    ),
-    createData(
-        'Calvin Steward',
-        'Какое-то место длинной в два предложения,  а то мало ли',
-        'Архитектура',
-        'г. Новосибирск Площадь Карла макса 17',
-        statuses.APPROVED
-    ),
-]
-
 export default function PlacesPage() {
     let api = new ApiService()
     const [value, setValue] = React.useState(0)
-    const [places, setPlaces] = React.useState()
+    const [places, setPlaces] = React.useState(new Array())
 
     const handleChange = (event, newValue) => {
         setValue(newValue)
 
-        let take = 9
+        let take = 7
         let skip = 0
         let onlyApproved = false
         let onlyNotReviewed = false
@@ -100,7 +44,9 @@ export default function PlacesPage() {
         }
 
         api.takePlaces(take, skip, onlyApproved, onlyNotReviewed).then(
-            (places) => setPlaces(places)
+            (places) => {
+                setPlaces(places.elements)
+            }
         )
     }
 
@@ -141,24 +87,24 @@ export default function PlacesPage() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {rows.map((row) => (
-                            <TableRow key={row.author}>
+                        {places.map((place) => (
+                            <TableRow key={place.id}>
                                 <TableCell
                                     align="left"
                                     component="th"
                                     scope="row"
                                 >
-                                    {row.author}
+                                    {place.author}
+                                </TableCell>
+                                <TableCell align="left">{place.name}</TableCell>
+                                <TableCell align="left">
+                                    {place.type.name}
                                 </TableCell>
                                 <TableCell align="left">
-                                    {row.placeName}
-                                </TableCell>
-                                <TableCell align="left">{row.type}</TableCell>
-                                <TableCell align="left">
-                                    {row.address}
+                                    {place.street}
                                 </TableCell>
                                 <TableCell align="left">
-                                    {row.status == statuses.APPROVED ? (
+                                    {place.status == statuses.APPROVED ? (
                                         <div className="places-page__table-mark places-page__table-mark-approved">
                                             Подтвержден
                                         </div>
