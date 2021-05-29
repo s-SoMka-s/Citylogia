@@ -2,7 +2,13 @@ package com.solution.citylogia;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Base64;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -12,6 +18,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.solution.citylogia.models.Favorite;
+import com.solution.citylogia.models.Photo;
 import com.solution.citylogia.models.Place;
 import com.solution.citylogia.models.ShortPlace;
 import com.solution.citylogia.network.RetrofitSingleton;
@@ -20,6 +27,9 @@ import com.solution.citylogia.network.api.IProfileApi;
 import com.solution.citylogia.services.AuthorizationService;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -85,6 +95,11 @@ public class ProfileActivity extends AppCompatActivity {
         this.profileApi.get().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(res -> {
             TextView name = this.findViewById(R.id.profile_name);
             name.setText(res.getData().getName());
+            Photo avatar = res.getData().getAvatar();
+
+            if (avatar != null){
+                // Установить фотку профиля
+            }
         });
     }
 
@@ -168,7 +183,39 @@ public class ProfileActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE && resultCode == RESULT_OK) {
+            Uri imageUri = data.getData();
+            Bitmap bitmap = null;
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            ByteArrayOutputStream bOut = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bOut);
+            String base64Image = Base64.encodeToString(bOut.toByteArray(), Base64.DEFAULT);
+
+            HashMap<String, Object> body = new HashMap<>();
+            body.put("name", "test");
+            body.put("content", base64Image);
+            body.put("extension", ".jpeg");
+
+            this.profileApi.uploadAvatar(body).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(res -> {
+               System.out.println(res);
+            });
+
             profileImage.setImageURI(data.getData());
         }
+    }
+
+    public String getPathFromURI(Uri contentUri) {
+        String res = null;
+        String[] proj = {MediaStore.Images.Media.DATA};
+        Cursor cursor = getContentResolver().query(contentUri, proj, null, null, null);
+        if (cursor.moveToFirst()) {
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            res = cursor.getString(column_index);
+        }
+        cursor.close();
+        return res;
     }
 }
