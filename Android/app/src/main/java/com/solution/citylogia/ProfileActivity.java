@@ -19,6 +19,7 @@ import com.solution.citylogia.network.api.IProfileApi;
 import com.solution.citylogia.services.AuthorizationService;
 import com.squareup.picasso.Picasso;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -36,7 +37,7 @@ public class ProfileActivity extends AppCompatActivity {
     private IFavoritesApi favoritesApi;
     private IProfileApi profileApi;
     private ImageView profileImage;
-
+    private List<Favorite> favorites;
     private TextView tipFav;
 
     @Inject
@@ -60,7 +61,6 @@ public class ProfileActivity extends AppCompatActivity {
             finish();
         });
 
-        ImageView but_like = findViewById(R.id.icon_like);
         ImageButton addProfileImg = findViewById(R.id.add_img_btn);
         profileImage = findViewById(R.id.profile_img);
         ImageButton logoutBtn = findViewById(R.id.btn_logout);
@@ -77,17 +77,7 @@ public class ProfileActivity extends AppCompatActivity {
             finish();
         });
 
-        /*but_like.setOnClickListener(v -> {
-            if (!this.place.is_favorite()) {
-                but_like.setImageResource(R.drawable.heart_color);
-                // выставить флажок, в профиле у человека, что ему место понравилось. (В базе)
-                setLike(true);
-            } else {
-                but_like.setImageResource(R.drawable.heart);
-                // убрать из базы данных
-                setLike(false);
-            }
-        });*/
+
     }
 
     @SuppressLint("CheckResult")
@@ -98,7 +88,9 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
-    private void fillLikedPlaces(Place place, View view) {
+    private void fillLikedPlaces(Favorite favorite, View view) {
+        Place place = favorite.getPlace();
+
         TextView name = view.findViewById(R.id.title_v);
         name.setText(place.getName());
 
@@ -109,8 +101,12 @@ public class ProfileActivity extends AppCompatActivity {
 
         but_like.setImageResource(R.drawable.heart_color);
 
+        but_like.setOnClickListener(v -> {
+            this.removeFavorite(favorite.getId());
+        });
+
         ImageView placeImage = view.findViewById(R.id.placeLikedImage);
-        placeImage.setOnClickListener( v -> {
+        placeImage.setOnClickListener(v -> {
             Long placeId = place.getId();
             Intent i = new Intent(this, PlaceInside.class);
             i.putExtra("id", placeId);
@@ -132,39 +128,29 @@ public class ProfileActivity extends AppCompatActivity {
     private void loadFavorites() {
         this.favoritesApi.getFavorites().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(res -> {
             List<Favorite> favorites = res.getData().getElements();
+            this.favorites = favorites;
             if (favorites.size() > 0) {
                 tipFav.setVisibility(View.INVISIBLE);
             } else {
                 tipFav.setVisibility(View.VISIBLE);
             }
             LinearLayout likedLayoutInsert = this.findViewById(R.id.LikedLayoutInsert);
+            likedLayoutInsert.removeAllViews();
+
             favorites.forEach(favorite -> {
                 View cricketerView = getLayoutInflater().inflate(R.layout.liked_place_add, null, false);
-                fillLikedPlaces(favorite.getPlace(), cricketerView.findViewById(R.id.LikedWholeContainer));
+                fillLikedPlaces(favorite, cricketerView.findViewById(R.id.LikedWholeContainer));
                 likedLayoutInsert.addView(cricketerView);
             });
         });
     }
 
-    private boolean getLike() {
-        return isPressed;
+    @SuppressLint("CheckResult")
+    private void removeFavorite(long id) {
+        this.favoritesApi.deleteFavorite(id).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(res -> {
+            this.loadFavorites();
+        });
     }
-
-    /*private void setLike(boolean state) {
-        if (state){
-            HashMap<String, Object> body = new HashMap<>();
-            body.put("place_id", this.place.getId());
-            body.put("user_id", 4);
-            this.favoritesApi.makeFavorite(body).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(res -> {
-                this.isPressed = res.getData() ? true : this.isPressed;
-            });
-        }
-        else {
-            this.favoritesApi.deleteFavorite(this.place.getId()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(res -> {
-                this.isPressed = res.getData() ? false : this.isPressed;
-            });
-        }
-    }*/
 
     private void imageFromGallery() {
         Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -174,7 +160,7 @@ public class ProfileActivity extends AppCompatActivity {
         pickIntent.setType("image/*");
 
         Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
-        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
 
         startActivityForResult(chooserIntent, PICK_IMAGE);
     }

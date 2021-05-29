@@ -190,10 +190,7 @@ public class place_reviews extends Fragment {
         }
     }
 
-    private boolean getLike() {
-        return isPressed;
-    }
-
+    @SuppressLint("CheckResult")
     private void setLike(boolean state) {
         HashMap<String, Object> body = new HashMap<>();
         body.put("place_id", this.place.getId());
