@@ -71,18 +71,6 @@ public class place_info extends Fragment {
         ImageView but_back = view.findViewById(R.id.icon_back_v3);
         but_back.setOnClickListener(v -> navController.navigate(R.id.action_place_info_to_activity_place_inside));
 
-        ImageButton profile_but = view.findViewById(R.id.profile_but);
-        profile_but.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), ProfileActivity.class);
-            startActivity(intent);
-        });
-
-        ImageButton map_btn = view.findViewById(R.id.map_icon);
-        map_btn.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), MapActivity.class);
-            startActivity(intent);
-        });
-
 
         layoutCardIndicators = view.findViewById(R.id.layoutBoardingIndicatorsRev);
 

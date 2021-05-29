@@ -34,7 +34,6 @@ import io.reactivex.schedulers.Schedulers;
 
 @AndroidEntryPoint
 public class activity_place_inside extends Fragment {
-    private PlaceInsideAdapter placeInsideAdapter;
     private IPlaceApi placeApi;
     private Place placeInfo = null;
     private Long id;

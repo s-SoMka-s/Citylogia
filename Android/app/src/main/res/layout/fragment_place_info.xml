@@ -169,32 +169,4 @@
 
     </ScrollView>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="bottom">
-
-        <ImageButton
-            android:id="@+id/map_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="56dp"
-            android:layout_weight="1"
-            android:background="@color/white"
-            android:src="@drawable/ic_baseline_place_30"
-            android:tint="@color/colorAccent" />
-
-        <ImageButton
-
-            android:id="@+id/profile_but"
-            android:layout_width="wrap_content"
-            android:layout_height="56dp"
-            android:layout_weight="1"
-            android:background="@color/white"
-            android:clickable="true"
-            android:src="@drawable/user__2_"
-            android:tint="@color/graySecondary" />
-
-    </LinearLayout>
-
 </FrameLayout>
