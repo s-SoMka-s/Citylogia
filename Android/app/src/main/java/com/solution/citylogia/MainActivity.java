@@ -34,8 +34,6 @@ public class MainActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-
         String languageToLoad = "ru";
         Locale locale = new Locale(languageToLoad);
         Locale.setDefault(locale);
@@ -46,7 +44,6 @@ public class MainActivity extends AppCompatActivity{
                 getBaseContext().getResources().getDisplayMetrics());
 
         setContentView(R.layout.activity_maps);
-
 
         filter = findViewById(R.id.bt_filter);
         materialSearchBar = findViewById(R.id.searchBar);
