@@ -42,9 +42,29 @@ namespace Citylogia.Server.Core.Api
         {
             var query = this.Query();
 
+            if (parameters.OnlyApproved)
+            {
+                query = query.Where(p => p.IsApproved);
+            }
+
+            if (parameters.OnlyNotReviewed)
+            {
+                query = query.Where(p => !p.IsApproved);
+            }
+
             if (parameters.TypeIds.Any())
             {
                 query = query.Where(p => parameters.TypeIds.Contains(p.TypeId));
+            }
+
+            if (parameters.Skip != null)
+            {
+                query = query.Skip((int)parameters.Skip.Value);
+            }
+
+            if (parameters.Take != null)
+            {
+                query = query.Take((int)parameters.Take.Value);
             }
 
             var summaries = query.Select(p => new ShortPlaceSummary(p, false)).ToList();

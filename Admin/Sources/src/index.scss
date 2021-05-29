@@ -1,0 +1,25 @@
+$root-font-size: 8px; // 1rem = 10px
+$max-width: 144rem;
+$font-family: Montserrat, serif;
+$transition-duration: 0.5s;
+$background-color: #f8f8fb;
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: $root-font-size;
+}
+
+body {
+    background-color: $background-color;
+}
+
+ul,
+li {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
