@@ -123,7 +123,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     String jsonData = gson.toJson(data);
                     storage.putItem("STORAGE_TOKENS_KEY", jsonData);
 
-                    startActivity(new Intent(this, MapActivity.class));
+                    startActivity(new Intent(this, ProfileActivity.class));
                     finish();
                 });
     }

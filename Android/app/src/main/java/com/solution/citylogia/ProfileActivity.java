@@ -37,7 +37,6 @@ public class ProfileActivity extends AppCompatActivity {
     private IFavoritesApi favoritesApi;
     private IProfileApi profileApi;
     private ImageView profileImage;
-    private List<Favorite> favorites;
     private TextView tipFav;
 
     @Inject
@@ -128,7 +127,6 @@ public class ProfileActivity extends AppCompatActivity {
     private void loadFavorites() {
         this.favoritesApi.getFavorites().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(res -> {
             List<Favorite> favorites = res.getData().getElements();
-            this.favorites = favorites;
             if (favorites.size() > 0) {
                 tipFav.setVisibility(View.INVISIBLE);
             } else {

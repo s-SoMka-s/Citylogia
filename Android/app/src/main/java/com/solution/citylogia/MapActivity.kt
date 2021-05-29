@@ -114,14 +114,16 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
             }
             else {
                 startActivity(Intent(this, LoginActivity::class.java))
-
             }
-            finish()
         }
 
         val offerBtn: ImageButton = findViewById(R.id.btn_idea)
         offerBtn.setOnClickListener{
-            offerPlace()
+            if (authService.isLoggedIn()) {
+                offerPlace()
+            } else {
+                Toast.makeText(this, "Ошибка, создайте/войдите\n в аккаунт!", Toast.LENGTH_LONG).show()
+            }
         }
     }
 

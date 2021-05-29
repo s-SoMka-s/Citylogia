@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,6 +28,7 @@ import com.solution.citylogia.models.Place;
 import com.solution.citylogia.models.Review;
 import com.solution.citylogia.network.RetrofitSingleton;
 import com.solution.citylogia.network.api.IFavoritesApi;
+import com.solution.citylogia.services.AuthorizationService;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -51,6 +53,9 @@ public class place_reviews extends Fragment {
 
     private InfoCardAdapter infoCardAdapter;
     private LinearLayout layoutCardIndicators;
+
+    @Inject
+    AuthorizationService authService;
 
     @Inject
     RetrofitSingleton retrofit;
@@ -85,7 +90,14 @@ public class place_reviews extends Fragment {
         View view = inflater.inflate(R.layout.fragment_place_reviews, container, false);
 
         FloatingActionButton open_review_v3_1 = view.findViewById(R.id.openReview);
-        open_review_v3_1.setOnClickListener(v -> openDialog());
+
+        open_review_v3_1.setOnClickListener(v -> {
+            if (authService.isLoggedIn()) {
+                openDialog();
+            } else {
+                Toast.makeText(requireActivity(), "Ошибка, создайте/войдите\n в аккаунт!", Toast.LENGTH_LONG).show();
+            }
+        });
 
         return view;
     }
@@ -119,14 +131,17 @@ public class place_reviews extends Fragment {
         ImageView but_like = view.findViewById(R.id.icon_heart);
 
         but_like.setOnClickListener(v -> {
-            if (!this.place.is_favorite()) {
-                but_like.setImageResource(R.drawable.heart_color);
-                // выставить флажок, в профиле у человека, что ему место понравилось. (В базе)
-                setLike(true);
+
+            if (authService.isLoggedIn()) {
+                if (!this.place.is_favorite()) {
+                    but_like.setImageResource(R.drawable.heart_color);
+                    setLike(true);
+                } else {
+                    but_like.setImageResource(R.drawable.heart);
+                    setLike(false);
+                }
             } else {
-                but_like.setImageResource(R.drawable.heart);
-                // убрать из базы данных
-                setLike(false);
+                Toast.makeText(requireActivity(), "Ошибка, создайте/войдите\n в аккаунт!", Toast.LENGTH_LONG).show();
             }
         });
 
