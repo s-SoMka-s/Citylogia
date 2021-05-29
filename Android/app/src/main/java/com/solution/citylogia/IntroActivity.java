@@ -114,8 +114,8 @@ public class IntroActivity extends AppCompatActivity {
     private void setUpBoardingItems() {
         List<IntroBoardingItem> mList = new ArrayList<>();
 
-        mList.add(new IntroBoardingItem("Находите крутые места", "Карта, поиск и фильтры помогут вам найти то самое подходящее место для предстоящей прогулки", R.drawable.nsu_1));
-        mList.add(new IntroBoardingItem("Делитесь впечатлениями", "Посетив какое-либо место, вы можете поставить ему оценку и написать о нём отзыв.", R.drawable.park_2));
+        mList.add(new IntroBoardingItem("Находите крутые места", "Карта, поиск и фильтры помогут вам найти то самое подходящее место для предстоящей прогулки", R.drawable.nsk_intro2));
+        mList.add(new IntroBoardingItem("Делитесь впечатлениями", "Посетив какое-либо место, вы можете поставить ему оценку и написать о нём отзыв.", R.drawable.nsk_intro1));
         mList.add(new IntroBoardingItem("Сохраняйте классные места", "Зацепило место и хотели бы в ближайшее время его посетить - добавьте его в избранное, чтобы точно его не потерять.", R.drawable.theater_3));
 
         introBoardingAdapter = new IntroBoardingAdapter(mList);
