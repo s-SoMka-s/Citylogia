@@ -145,6 +145,12 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), ACCESS_LOCATION_REQUEST_CODE)
         }
         this.loadPlaces()
+
+        //test
+        /*val latLng = LatLng(100.0, 100.0)
+        val point = CameraUpdateFactory.newLatLng(latLng)
+        mMap!!.moveCamera(point)*/
+
         mMap!!.setOnMarkerClickListener { marker: Marker ->
             try {
                 val placeId = marker.snippet.toLong()
@@ -247,13 +253,13 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
             markerOptions.icon(this.bitmapDescriptorFromVector(this, R.drawable.ic_my_navigation))
             userLocationMarker = mMap!!.addMarker(markerOptions)
             if (this.refresh) {
-                mMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel))
+                mMap!!.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel))
                 this.refresh = false
             }
         } else {
             userLocationMarker!!.position = latLng
             if (this.refresh) {
-                mMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel))
+                mMap!!.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel))
                 this.refresh = false
             }
         }
