@@ -55,6 +55,7 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
     private var userLongitude: Double? = null
     private var userLatitude: Double? = null
     private var selectedTyped: ArrayList<PlaceType> = ArrayList()
+    private var allTyped: ArrayList<PlaceType> = ArrayList()
     private var selectedRadius: Int = 10
     private var allPlaces: List<ShortPlace>? = null
 
@@ -76,6 +77,8 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
         setContentView(R.layout.activity_maps)
 
         this.placeApi = retrofitNew.retrofit.create(IPlaceApi::class.java)
+
+        this.loadTypes()
 
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -140,11 +143,42 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
             val i = Intent(this@MapActivity, Search::class.java)
             val gson = GsonBuilder().setPrettyPrinting().create()
             i.putExtra("places", gson.toJson(this.allPlaces))
+
+            val selectedTypes: ArrayList<Boolean> = ArrayList()
+            for (i in 0 until allTyped.size) {
+                selectedTypes.add(false)
+            }
+
+            for (i in 0 until selectedTyped.size) {
+                //костыль
+                selectedTypes[selectedTyped[i].id.toInt() - 7] = true
+            }
+
+            //this.selectedTyped.add(PlaceType())
+            i.putExtra("all places", gson.toJson(this.allPlaces))
+            i.putExtra("all types", gson.toJson(this.allTyped))
             i.putExtra("selected types", gson.toJson(this.selectedTyped))
+            //val args = Bundle()
+            //args.putSerializable("selected_types", this.selectedTyped)
+            //i.putExtra("bundle", args);
+
+            //i.putExtra("selected types", selectedTypes)
             i.putExtra("selected radii", selectedRadius)
             i.putExtra("user latitude", userLatitude)
             i.putExtra("user longitude", userLongitude)
-            startActivityForResult(i, 2404)
+            startActivity(i)
+
+            //getSupportActionBar().hide();
+            //startActivityForResult(i, 2404)
+            //finish()
+            /*try {
+                val placeId = marker.snippet.toLong()
+                val i = Intent(this@MapActivity, PlaceInside::class.java)
+                i.putExtra("id", placeId)
+                startActivity(i)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }*/
         })
     }
 
@@ -322,5 +356,17 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
                         this.markers = this.mapService.drawMarkers(this.mMap, places)
                     }
                 }, {})
+    }
+
+    @SuppressLint("CheckResult")
+    private fun loadTypes() {
+        this.placeApi.getPlaceTypes()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { types: BaseCollectionResponse<PlaceType>? ->
+                    val a = types?.data?.elements as ArrayList<PlaceType>
+                    this.selectedTyped = a
+                    this.allTyped = a.clone() as ArrayList<PlaceType>
+                };
     }
 }

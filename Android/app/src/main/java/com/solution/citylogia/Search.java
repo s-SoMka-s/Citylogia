@@ -22,11 +22,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.solution.citylogia.models.Place;
 import com.solution.citylogia.models.PlaceType;
 import com.solution.citylogia.models.ShortPlace;
 import com.solution.citylogia.utils.Generator;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -37,25 +39,29 @@ public class Search extends AppCompatActivity {
     ListView listView;
     SearchView searchView;
     ArrayList<String> stringArrayList = new ArrayList<>();
-    ArrayList<PlaceType> selectedTyped = new ArrayList<>();
-    //MyAdapter adapter;
+    ArrayList<PlaceType> selectedTypes;
+    ArrayList<PlaceType> placeTyped;
+    MyAdapter adapter;
     Double userLatitude;
     Double userLongitude;
-    ArrayList<Place> places;
+    ArrayList<Place> allPlaces;
     ArrayList<String> names;
     ArrayList<String> types;
+    ArrayList<PlaceType> allTypes;
     ArrayList<Double> distances;
     ArrayList<String> distancesString;
     ArrayList<Double> marks;
     ArrayList<String> marksString;
-    String selectedTypesString;
+    String selectedTypesString = "";
     String[] typeArray = {"Парки", "Архитектура", "Еда", "Другое"};
     Spinner filter;
     TextView textView;
-    ArrayList<Boolean> selectedTypes;
+    //ArrayList<Boolean> selectedTypes;
     static final int AMOUNT_OF_TYPES = 4;
 
-    enum Sort {byMarks, byDistances};
+    enum Sort {byMarks, byDistances}
+
+    ;
 
     Sort sort;
     //int images[] = {R.drawable.placeicon,R.drawable.placeicon};
@@ -77,23 +83,43 @@ public class Search extends AppCompatActivity {
     ArrayList<Item> items;
     LatLng position;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Generator generator = new Generator();
-        this.places = generator.genPlaces(10);
+        //Generator generator = new Generator();
+        //this.places = generator.genPlaces(10);
         setContentView(R.layout.activity_search);
         //getSupportActionBar().hide();
         userLatitude = getIntent().getDoubleExtra("user latitude", 0.0);
         userLongitude = getIntent().getDoubleExtra("user longitude", 0.0);
         Gson gson = new Gson();
-        selectedTyped = gson.fromJson(String.valueOf(getIntent().getSerializableExtra("selected types")), ArrayList<PlaceType>.class);
+
+        String args = getIntent().getStringExtra("all types");
+        Type placeTypesType = new TypeToken<ArrayList<PlaceType>>() {
+        }.getType();
+        allTypes = gson.fromJson(args, placeTypesType);
+
+        args = getIntent().getStringExtra("selected types");
+        placeTypesType = new TypeToken<ArrayList<PlaceType>>() {
+        }.getType();
+        selectedTypes = gson.fromJson(args, placeTypesType);
+
+        args = getIntent().getStringExtra("all places");
+        placeTypesType = new TypeToken<ArrayList<Place>>() {
+        }.getType();
+        allPlaces = gson.fromJson(args, placeTypesType);
+
+        position = new LatLng(userLatitude, userLongitude);
+
         listView = findViewById(R.id.search_list_view);
         searchView = findViewById(R.id.search_view);
         textView = findViewById(R.id.selected_types);
-/*
-        textView.setText(getSelectedTypesString());
+
+        for (int i = 0; i < selectedTypes.size() - 1; i++) {
+            selectedTypesString += selectedTypes.get(i).getName() + ", ";
+        }
+        selectedTypesString += selectedTypes.get(selectedTypes.size() - 1).getName();
+        textView.setText(selectedTypesString);
 
         items = getItems();
         reBuild();
@@ -135,13 +161,13 @@ public class Search extends AppCompatActivity {
                 reBuild();
             }
         });
-*/
     }
 
-    /*private ArrayList<Item> getItems() {
+    private ArrayList<Item> getItems() {
         ArrayList<Item> res = new ArrayList<>();
-        for (int i = 0; i < places.size(); i++) {
-                res.add(new Item(getDistance(i), places.get(i).getType().getName(), places.get(i).getName(), places.get(i).getMark()));
+        for (int i = 0; i < allPlaces.size(); i++) {
+            res.add(new Item(getDistance(i), allPlaces.get(i).getType().getName(),
+                    allPlaces.get(i).getName(), allPlaces.get(i).getMark()));
         }
         return res;
     }
@@ -233,9 +259,9 @@ public class Search extends AppCompatActivity {
         public int compare(Item o1, Item o2) {
             return (int) ((o1.mark - o2.mark) * 1000000);
         }
-    }*/
+    }
 
-    /*class MyAdapter extends ArrayAdapter<String> {
+    class MyAdapter extends ArrayAdapter<String> {
         Context context;
         ArrayList<String> rTitle;
         ArrayList<String> rOriginalTitle;
@@ -301,17 +327,17 @@ public class Search extends AppCompatActivity {
 
                 //@Override
                 //protected FilterResults performFiltering(CharSequence constraint) {
-                  //  List<String> filteredResults = null;
-                    //if (constraint.length() == 0) {
-                      //  filteredResults = rOriginalTitle;
-                   // } else {
-                     //   filteredResults = getFilteredResults(constraint.toString().toLowerCase());
-                   // }
+                //  List<String> filteredResults = null;
+                //if (constraint.length() == 0) {
+                //  filteredResults = rOriginalTitle;
+                // } else {
+                //   filteredResults = getFilteredResults(constraint.toString().toLowerCase());
+                // }
 
-                    //FilterResults results = new FilterResults();
-                    //results.values = filteredResults;
+                //FilterResults results = new FilterResults();
+                //results.values = filteredResults;
 
-                    //return results;
+                //return results;
                 //}
             };
         }
@@ -332,7 +358,7 @@ public class Search extends AppCompatActivity {
         float[] results = new float[1];
 
         Location.distanceBetween(position.latitude, position.longitude,
-                places.get(i).getLatitude(), places.get(i).getLongitude(), results);
+                allPlaces.get(i).getLatitude(), allPlaces.get(i).getLongitude(), results);
 
         return results[0];
     }
@@ -352,13 +378,14 @@ public class Search extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent i = new Intent();
-                i.putExtra("selected places in search", position);
-                setResult(RESULT_OK, i);
+                //Intent i = new Intent();
+                Intent i = new Intent(Search.this, MapActivity.class);
+                i.putExtra("selected place in search", id);
+                //setResult(RESULT_OK, i);
                 finish();
                 //Intent i = new Intent(Search.this, PlaceInside.class);
 
-                //i.putExtra("selected places in search", position); // контекст - вся инфа о месте - изу структуру!
+                //i.putExtra("id", 2); // контекст - вся инфа о месте - изу структуру!
 
                 //startActivity(i);
                 //Toast.makeText(getApplicationContext(), adapter.getItem(position), Toast.LENGTH_SHORT).show();
@@ -371,9 +398,7 @@ public class Search extends AppCompatActivity {
         boolean flag = false;
 
         //this.selectedTypes
-
-
         return res.toString();
-    }*/
+    }
 
 }
