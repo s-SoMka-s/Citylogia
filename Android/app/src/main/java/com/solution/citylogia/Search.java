@@ -23,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.solution.citylogia.models.Place;
+import com.solution.citylogia.models.PlaceType;
 import com.solution.citylogia.models.ShortPlace;
 import com.solution.citylogia.utils.Generator;
 
@@ -36,7 +37,10 @@ public class Search extends AppCompatActivity {
     ListView listView;
     SearchView searchView;
     ArrayList<String> stringArrayList = new ArrayList<>();
-    MyAdapter adapter;
+    ArrayList<PlaceType> selectedTyped = new ArrayList<>();
+    //MyAdapter adapter;
+    Double userLatitude;
+    Double userLongitude;
     ArrayList<Place> places;
     ArrayList<String> names;
     ArrayList<String> types;
@@ -51,9 +55,8 @@ public class Search extends AppCompatActivity {
     ArrayList<Boolean> selectedTypes;
     static final int AMOUNT_OF_TYPES = 4;
 
-    enum Sort {byMarks, byDistances}
+    enum Sort {byMarks, byDistances};
 
-    ;
     Sort sort;
     //int images[] = {R.drawable.placeicon,R.drawable.placeicon};
 
@@ -82,12 +85,14 @@ public class Search extends AppCompatActivity {
         this.places = generator.genPlaces(10);
         setContentView(R.layout.activity_search);
         //getSupportActionBar().hide();
-        position = getIntent().getParcelableExtra("user position");
-        //selectedTypes = getIntent().getBooleanArrayExtra("selected types");
+        userLatitude = getIntent().getDoubleExtra("user latitude", 0.0);
+        userLongitude = getIntent().getDoubleExtra("user longitude", 0.0);
+        Gson gson = new Gson();
+        selectedTyped = gson.fromJson(String.valueOf(getIntent().getSerializableExtra("selected types")), ArrayList<PlaceType>.class);
         listView = findViewById(R.id.search_list_view);
         searchView = findViewById(R.id.search_view);
         textView = findViewById(R.id.selected_types);
-
+/*
         textView.setText(getSelectedTypesString());
 
         items = getItems();
@@ -130,10 +135,10 @@ public class Search extends AppCompatActivity {
                 reBuild();
             }
         });
-
+*/
     }
 
-    private ArrayList<Item> getItems() {
+    /*private ArrayList<Item> getItems() {
         ArrayList<Item> res = new ArrayList<>();
         for (int i = 0; i < places.size(); i++) {
                 res.add(new Item(getDistance(i), places.get(i).getType().getName(), places.get(i).getName(), places.get(i).getMark()));
@@ -228,9 +233,9 @@ public class Search extends AppCompatActivity {
         public int compare(Item o1, Item o2) {
             return (int) ((o1.mark - o2.mark) * 1000000);
         }
-    }
+    }*/
 
-    class MyAdapter extends ArrayAdapter<String> {
+    /*class MyAdapter extends ArrayAdapter<String> {
         Context context;
         ArrayList<String> rTitle;
         ArrayList<String> rOriginalTitle;
@@ -274,8 +279,8 @@ public class Search extends AppCompatActivity {
                     rTitle.clear();
                     rTitle.addAll((List) results.values);
                     notifyDataSetChanged();
-                    /*rTitle = (ArrayList<String>) results.values;
-                    notifyDataSetChanged();*/
+                    //rTitle = (ArrayList<String>) results.values;
+                    //notifyDataSetChanged();
                 }
 
                 @Override
@@ -294,20 +299,20 @@ public class Search extends AppCompatActivity {
                     return results;
                 }
 
-                /*@Override
-                protected FilterResults performFiltering(CharSequence constraint) {
-                    List<String> filteredResults = null;
-                    if (constraint.length() == 0) {
-                        filteredResults = rOriginalTitle;
-                    } else {
-                        filteredResults = getFilteredResults(constraint.toString().toLowerCase());
-                    }
+                //@Override
+                //protected FilterResults performFiltering(CharSequence constraint) {
+                  //  List<String> filteredResults = null;
+                    //if (constraint.length() == 0) {
+                      //  filteredResults = rOriginalTitle;
+                   // } else {
+                     //   filteredResults = getFilteredResults(constraint.toString().toLowerCase());
+                   // }
 
-                    FilterResults results = new FilterResults();
-                    results.values = filteredResults;
+                    //FilterResults results = new FilterResults();
+                    //results.values = filteredResults;
 
-                    return results;
-                }*/
+                    //return results;
+                //}
             };
         }
 
@@ -351,11 +356,11 @@ public class Search extends AppCompatActivity {
                 i.putExtra("selected places in search", position);
                 setResult(RESULT_OK, i);
                 finish();
-                /*Intent i = new Intent(Search.this, PlaceInside.class);
+                //Intent i = new Intent(Search.this, PlaceInside.class);
 
-                i.putExtra("selected places in search", position); // контекст - вся инфа о месте - изу структуру!
+                //i.putExtra("selected places in search", position); // контекст - вся инфа о месте - изу структуру!
 
-                startActivity(i);*/
+                //startActivity(i);
                 //Toast.makeText(getApplicationContext(), adapter.getItem(position), Toast.LENGTH_SHORT).show();
             }
         });
@@ -369,6 +374,6 @@ public class Search extends AppCompatActivity {
 
 
         return res.toString();
-    }
+    }*/
 
 }

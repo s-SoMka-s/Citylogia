@@ -24,6 +24,8 @@ import androidx.fragment.app.setFragmentResultListener
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
+import com.google.gson.GsonBuilder
+import com.mancj.materialsearchbar.MaterialSearchBar
 import com.solution.citylogia.models.BaseCollectionResponse
 import com.solution.citylogia.models.PlaceType
 import com.solution.citylogia.models.ShortPlace
@@ -54,14 +56,17 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
     private var userLatitude: Double? = null
     private var selectedTyped: ArrayList<PlaceType> = ArrayList()
     private var selectedRadius: Int = 10
+    private var allPlaces: List<ShortPlace>? = null
 
     private var zoomLevel = 17.0f //This goes up to 21
 
     private lateinit var filterPanel: LinearLayout
     private lateinit var menuPanel: LinearLayout
     private lateinit var btnPanel: LinearLayout
+
     @Inject
     lateinit var retrofitNew: RetrofitSingleton
+
     @Inject
     lateinit var authService: AuthorizationService
 
@@ -87,7 +92,7 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
 
         var filter = findViewById<Button>(R.id.bt_filter)
 
-        filter.setOnClickListener{
+        filter.setOnClickListener {
             var bundle = Bundle()
             bundle.putSerializable("selected_types", this.selectedTyped)
             bundle.putSerializable("selected_radius", this.selectedRadius)
@@ -100,31 +105,47 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
         }
 
         supportFragmentManager.setFragmentResultListener("filters_fragment_apply", this) { _, bundle ->
-                    val selectedTypes = bundle.get("selected_types") as ArrayList<PlaceType>?
-                    val radius = bundle.get("radius") as Int
-                    this.selectedTyped = selectedTyped
-                    this.selectedRadius = radius
-                    this.loadPlaces(types = selectedTypes, radius = radius.toDouble(), longitude = this.userLongitude, latitude = this.userLatitude)
-                }
+            val selectedTypes = bundle.get("selected_types") as ArrayList<PlaceType>?
+            val radius = bundle.get("radius") as Int
+            this.selectedTyped = selectedTyped
+            this.selectedRadius = radius
+            this.loadPlaces(types = selectedTypes, radius = radius.toDouble(), longitude = this.userLongitude, latitude = this.userLatitude)
+        }
 
         val profileBtn: ImageButton = findViewById(R.id.but_profile)
         profileBtn.setOnClickListener {
             if (authService.isLoggedIn()) {
                 startActivity(Intent(this, ProfileActivity::class.java))
-            }
-            else {
+            } else {
                 startActivity(Intent(this, LoginActivity::class.java))
             }
         }
 
         val offerBtn: ImageButton = findViewById(R.id.btn_idea)
-        offerBtn.setOnClickListener{
+        offerBtn.setOnClickListener {
             if (authService.isLoggedIn()) {
                 offerPlace()
             } else {
                 Toast.makeText(this, "Ошибка, создайте/войдите\n в аккаунт!", Toast.LENGTH_LONG).show()
             }
         }
+
+        ////new
+        //var filter: Button? = null
+        var materialSearchBar: MaterialSearchBar? = null
+
+        //filter = findViewById(R.id.bt_filter)
+        materialSearchBar = findViewById<MaterialSearchBar>(R.id.searchBar)
+        materialSearchBar.setOnClickListener(View.OnClickListener { v: View? ->
+            val i = Intent(this@MapActivity, Search::class.java)
+            val gson = GsonBuilder().setPrettyPrinting().create()
+            i.putExtra("places", gson.toJson(this.allPlaces))
+            i.putExtra("selected types", gson.toJson(this.selectedTyped))
+            i.putExtra("selected radii", selectedRadius)
+            i.putExtra("user latitude", userLatitude)
+            i.putExtra("user longitude", userLongitude)
+            startActivityForResult(i, 2404)
+        })
     }
 
     override fun onStart() {
@@ -146,11 +167,6 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
         }
         this.loadPlaces()
 
-        //test
-        /*val latLng = LatLng(100.0, 100.0)
-        val point = CameraUpdateFactory.newLatLng(latLng)
-        mMap!!.moveCamera(point)*/
-
         mMap!!.setOnMarkerClickListener { marker: Marker ->
             try {
                 val placeId = marker.snippet.toLong()
@@ -171,11 +187,6 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
             val btn_zoom_in: ImageButton = findViewById(R.id.btn_zoom_in)
             val btn_zoom_out: ImageButton = findViewById(R.id.btn_zoom_out)
             val btn_navigation: ImageButton = findViewById(R.id.btn_navigation)
-
-            /* Двигает камеру на юзера, но я не знаю куда это вставить, чтобы сразу карта грузилась на юзере
-            val latLng = LatLng(locationResult.lastLocation.latitude, locationResult.lastLocation.longitude);
-            val point = CameraUpdateFactory.newLatLng(latLng)
-            mMap!!.moveCamera(point)*/
 
             if (mMap != null) {
                 setUserLocationMarker(locationResult.lastLocation)
@@ -220,8 +231,9 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
                 .setCancelable(false)
                 .setPositiveButton("Отправить") { _: DialogInterface?, _: Int ->
                     /*Send data to base*/
-                    Toast.makeText(this@MapActivity, "Спасибо! Ваш запрос отправлен!", Toast.LENGTH_LONG).show()}
-                .setNegativeButton("Отмена") { _: DialogInterface?, _: Int ->  }
+                    Toast.makeText(this@MapActivity, "Спасибо! Ваш запрос отправлен!", Toast.LENGTH_LONG).show()
+                }
+                .setNegativeButton("Отмена") { _: DialogInterface?, _: Int -> }
 
         val alertDialog: AlertDialog = alertDialogBuilder.create()
         alertDialog.show()
@@ -273,7 +285,7 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
         cricketerView.findViewById<TextView>(R.id.place_address).text = place.city
         var nearPlaceImage = cricketerView.findViewById<ImageView>(R.id.near_place_img)
         Picasso.get().load(R.drawable.near_place_template)
-                     .into(nearPlaceImage)
+                .into(nearPlaceImage)
         nearPlaceLayout.addView(cricketerView);
     }
 
@@ -293,7 +305,7 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
     }
 
     @SuppressLint("CheckResult")
-    private fun loadPlaces(types: ArrayList<PlaceType>? = null, latitude: Double? = null, radius: Double? = null, longitude: Double? = null){
+    private fun loadPlaces(types: ArrayList<PlaceType>? = null, latitude: Double? = null, radius: Double? = null, longitude: Double? = null) {
         val typeIds = types?.map { type -> type.id }
 
         this.placeApi.getAllPlaces(latitude = latitude, longitude = longitude, radius = radius, typeIds = typeIds)
@@ -302,6 +314,7 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
 
                     val places = places?.data?.elements
                     if (places != null) {
+                        allPlaces = places;
                         this.clearMarkers()
                         var nearest = places.getNearest()
                         if (nearest != null)

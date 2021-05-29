@@ -68,7 +68,7 @@ class FiltersFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
                 val typeCheckBox = cricketerView.findViewById<CheckBox>(R.id.type_select_checkBox);
                 typeCheckBox.text = placeType.name;
 
-                if (this.selectedTypes?.contains(placeType) == true){
+                if (this.selectedTypes?.contains(placeType) == true) {
                     typeCheckBox.isChecked = true;
                 }
 
@@ -76,8 +76,7 @@ class FiltersFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
                     val checkBox = it as CheckBox;
                     if (checkBox.isChecked) {
                         this.selectedTypes?.add(placeType)
-                    }
-                    else{
+                    } else {
                         this.selectedTypes?.remove(placeType)
                     }
                 }
@@ -90,15 +89,16 @@ class FiltersFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
     private fun setUpButtons(view: View) {
         val backBtn = view.findViewById<TextView>(R.id.filters_cancel)
 
-        backBtn.setOnClickListener{
+        backBtn.setOnClickListener {
             this.goBack();
         }
 
         val doneBtn = view.findViewById<TextView>(R.id.filters_complete)
 
-        doneBtn.setOnClickListener{
+        doneBtn.setOnClickListener {
             this.goBack();
-            setFragmentResult("filters_fragment_apply", bundleOf("selected_types" to this.selectedTypes, "radius" to this.radius))
+            setFragmentResult("filters_fragment_apply", bundleOf("selected_types"
+                    to this.selectedTypes, "radius" to this.radius))
         }
 
         val rangeSeekBar = view.findViewById<SeekBar>(R.id.filter_seekBar)
