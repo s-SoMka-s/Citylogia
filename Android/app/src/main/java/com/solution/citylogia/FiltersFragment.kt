@@ -21,11 +21,13 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class FiltersFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
     private var selectedTypes: ArrayList<PlaceType>? = ArrayList()
     private var radius: Int = 10
 
+    @Inject
     lateinit var retrofit: RetrofitSingleton
 
     companion object {
