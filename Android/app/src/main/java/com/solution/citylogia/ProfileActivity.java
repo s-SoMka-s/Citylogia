@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -49,6 +50,7 @@ public class ProfileActivity extends AppCompatActivity {
     private IProfileApi profileApi;
     private ImageView profileImage;
     private TextView tipFav;
+    private ProgressBar progressBar;
 
     @Inject
     RetrofitSingleton retrofit;
@@ -71,6 +73,7 @@ public class ProfileActivity extends AppCompatActivity {
             finish();
         });
 
+        progressBar = findViewById(R.id.profile_prb);
         ImageButton addProfileImg = findViewById(R.id.add_img_btn);
         profileImage = findViewById(R.id.profile_img);
         ImageButton logoutBtn = findViewById(R.id.btn_logout);
@@ -86,8 +89,6 @@ public class ProfileActivity extends AppCompatActivity {
             startActivity(i);
             finish();
         });
-
-
     }
 
     @SuppressLint("CheckResult")

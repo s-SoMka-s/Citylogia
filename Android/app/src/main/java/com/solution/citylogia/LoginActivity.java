@@ -69,11 +69,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 break;
             case R.id.login_btn:
                 loginUser();
-                /*if (it is succes) {
-                    startActivity(new Intent(this, MapActivity.class));
-                } else {
-                    Toast.makeText(this, "Возможно вы вели неправильные данные либо такого пользователя не существует", Toast.LENGTH_LONG).show();
-                }*/
         }
     }
 
@@ -105,7 +100,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @SuppressLint("CheckResult")
     private void login(String email, String password) {
-        // Have fun
         IAuthorizationApi api = this.retrofit.getRetrofit().create(IAuthorizationApi.class);
         LoginParameters parameters = new LoginParameters(email, password);
         api.login(parameters)
@@ -122,6 +116,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     Gson gson = new Gson();
                     String jsonData = gson.toJson(data);
                     storage.putItem("STORAGE_TOKENS_KEY", jsonData);
+
+                    // check data
+                    // Toast.makeText(this, "Возможно вы вели неправильные данные либо такого пользователя не существует", Toast.LENGTH_LONG).show();
 
                     startActivity(new Intent(this, ProfileActivity.class));
                     finish();
