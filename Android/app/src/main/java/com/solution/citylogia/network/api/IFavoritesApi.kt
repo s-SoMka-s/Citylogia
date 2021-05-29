@@ -14,4 +14,7 @@ interface IFavoritesApi {
 
     @DELETE("Favorites/{id}")
     fun deleteFavorite(@Path("id") id: Long): Single<BaseObjectResponse<Boolean>>
+
+    @DELETE("Favorites")
+    fun deleteFavoriteByPlaceId(@Body data: Any): Single<BaseObjectResponse<Boolean>>
 }

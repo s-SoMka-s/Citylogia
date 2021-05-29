@@ -1,4 +1,5 @@
-﻿using Libraries.Db.Base;
+﻿using Core.Entities;
+using Libraries.Db.Base;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -50,7 +51,7 @@ namespace Citylogia.Server.Core.Entityes
         public string Street { get; set; }
         public long House { get; set; }
 
-        public virtual ICollection<Photo> Photos { get; set; }
+        public virtual ICollection<PlacePhoto> Photos { get; set; }
 
         public virtual ICollection<Review> Reviews { get; set; }
     }

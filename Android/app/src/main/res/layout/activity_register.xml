@@ -55,6 +55,7 @@
         android:backgroundTint="@color/nonActive"
         android:drawableStart="@drawable/password"
         android:drawablePadding="20dp"
+        android:inputType="textPassword"
         android:hint="Введите пароль"
         android:textColorHint="@color/blackPrimary"
         android:textSize="14sp"

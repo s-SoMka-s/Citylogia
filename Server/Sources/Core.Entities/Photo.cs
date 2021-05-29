@@ -6,16 +6,14 @@ namespace Citylogia.Server.Core.Entityes
     [Table("Photos")]
     public class Photo : BaseDataType
     {
-        public Photo() : base()
+        public Photo()
         {
             this.PublicUrl = string.Empty;
+            this.Name = string.Empty;
         }
 
 
         public string PublicUrl { get; set; }
-
-        [ForeignKey(nameof(Place))]
-        public long PlaceId { get; set; }
-        public Place Place { get; set; }
+        public string Name { get; set; }
     }
 }

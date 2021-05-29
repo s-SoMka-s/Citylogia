@@ -47,7 +47,6 @@ public class place_info extends Fragment {
         if (args != null) {
             this.place = gson.fromJson(String.valueOf(args.getSerializable("place")), Place.class);
         }
-
     }
 
     @Override
@@ -71,18 +70,6 @@ public class place_info extends Fragment {
 
         ImageView but_back = view.findViewById(R.id.icon_back_v3);
         but_back.setOnClickListener(v -> navController.navigate(R.id.action_place_info_to_activity_place_inside));
-
-        ImageButton profile_but = view.findViewById(R.id.profile_but);
-        profile_but.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), ProfileActivity.class);
-            startActivity(intent);
-        });
-
-        ImageButton map_btn = view.findViewById(R.id.map_icon);
-        map_btn.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), MapActivity.class);
-            startActivity(intent);
-        });
 
 
         layoutCardIndicators = view.findViewById(R.id.layoutBoardingIndicatorsRev);
@@ -109,8 +96,8 @@ public class place_info extends Fragment {
 
         infoCardAdapter = new InfoCardAdapter(mList);
 
-        for (int i = 0; i < place.getPhoto().getElements().size(); i++) {
-            String url_image = place.getPhoto().getElements().get(i).getPublic_url();
+        for (int i = 0; i < place.getPhotos().getElements().size(); i++) {
+            String url_image = place.getPhotos().getElements().get(i).getLink();
             mList.add(new InfoCardItem(url_image));
         }
     }
@@ -150,7 +137,7 @@ public class place_info extends Fragment {
         TextView text_v2_replace = view.findViewById(R.id.text_intro);
 
         String title_v2 = this.place.getName();
-        String address_v2 = this.place.getAddress();
+        String address_v2 = this.place.getCity();
         String text_v2 = this.place.getDescription();
 
         title_v2_replace.setText(title_v2);

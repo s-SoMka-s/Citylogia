@@ -16,6 +16,10 @@ class AuthorizationService @Inject constructor(private val storage: StorageServi
         return data != null && !data.isTemporary && !this.isRefreshTokenExpired();
     }
 
+    fun logOut() {
+        storage.removeItem(storageTokenKey);
+    }
+
     fun getAccessToken(): String? {
         return getTokens()?.tokens
                           ?.access

@@ -10,9 +10,9 @@ import com.solution.citylogia.models.ShortPlace
 
 class MapService {
     fun drawMarkers(mMap: GoogleMap? = null, placesToDraw: Iterable<ShortPlace>): List<Marker> {
-        return placesToDraw.map { (id, _, latitude, longitude) ->
-           val latLng = LatLng(latitude, longitude)
-           val markerOptions = createMarker(latLng, id)
+        return placesToDraw.map {
+           val latLng = LatLng(it.latitude, it.longitude)
+           val markerOptions = createMarker(latLng, it.id)
            mMap!!.addMarker(markerOptions)
        }
     }

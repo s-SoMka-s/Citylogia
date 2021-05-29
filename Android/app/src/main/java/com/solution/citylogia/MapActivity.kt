@@ -114,14 +114,16 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
             }
             else {
                 startActivity(Intent(this, LoginActivity::class.java))
-
             }
-            finish()
         }
 
         val offerBtn: ImageButton = findViewById(R.id.btn_idea)
         offerBtn.setOnClickListener{
-            offerPlace()
+            if (authService.isLoggedIn()) {
+                offerPlace()
+            } else {
+                Toast.makeText(this, "Ошибка, создайте/войдите\n в аккаунт!", Toast.LENGTH_LONG).show()
+            }
         }
     }
 
@@ -143,6 +145,12 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), ACCESS_LOCATION_REQUEST_CODE)
         }
         this.loadPlaces()
+
+        //test
+        /*val latLng = LatLng(100.0, 100.0)
+        val point = CameraUpdateFactory.newLatLng(latLng)
+        mMap!!.moveCamera(point)*/
+
         mMap!!.setOnMarkerClickListener { marker: Marker ->
             try {
                 val placeId = marker.snippet.toLong()
@@ -245,13 +253,13 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
             markerOptions.icon(this.bitmapDescriptorFromVector(this, R.drawable.ic_my_navigation))
             userLocationMarker = mMap!!.addMarker(markerOptions)
             if (this.refresh) {
-                mMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel))
+                mMap!!.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel))
                 this.refresh = false
             }
         } else {
             userLocationMarker!!.position = latLng
             if (this.refresh) {
-                mMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel))
+                mMap!!.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel))
                 this.refresh = false
             }
         }
@@ -262,7 +270,7 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
         val cricketerView = layoutInflater.inflate(R.layout.near_place, null, false)
 
         cricketerView.findViewById<TextView>(R.id.place_name).text = place.name
-        cricketerView.findViewById<TextView>(R.id.place_address).text = place.address
+        cricketerView.findViewById<TextView>(R.id.place_address).text = place.city
         var nearPlaceImage = cricketerView.findViewById<ImageView>(R.id.near_place_img)
         Picasso.get().load(R.drawable.near_place_template)
                      .into(nearPlaceImage)

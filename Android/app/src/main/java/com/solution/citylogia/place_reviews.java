@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,6 +28,8 @@ import com.solution.citylogia.models.Place;
 import com.solution.citylogia.models.Review;
 import com.solution.citylogia.network.RetrofitSingleton;
 import com.solution.citylogia.network.api.IFavoritesApi;
+import com.solution.citylogia.network.api.IReviewsApi;
+import com.solution.citylogia.services.AuthorizationService;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -41,15 +44,22 @@ import io.reactivex.schedulers.Schedulers;
 
 import static com.solution.citylogia.utils.DateTimeExtensionsKt.FromTimestamp;
 
+@AndroidEntryPoint
 public class place_reviews extends Fragment {
 
     private Place place = null;
     private Boolean isPressed = false;
-    private RetrofitSingleton retrofit;
-    private IFavoritesApi favoritesApi;
 
+    private IFavoritesApi favoritesApi;
+    private IReviewsApi reviewsApi;
     private InfoCardAdapter infoCardAdapter;
     private LinearLayout layoutCardIndicators;
+
+    @Inject
+    AuthorizationService authService;
+
+    @Inject
+    RetrofitSingleton retrofit;
 
     public place_reviews() {
 
@@ -65,7 +75,10 @@ public class place_reviews extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         this.favoritesApi = retrofit.getRetrofit().create(IFavoritesApi.class);
+        this.reviewsApi = retrofit.getRetrofit().create(IReviewsApi.class);
+
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         Bundle args = getArguments();
         if (args != null) {
@@ -81,23 +94,32 @@ public class place_reviews extends Fragment {
         View view = inflater.inflate(R.layout.fragment_place_reviews, container, false);
 
         FloatingActionButton open_review_v3_1 = view.findViewById(R.id.openReview);
-        open_review_v3_1.setOnClickListener(v -> openDialog());
+
+        open_review_v3_1.setOnClickListener(v -> {
+            if (authService.isLoggedIn()) {
+                openDialog();
+            } else {
+                Toast.makeText(requireActivity(), "Ошибка, создайте/войдите\n в аккаунт!", Toast.LENGTH_LONG).show();
+            }
+        });
 
         return view;
     }
 
+    @SuppressLint("CheckResult")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         LinearLayout reviewLayoutInsert = view.findViewById(R.id.LikedLayoutInsert);
-        this.place.getReviews().getElements().forEach(review -> {
-            final View cricketerView = getLayoutInflater().inflate(R.layout.review_row_add, null, false);
-            reviewLayoutInsert.addView(cricketerView);
-            fillReviews(cricketerView.findViewById(R.id.testLayout), review);
 
+        this.reviewsApi.get(this.place.getId()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(res -> {
+            res.getData().getElements().forEach(review -> {
+                final View cricketerView = getLayoutInflater().inflate(R.layout.review_row_add, null, false);
+                reviewLayoutInsert.addView(cricketerView);
+                fillReviews(cricketerView.findViewById(R.id.testLayout), review);
+            });
         });
-
         this.fillData(view);
 
         final NavController navController = Navigation.findNavController(view);
@@ -115,14 +137,17 @@ public class place_reviews extends Fragment {
         ImageView but_like = view.findViewById(R.id.icon_heart);
 
         but_like.setOnClickListener(v -> {
-            if (!this.place.is_favorite()) {
-                but_like.setImageResource(R.drawable.heart_color);
-                // выставить флажок, в профиле у человека, что ему место понравилось. (В базе)
-                setLike(true);
+
+            if (authService.isLoggedIn()) {
+                if (!this.place.is_favorite()) {
+                    but_like.setImageResource(R.drawable.heart_color);
+                    setLike(true);
+                } else {
+                    but_like.setImageResource(R.drawable.heart);
+                    setLike(false);
+                }
             } else {
-                but_like.setImageResource(R.drawable.heart);
-                // убрать из базы данных
-                setLike(false);
+                Toast.makeText(requireActivity(), "Ошибка, создайте/войдите\n в аккаунт!", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -151,8 +176,8 @@ public class place_reviews extends Fragment {
 
         infoCardAdapter = new InfoCardAdapter(mList);
 
-        for (int i = 0; i < place.getPhoto().getElements().size(); i++) {
-            String url_image = place.getPhoto().getElements().get(i).getPublic_url();
+        for (int i = 0; i < place.getPhotos().getElements().size(); i++) {
+            String url_image = place.getPhotos().getElements().get(i).getLink();
             mList.add(new InfoCardItem(url_image));
         }
     }
@@ -186,24 +211,23 @@ public class place_reviews extends Fragment {
         }
     }
 
-    private boolean getLike() {
-        return isPressed;
-    }
-
+    @SuppressLint("CheckResult")
     private void setLike(boolean state) {
+        HashMap<String, Object> body = new HashMap<>();
+        body.put("place_id", this.place.getId());
         if (state){
-            HashMap<String, Object> body = new HashMap<>();
-            body.put("place_id", this.place.getId());
-            body.put("user_id", 4);
             this.favoritesApi.makeFavorite(body).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(res -> {
                 this.isPressed = res.getData() ? true : this.isPressed;
                 this.place.set_favorite(this.isPressed);
             });
         }
         else {
-            this.favoritesApi.deleteFavorite(this.place.getId()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(res -> {
-                this.isPressed = res.getData() ? false : this.isPressed;
-                this.place.set_favorite(this.isPressed);
+            this.favoritesApi.getFavorites().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(response -> {
+                Long id = response.getData().getElements().stream().filter(f -> f.getPlace().getId() == this.place.getId()).findFirst().get().getId();
+                this.favoritesApi.deleteFavorite(id).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(res -> {
+                    this.isPressed = res.getData() ? false : this.isPressed;
+                    this.place.set_favorite(this.isPressed);
+                });
             });
         }
 
@@ -221,7 +245,7 @@ public class place_reviews extends Fragment {
         TextView address_v3_replace = view.findViewById(R.id.address_v3);
 
         String title_v2 = this.place.getName();
-        String address_v2 = this.place.getAddress();
+        String address_v2 = this.place.getCity();
         // Boolean isLikePressed = ...
 
         title_v3_replace.setText(title_v2);
@@ -237,7 +261,7 @@ public class place_reviews extends Fragment {
         ImageView placeImage = view.findViewById(R.id.image_replace);
 
         try {
-            String url_image = place.getPhoto().getElements().get(1).getPublic_url();
+            String url_image = place.getPhotos().getElements().get(1).getLink();
             Picasso.get().load(url_image)
                     .placeholder(R.drawable.tm_info)
                     .into(placeImage);
@@ -271,7 +295,7 @@ public class place_reviews extends Fragment {
         date.setText(dateReplace);
         
         try {
-            String url_image = review.getAuthor().getAvatar().getPublic_url();
+            String url_image = review.getAuthor().getAvatar().getLink();
             Picasso.get().load(url_image)
                     .resize(150, 150)
                     .centerCrop()

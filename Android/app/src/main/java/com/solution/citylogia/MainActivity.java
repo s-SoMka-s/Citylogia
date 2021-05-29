@@ -11,15 +11,24 @@ import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mancj.materialsearchbar.MaterialSearchBar;
+import com.solution.citylogia.network.StorageService;
+import com.solution.citylogia.services.AuthorizationService;
 
 import java.util.List;
 import java.util.Locale;
+
+import javax.inject.Inject;
+
+import dagger.hilt.android.AndroidEntryPoint;
+
 
 public class MainActivity extends AppCompatActivity{
     Button filter;
 
     private MaterialSearchBar materialSearchBar;
     private List<AutocompletePrediction> predictionList;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +44,6 @@ public class MainActivity extends AppCompatActivity{
                 getBaseContext().getResources().getDisplayMetrics());
 
         setContentView(R.layout.activity_maps);
-
 
         filter = findViewById(R.id.bt_filter);
         materialSearchBar = findViewById(R.id.searchBar);
