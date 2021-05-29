@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.solution.citylogia.models.Favorite;
 import com.solution.citylogia.models.Place;
+import com.solution.citylogia.models.ShortPlace;
 import com.solution.citylogia.network.RetrofitSingleton;
 import com.solution.citylogia.network.api.IFavoritesApi;
 import com.solution.citylogia.network.api.IProfileApi;
@@ -88,7 +89,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void fillLikedPlaces(Favorite favorite, View view) {
-        Place place = favorite.getPlace();
+        ShortPlace place = favorite.getPlace();
 
         TextView name = view.findViewById(R.id.title_v);
         name.setText(place.getName());
@@ -113,7 +114,7 @@ public class ProfileActivity extends AppCompatActivity {
             finish();
         });
         try {
-            String url_image = place.getPhotos().getElements().get(0).getLink();
+            String url_image = place.getMain_photo().getLink();
             Picasso.get().load(url_image)
                     .placeholder(R.drawable.image_template)
                     .into(placeImage);
