@@ -47,7 +47,6 @@ public class place_info extends Fragment {
         if (args != null) {
             this.place = gson.fromJson(String.valueOf(args.getSerializable("place")), Place.class);
         }
-
     }
 
     @Override
