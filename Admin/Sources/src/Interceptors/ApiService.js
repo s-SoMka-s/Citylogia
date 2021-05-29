@@ -22,6 +22,28 @@ export class ApiService {
         return this.client.post('/Auth/Email', data)
     }
 
+    takePlaces(
+        take = null,
+        skip = null,
+        onlyApproved = false,
+        onlyNotReviewed = false
+    ) {
+        const params = []
+
+        if (take != null) {
+            params.push(`take=${take}`)
+        }
+
+        if (skip != null) {
+            params.push(`skip=${skip}`)
+        }
+
+        params.push(`only_approved=${onlyApproved}`)
+        params.push(`only_not_reviewed=${onlyNotReviewed}`)
+
+        return this.client.post(`/Places?${params.join('&')}`)
+    }
+
     #processResponse(response) {
         if (response.data == null || response.data == '') {
             throw 'Error response'

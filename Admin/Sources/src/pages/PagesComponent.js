@@ -19,10 +19,6 @@ export class PagesComponent extends Component {
                     <Menu></Menu>
                 </div>
                 <div className="pages__wrapper">
-                    <div className="pages__header">
-                        <ToolBar></ToolBar>
-                    </div>
-
                     <div className="pages__content-box">
                         <Switch>
                             <Route
