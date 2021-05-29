@@ -28,6 +28,7 @@ import com.solution.citylogia.models.Place;
 import com.solution.citylogia.models.Review;
 import com.solution.citylogia.network.RetrofitSingleton;
 import com.solution.citylogia.network.api.IFavoritesApi;
+import com.solution.citylogia.network.api.IReviewsApi;
 import com.solution.citylogia.services.AuthorizationService;
 import com.squareup.picasso.Picasso;
 
@@ -50,7 +51,7 @@ public class place_reviews extends Fragment {
     private Boolean isPressed = false;
 
     private IFavoritesApi favoritesApi;
-
+    private IReviewsApi reviewsApi;
     private InfoCardAdapter infoCardAdapter;
     private LinearLayout layoutCardIndicators;
 
@@ -74,7 +75,10 @@ public class place_reviews extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         this.favoritesApi = retrofit.getRetrofit().create(IFavoritesApi.class);
+        this.reviewsApi = retrofit.getRetrofit().create(IReviewsApi.class);
+
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         Bundle args = getArguments();
         if (args != null) {
@@ -102,18 +106,20 @@ public class place_reviews extends Fragment {
         return view;
     }
 
+    @SuppressLint("CheckResult")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         LinearLayout reviewLayoutInsert = view.findViewById(R.id.LikedLayoutInsert);
-        this.place.getReviews().getElements().forEach(review -> {
-            final View cricketerView = getLayoutInflater().inflate(R.layout.review_row_add, null, false);
-            reviewLayoutInsert.addView(cricketerView);
-            fillReviews(cricketerView.findViewById(R.id.testLayout), review);
 
+        this.reviewsApi.get(this.place.getId()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(res -> {
+            res.getData().getElements().forEach(review -> {
+                final View cricketerView = getLayoutInflater().inflate(R.layout.review_row_add, null, false);
+                reviewLayoutInsert.addView(cricketerView);
+                fillReviews(cricketerView.findViewById(R.id.testLayout), review);
+            });
         });
-
         this.fillData(view);
 
         final NavController navController = Navigation.findNavController(view);
