@@ -6,6 +6,23 @@
     android:layout_height="match_parent"
     tools:context=".ProfileActivity">
 
+    <ProgressBar
+        android:id="@+id/profile_prb"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="gone"
+        android:max="100"
+        android:minWidth="250dp"
+        android:minHeight="50dp"
+        android:progress="1"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ScrollView
         android:id="@+id/likedPlaces"
         android:layout_width="match_parent"
