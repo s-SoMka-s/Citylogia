@@ -43,7 +43,6 @@ public class Search extends AppCompatActivity {
     MyAdapter adapter;
     Double userLatitude;
     Double userLongitude;
-    ArrayList<Place> allPlaces;
     ArrayList<Place> selectedPlaces;
     ArrayList<String> names;
     ArrayList<String> types;

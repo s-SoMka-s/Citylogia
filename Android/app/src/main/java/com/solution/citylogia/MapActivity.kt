@@ -374,12 +374,27 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
                             allPlaces = places.clone() as ArrayList<Place>
                             flag = false
                         }
-                        selectedPlaces = places
                         this.clearMarkers()
-                        /*var nearest = places.getNearest()
-                        if (nearest != null)
-                            this.loadNearestPlace(nearest)*/
-                        this.markers = this.mapService.drawMarkers(this.mMap, places)
+                        /*for (String item : rOriginalTitle) {
+                if (item.toLowerCase().contains(constraint)) {
+                    results.add(item);
+                }
+              }*/
+                        /*for (String item : rOriginalTitle) {
+                if (item.toLowerCase().contains(constraint)) {
+                    results.add(item);
+                }
+            }*/
+                        val xx = java.util.ArrayList<Place>()
+                        for (i in 0 until places.size) {
+                            var count = 0
+                            if (distanceBetweenTwoMarkers(places[i]) <= selectedRadius*1000) {
+                                xx.add(places[i])
+                                count++
+                            }
+                        }
+                        selectedPlaces = xx.toList()
+                        this.markers = this.mapService.drawMarkers(this.mMap, xx)
                     }
                 }, {})
     }
@@ -415,12 +430,19 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
         var jsonedTypes = bundle.getString("selected_types");
         val placeTypesType = object : TypeToken<java.util.ArrayList<PlaceType?>?>() {}.type
 
-        val selectedTypes =  gson.fromJson<ArrayList<PlaceType>>(jsonedTypes, placeTypesType)
+        val selectedTypes = gson.fromJson<ArrayList<PlaceType>>(jsonedTypes, placeTypesType)
         val radius = bundle.getInt("selected_radius")
 
         this.selectedTyped = selectedTyped
         this.selectedRadius = radius
         this.loadPlaces(types = selectedTypes, radius = radius.toDouble(), longitude = this.userLongitude, latitude = this.userLatitude)
+    }
+
+    private fun distanceBetweenTwoMarkers(place: Place): Float {
+        val results = FloatArray(1)
+        Location.distanceBetween(userLatitude!!, userLongitude!!,
+                place.latitude, place.longitude, results)
+        return results[0]
     }
 }
 
