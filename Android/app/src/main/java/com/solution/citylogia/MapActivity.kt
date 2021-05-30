@@ -156,7 +156,7 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
             }
 
             //this.selectedTyped.add(PlaceType())
-            i.putExtra("all places", gson.toJson(this.allPlaces))
+            i.putExtra("all places", gson.toJson(this.selectedPlaces))
             i.putExtra("all types", gson.toJson(this.allTyped))
             i.putExtra("selected types", gson.toJson(this.selectedTyped))
             i.putExtra("markers", gson.toJson(markerIds))

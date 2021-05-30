@@ -76,7 +76,7 @@ public class Search extends AppCompatActivity {
             this.type = type;
             this.name = name;
             this.mark = mark;
-            this.id = id - 13;
+            this.id = id;
         }
     }
 
@@ -105,7 +105,7 @@ public class Search extends AppCompatActivity {
         args = getIntent().getStringExtra("all places");
         placeTypesType = new TypeToken<ArrayList<Place>>() {
         }.getType();
-        allPlaces = gson.fromJson(args, placeTypesType);
+        selectedPlaces = gson.fromJson(args, placeTypesType);
 
         args = getIntent().getStringExtra("markers");
         placeTypesType = new TypeToken<ArrayList<Long>>() {
@@ -118,14 +118,14 @@ public class Search extends AppCompatActivity {
         searchView = findViewById(R.id.search_view);
         textView = findViewById(R.id.selected_types);
 
-        selectedPlaces = new ArrayList<Place>();
+        /*selectedPlaces = new ArrayList<Place>();
         for (int i = 0; i < allPlaces.size(); i++) {
             for (int j = 0; j < selectedTypes.size(); j++) {
                 if (allPlaces.get(i).getId() - 13 == selectedTypes.get(j).getId() - 7) {
                     selectedPlaces.add(allPlaces.get(i));
                 }
             }
-        }
+        }*/
 
         mapOriginal = new Long[selectedPlaces.size()];
         for (int i = 0; i < selectedPlaces.size(); i++) {
@@ -442,7 +442,7 @@ public class Search extends AppCompatActivity {
                 setResult(RESULT_OK, intent);
                 finish();*/
                 //val placeId = markers!![result.toInt()].snippet.toLong();
-                Long placeId = markers.get(Math.toIntExact(map[(int) id]));
+                Long placeId = map[(int) id];
                 Intent i = new Intent(Search.this, PlaceInside.class);
                 i.putExtra("id", placeId);
                 startActivity(i);
