@@ -25,6 +25,7 @@ import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 import com.mancj.materialsearchbar.MaterialSearchBar
 import com.solution.citylogia.models.BaseCollectionResponse
 import com.solution.citylogia.models.Place
@@ -99,23 +100,11 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
         var filter = findViewById<Button>(R.id.bt_filter)
 
         filter.setOnClickListener {
-            var bundle = Bundle()
-            bundle.putSerializable("selected_types", this.selectedTyped)
-            bundle.putSerializable("selected_radius", this.selectedRadius)
-
-            var filtersFragment = FiltersFragment.getNewInstance(bundle);
-            supportFragmentManager.beginTransaction()
-                    .replace(R.id.map, filtersFragment)
-                    .addToBackStack(null)
-                    .commit();
+            this.startFilters()
         }
 
         supportFragmentManager.setFragmentResultListener("filters_fragment_apply", this) { _, bundle ->
-            val selectedTypes = bundle.get("selected_types") as ArrayList<PlaceType>?
-            val radius = bundle.get("radius") as Int
-            this.selectedTyped = selectedTyped
-            this.selectedRadius = radius
-            this.loadPlaces(types = selectedTypes, radius = radius.toDouble(), longitude = this.userLongitude, latitude = this.userLatitude)
+            this.getFiltersResult(bundle)
         }
 
         val profileBtn: ImageButton = findViewById(R.id.but_profile)
@@ -405,5 +394,32 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
                     this.selectedTyped = a
                     this.allTyped = a.clone() as ArrayList<PlaceType>
                 };
+    }
+
+    private fun startFilters() {
+        var bundle = Bundle()
+        val gson = GsonBuilder().setPrettyPrinting().create()
+
+        bundle.putString("selected_types", gson.toJson(this.selectedTyped))
+        bundle.putInt("selected_radius", this.selectedRadius)
+
+        var filtersFragment = FiltersFragment.getNewInstance(bundle);
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.map, filtersFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    private fun getFiltersResult(bundle: Bundle) {
+        val gson = GsonBuilder().setPrettyPrinting().create()
+        var jsonedTypes = bundle.getString("selected_types");
+        val placeTypesType = object : TypeToken<java.util.ArrayList<PlaceType?>?>() {}.type
+
+        val selectedTypes =  gson.fromJson<ArrayList<PlaceType>>(jsonedTypes, placeTypesType)
+        val radius = bundle.getInt("selected_radius")
+
+        this.selectedTyped = selectedTyped
+        this.selectedRadius = radius
+        this.loadPlaces(types = selectedTypes, radius = radius.toDouble(), longitude = this.userLongitude, latitude = this.userLatitude)
     }
 }
