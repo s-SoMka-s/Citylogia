@@ -13,6 +13,8 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 import com.solution.citylogia.models.PlaceType
 import com.solution.citylogia.network.RetrofitSingleton
 import com.solution.citylogia.network.api.IPlaceApi
@@ -48,8 +50,11 @@ class FiltersFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        this.selectedTypes = arguments?.getSerializable("selected_types") as ArrayList<PlaceType>
-        this.radius = arguments?.getSerializable("selected_radius") as Int
+        val gson = GsonBuilder().setPrettyPrinting().create()
+        var jsonedTypes = arguments?.getString("selected_types");
+        val placeTypesType = object : TypeToken<java.util.ArrayList<PlaceType?>?>() {}.type
+        this.selectedTypes = gson.fromJson<ArrayList<PlaceType>>(jsonedTypes, placeTypesType)
+        this.radius = arguments?.getInt("selected_radius") as Int
         super.onViewCreated(view, savedInstanceState)
         this.setUpButtons(view)
         this.loadTypes(view)
@@ -97,8 +102,13 @@ class FiltersFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
         doneBtn.setOnClickListener {
             this.goBack();
-            setFragmentResult("filters_fragment_apply", bundleOf("selected_types"
-                    to this.selectedTypes, "radius" to this.radius))
+            var bundle = Bundle()
+            val gson = GsonBuilder().setPrettyPrinting().create()
+
+            bundle.putString("selected_types", gson.toJson(this.selectedTypes))
+            bundle.putInt("selected_radius", this.radius)
+
+            setFragmentResult("filters_fragment_apply", bundle)
         }
 
         val rangeSeekBar = view.findViewById<SeekBar>(R.id.filter_seekBar)
