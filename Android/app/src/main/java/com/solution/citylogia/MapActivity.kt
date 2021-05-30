@@ -150,15 +150,24 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
                 //костыль
                 markerIds.add(markers!![i].snippet.toLong())
             }
-            for (i in 0 until selectedTyped.size) {
-                //костыль
-                selectedTypes[selectedTyped[i].id.toInt() - 7] = true
+
+            var selectedTypedX: ArrayList<PlaceType> = ArrayList()
+            for (i in 0 until selectedPlaces!!.size) {
+                var flag = true
+                for (j in 0 until selectedTypedX.size) {
+                    if (selectedTypedX[j].id == selectedPlaces!![i].type.id) {
+                        flag = false
+                    }
+                }
+                if (flag) {
+                    selectedTypedX.add(selectedPlaces!![i].type)
+                }
             }
 
             //this.selectedTyped.add(PlaceType())
             i.putExtra("all places", gson.toJson(this.selectedPlaces))
             i.putExtra("all types", gson.toJson(this.allTyped))
-            i.putExtra("selected types", gson.toJson(this.selectedTyped))
+            i.putExtra("selected types", gson.toJson(selectedTypedX))
             i.putExtra("markers", gson.toJson(markerIds))
             /*val args = Bundle()
             args.putSerializable("selected_types", this.mar)

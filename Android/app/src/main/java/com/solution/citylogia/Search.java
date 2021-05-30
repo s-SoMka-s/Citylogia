@@ -135,7 +135,9 @@ public class Search extends AppCompatActivity {
         for (int i = 0; i < selectedTypes.size() - 1; i++) {
             selectedTypesString += selectedTypes.get(i).getName() + ", ";
         }
-        selectedTypesString += selectedTypes.get(selectedTypes.size() - 1).getName();
+        if (selectedTypes.size() > 1) {
+            selectedTypesString += selectedTypes.get(selectedTypes.size() - 1).getName();
+        }
         textView.setText(selectedTypesString);
 
         items = getItems();
@@ -261,7 +263,22 @@ public class Search extends AppCompatActivity {
         StringBuilder build;
         for (int i = 0; i < items.size(); i++) {
             build = new StringBuilder();
-            res.add(build.append("Оценка: ").append((round(items.get(i).mark, 1))).toString());
+            if (items.get(i).mark >= 4.5) {
+                res.add(build.append("★★★★★").toString());
+            } else if (items.get(i).mark >= 3.5) {
+                res.add(build.append("★★★★☆").toString());
+            } else if (items.get(i).mark >= 2.5) {
+                res.add(build.append("★★★☆☆").toString());
+            } else if (items.get(i).mark >= 1.5) {
+                res.add(build.append("★★☆☆☆").toString());
+            } else if (items.get(i).mark >= 0.5) {
+                res.add(build.append("★☆☆☆☆").toString());
+            } else if (items.get(i).mark > 0.0) {
+                res.add(build.append("☆☆☆☆☆").toString());
+            } else if (items.get(i).mark == 0.0) {
+                res.add(build.append("отзывов пока нет").toString());
+            }
+            //res.add(build.append("Оценка: ").append((round(items.get(i).mark, 1))).toString());
         }
         return res;
     }
