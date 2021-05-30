@@ -28,8 +28,6 @@ public class MainActivity extends AppCompatActivity{
     private MaterialSearchBar materialSearchBar;
     private List<AutocompletePrediction> predictionList;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +43,7 @@ public class MainActivity extends AppCompatActivity{
 
         setContentView(R.layout.activity_maps);
 
-        filter = findViewById(R.id.bt_filter);
+        /*filter = findViewById(R.id.bt_filter);
         materialSearchBar = findViewById(R.id.searchBar);
         materialSearchBar.setOnClickListener(v -> {
             Intent i = new Intent(MainActivity.this, Search.class);
@@ -56,11 +54,8 @@ public class MainActivity extends AppCompatActivity{
             //i.putExtra("user position", position);
             startActivityForResult(i, 2404);
 
-        });
+        });*/
     }
-
-
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

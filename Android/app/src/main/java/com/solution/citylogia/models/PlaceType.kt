@@ -1,5 +1,8 @@
 package com.solution.citylogia.models
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class PlaceType(
         val id: Long = 0,
         val name: String = "Архитектура",
