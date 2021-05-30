@@ -23,3 +23,19 @@ li {
     margin: 0;
     padding: 0;
 }
+
+::-webkit-scrollbar {
+    width: 0.8rem;
+    background: #eef0f6;
+    border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #a6acbe;
+    border-radius: 8px;
+}
+
+@font-face {
+    font-family: GilroyMedium;
+    src: url(./assets/fonts/Gilroy/Gilroy-Medium.ttf);
+}

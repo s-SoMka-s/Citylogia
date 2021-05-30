@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import './PlacesPlage.scss'
 import { makeStyles } from '@material-ui/core/styles'
 import Table from '@material-ui/core/Table'
@@ -17,38 +17,56 @@ import LeftArrow from '../../assets/pagination/arrow-left.svg'
 import RightArrow from '../../assets/pagination/arrow-right.svg'
 import { ApiService } from '../../Interceptors/ApiService'
 
-const useStyles = makeStyles({})
+const PLACES_PER_PAGE = 7
 
 const statuses = {
     NOT_REVIEWED: 1,
     APPROVED: 2,
 }
 
+function getPlaces() {}
+
 export default function PlacesPage() {
     let api = new ApiService()
-    const [value, setValue] = React.useState(0)
-    const [places, setPlaces] = React.useState(new Array())
 
-    const handleChange = (event, newValue) => {
-        setValue(newValue)
+    let take = PLACES_PER_PAGE
+    let skip = 0
+    let onlyApproved = true
+    let onlyNotReviewed = false
 
-        let take = 7
-        let skip = 0
-        let onlyApproved = false
-        let onlyNotReviewed = false
+    const [value, setValue] = useState(0)
+    const [places, setPlaces] = useState(new Array())
+    const [firstLoad, setFalse] = useState(true)
 
-        if (newValue == 0) {
-            onlyApproved = true
-        } else {
-            onlyNotReviewed = true
-        }
-
+    const loadPlaces = (take, skip, onlyApproved, onlyNotReviewed) => {
         api.takePlaces(take, skip, onlyApproved, onlyNotReviewed).then(
             (places) => {
                 setPlaces(places.elements)
             }
         )
     }
+
+    const handleChange = (event, newValue) => {
+        setValue(newValue)
+
+        if (newValue == 0) {
+            onlyApproved = true
+            onlyNotReviewed = false
+        } else {
+            onlyNotReviewed = true
+            onlyApproved = false
+        }
+
+        loadPlaces(take, skip, onlyApproved, onlyNotReviewed)
+    }
+
+    useEffect(() => {
+        if (firstLoad) {
+            setFalse(false)
+            console.log(firstLoad)
+            loadPlaces(take, skip, onlyApproved, onlyNotReviewed)
+        }
+    })
 
     return (
         <div className="places-page">

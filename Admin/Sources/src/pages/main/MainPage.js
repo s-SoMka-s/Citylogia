@@ -10,6 +10,7 @@ import InfoBlock from './InfoBlock/InfoBlock'
 import MapImg from '../../assets/map.png'
 import LineInputField from '../../components/line-input-field/LineInputField'
 import ToolBar from '../../components/toolbar/ToolBar'
+import PlusIcon from '../../assets/Plus.svg'
 
 export class MainPage extends Component {
     static propTypes = {}
@@ -17,7 +18,7 @@ export class MainPage extends Component {
     render() {
         return (
             <div className="main-page-container">
-                <div className="pages__header">
+                <div className="pages-header">
                     <ToolBar></ToolBar>
                 </div>
                 <div className="main-page">
@@ -43,7 +44,39 @@ export class MainPage extends Component {
                     ></InfoBlock>
                     {/* <div className="main-page__map"></div> */}
                     <div className="main-page__form">
-                        <LineInputField></LineInputField>
+                        <label htmlFor="nameInput">Название</label>
+                        <input id="nameInput" placeholder="Название"></input>
+                        <div className="main-page__form-divider"></div>
+                        <label htmlFor="shortDescriptionInput">
+                            Краткое описание
+                        </label>
+                        <input
+                            id="shortDescriptionInput"
+                            placeholder="Краткое описание"
+                        ></input>
+                        <div className="main-page__form-divider"></div>
+                        <label htmlFor="descriptionInput">Описание</label>
+                        <input
+                            id="descriptionInput"
+                            placeholder="Описание"
+                        ></input>
+                        <div className="main-page__form-divider"></div>
+                        <label htmlFor="typeInput">Тип места</label>
+                        <input id="typeInput" placeholder="Тип места"></input>
+                        <div className="main-page__form-divider"></div>
+                        <label htmlFor="cityInput">Адресс</label>
+                        <input id="cityInput" placeholder="Город"></input>
+                        <input id="streetInput" placeholder="Улица"></input>
+                        <input id="houseInput" placeholder="Дом"></input>
+                        <div className="main-page__form-divider"></div>
+                        <label htmlFor="coordInput">Координаты</label>
+                        <input id="coordInput" placeholder="Долгота"></input>
+                        <input id="coord2Input" placeholder="Широта"></input>
+                        <div className="main-page__form-divider"></div>
+                        <div className="main-page__form-photos-controls">
+                            <span>Фотки</span>
+                            <img src={PlusIcon}></img>
+                        </div>
                     </div>
                 </div>
             </div>

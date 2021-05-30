@@ -3,7 +3,7 @@ import axios from 'axios'
 export class ApiService {
     constructor() {
         this.client = axios.create({
-            baseURL: `http://localhost:5000/api`,
+            baseURL: `http://35.209.124.144:8000/api`,
             timeout: 10000,
         })
 
@@ -30,11 +30,11 @@ export class ApiService {
     ) {
         const params = []
 
-        if (take != null) {
+        if (take !== null) {
             params.push(`take=${take}`)
         }
 
-        if (skip != null) {
+        if (skip !== null) {
             params.push(`skip=${skip}`)
         }
 
@@ -45,11 +45,11 @@ export class ApiService {
     }
 
     #processResponse(response) {
-        if (response.data == null || response.data == '') {
+        if (response.data === null || response.data === '') {
             throw 'Error response'
         }
 
-        if (response.data.status_code != 200) {
+        if (response.data.status_code !== 200) {
             throw `Status code not 200! Status code: ${response.data.status_code}`
         }
 
