@@ -27,18 +27,19 @@ import com.google.android.gms.maps.model.*
 import com.google.gson.GsonBuilder
 import com.mancj.materialsearchbar.MaterialSearchBar
 import com.solution.citylogia.models.BaseCollectionResponse
+import com.solution.citylogia.models.Place
 import com.solution.citylogia.models.PlaceType
 import com.solution.citylogia.models.ShortPlace
 import com.solution.citylogia.network.RetrofitSingleton
 import com.solution.citylogia.network.api.IPlaceApi
 import com.solution.citylogia.services.AuthorizationService
 import com.solution.citylogia.services.MapService
-import com.solution.citylogia.utils.getNearest
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class MapActivity : FragmentActivity(), OnMapReadyCallback {
@@ -57,7 +58,9 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
     private var selectedTyped: ArrayList<PlaceType> = ArrayList()
     private var allTyped: ArrayList<PlaceType> = ArrayList()
     private var selectedRadius: Int = 10
-    private var allPlaces: List<ShortPlace>? = null
+    private var selectedPlaces: List<Place>? = null
+    private var allPlaces: List<Place>? = null
+    private var flag: Boolean = true
 
     private var zoomLevel = 17.0f //This goes up to 21
 
@@ -142,7 +145,6 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
         materialSearchBar.setOnClickListener(View.OnClickListener { v: View? ->
             val i = Intent(this@MapActivity, Search::class.java)
             val gson = GsonBuilder().setPrettyPrinting().create()
-            i.putExtra("places", gson.toJson(this.allPlaces))
 
             val selectedTypes: ArrayList<Boolean> = ArrayList()
             for (i in 0 until allTyped.size) {
@@ -154,32 +156,63 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
                 selectedTypes[selectedTyped[i].id.toInt() - 7] = true
             }
 
+            var markerIds: ArrayList<Long> = ArrayList()
+            for (i in 0 until markers!!.size) {
+                //костыль
+                markerIds.add(markers!![i].snippet.toLong())
+            }
+            for (i in 0 until selectedTyped.size) {
+                //костыль
+                selectedTypes[selectedTyped[i].id.toInt() - 7] = true
+            }
+
             //this.selectedTyped.add(PlaceType())
             i.putExtra("all places", gson.toJson(this.allPlaces))
             i.putExtra("all types", gson.toJson(this.allTyped))
             i.putExtra("selected types", gson.toJson(this.selectedTyped))
-            //val args = Bundle()
-            //args.putSerializable("selected_types", this.selectedTyped)
-            //i.putExtra("bundle", args);
+            i.putExtra("markers", gson.toJson(markerIds))
+            /*val args = Bundle()
+            args.putSerializable("selected_types", this.mar)
+            i.putExtra("bundle", args);*/
 
             //i.putExtra("selected types", selectedTypes)
             i.putExtra("selected radii", selectedRadius)
             i.putExtra("user latitude", userLatitude)
             i.putExtra("user longitude", userLongitude)
-            startActivity(i)
+            //startActivity(i)
 
             //getSupportActionBar().hide();
-            //startActivityForResult(i, 2404)
+            startActivityForResult(i, 2404)
             //finish()
             /*try {
-                val placeId = marker.snippet.toLong()
+                //val placeId = marker.snippet.toLong()
                 val i = Intent(this@MapActivity, PlaceInside::class.java)
-                i.putExtra("id", placeId)
+                i.putExtra("id", 20)
                 startActivity(i)
             } catch (e: Exception) {
                 e.printStackTrace()
             }*/
+
+
         })
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        var result: String = ""
+        try {
+            super.onActivityResult(requestCode, resultCode, data)
+            if (requestCode === 2404 && resultCode === RESULT_OK) {
+                if (data != null) {
+                    result = data.getStringExtra("result").toString()
+                    val placeId = markers!![result.toInt()].snippet.toLong()
+                    val i = Intent(this@MapActivity, PlaceInside::class.java)
+                    i.putExtra("id", placeId)
+                    startActivity(i)
+                }
+            }
+        } catch (ex: java.lang.Exception) {
+        }
     }
 
     override fun onStart() {
@@ -344,15 +377,19 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
 
         this.placeApi.getAllPlaces(latitude = latitude, longitude = longitude, radius = radius, typeIds = typeIds)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).subscribe({ places: BaseCollectionResponse<ShortPlace>? ->
+                .observeOn(AndroidSchedulers.mainThread()).subscribe({ places: BaseCollectionResponse<Place>? ->
 
-                    val places = places?.data?.elements
+                    val places = places?.data?.elements as ArrayList<Place>
                     if (places != null) {
-                        allPlaces = places;
+                        if (flag) {
+                            allPlaces = places.clone() as ArrayList<Place>
+                            flag = false
+                        }
+                        selectedPlaces = places
                         this.clearMarkers()
-                        var nearest = places.getNearest()
+                        /*var nearest = places.getNearest()
                         if (nearest != null)
-                            this.loadNearestPlace(nearest);
+                            this.loadNearestPlace(nearest)*/
                         this.markers = this.mapService.drawMarkers(this.mMap, places)
                     }
                 }, {})

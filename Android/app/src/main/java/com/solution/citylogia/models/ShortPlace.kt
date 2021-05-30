@@ -1,6 +1,5 @@
 package com.solution.citylogia.models
 
-
 data class ShortPlace(
         var id: Long = 0,
         var name: String? = null,
