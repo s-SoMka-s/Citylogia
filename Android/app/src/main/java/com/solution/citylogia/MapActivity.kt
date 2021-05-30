@@ -423,3 +423,4 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
         this.loadPlaces(types = selectedTypes, radius = radius.toDouble(), longitude = this.userLongitude, latitude = this.userLatitude)
     }
 }
+

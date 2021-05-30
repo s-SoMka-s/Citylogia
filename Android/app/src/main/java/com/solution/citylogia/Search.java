@@ -56,11 +56,10 @@ public class Search extends AppCompatActivity {
     Spinner filter;
     TextView textView;
     ArrayList<Long> markers;
+    Long[] mapOriginal;
     Long[] map;
 
     enum Sort {byMarks, byDistances}
-
-    ;
 
     Sort sort;
     //int images[] = {R.drawable.placeicon,R.drawable.placeicon};
@@ -128,10 +127,11 @@ public class Search extends AppCompatActivity {
             }
         }
 
-        map = new Long[selectedPlaces.size()];
+        mapOriginal = new Long[selectedPlaces.size()];
         for (int i = 0; i < selectedPlaces.size(); i++) {
-            map[i] = 0L;
+            mapOriginal[i] = 0L;
         }
+        map = mapOriginal.clone();
 
         for (int i = 0; i < selectedTypes.size() - 1; i++) {
             selectedTypesString += selectedTypes.get(i).getName() + ", ";
@@ -223,7 +223,7 @@ public class Search extends AppCompatActivity {
         StringBuilder build;
         for (int i = 0; i < items.size(); i++) {
             build = new StringBuilder();
-            res.add(build.append(Double.toString(round(items.get(i).distance, 1))).append(" км").toString());
+            res.add(build.append((round(items.get(i).distance, 1))).append(" км").toString());
         }
         return res;
     }
@@ -288,6 +288,9 @@ public class Search extends AppCompatActivity {
         ArrayList<String> rDescription1;
         ArrayList<String> rDescription2;
         ArrayList<String> rDescription3;
+        ArrayList<String> rOriginalDescription1;
+        ArrayList<String> rOriginalDescription2;
+        ArrayList<String> rOriginalDescription3;
         int[] rImgs;
 
         MyAdapter(Context c, ArrayList<String> title, ArrayList<String> description1,
@@ -296,9 +299,12 @@ public class Search extends AppCompatActivity {
             this.context = c;
             this.rTitle = title;
             this.rOriginalTitle = new ArrayList<>(rTitle);
-            this.rDescription1 = description1;
-            this.rDescription2 = description2;
-            this.rDescription3 = description3;
+            this.rOriginalDescription1 = description1;
+            this.rOriginalDescription2 = description2;
+            this.rOriginalDescription3 = description3;
+            this.rDescription1 = new ArrayList<>(rOriginalDescription1);
+            this.rDescription2 = new ArrayList<>(rOriginalDescription2);
+            this.rDescription3 = new ArrayList<>(rOriginalDescription3);
         }
 
         @NonNull
@@ -341,11 +347,16 @@ public class Search extends AppCompatActivity {
 
                     if (constraint == null || constraint.length() == 0) {
                         filteredResults.addAll(rOriginalTitle);
+                        rDescription1 = rOriginalDescription1;
+                        rDescription2 = rOriginalDescription2;
+                        rDescription3 = rOriginalDescription3;
+                        map = mapOriginal;
                     } else {
                         filteredResults = getFilteredResults(constraint.toString().toLowerCase());
                     }
 
                     FilterResults results = new FilterResults();
+
                     results.values = filteredResults;
 
                     return results;
@@ -371,11 +382,23 @@ public class Search extends AppCompatActivity {
         protected List<String> getFilteredResults(String constraint) {
             List<String> results = new ArrayList<>();
 
-            for (String item : rOriginalTitle) {
+            int cnt = 0;
+
+            for (int i = 0; i < rOriginalTitle.size(); i++) {
+                if (rOriginalTitle.get(i).toLowerCase().contains(constraint)) {
+                    results.add(rOriginalTitle.get(i));
+                    rDescription1.set(cnt, rOriginalDescription1.get(i));
+                    rDescription2.set(cnt, rOriginalDescription2.get(i));
+                    rDescription3.set(cnt, rOriginalDescription3.get(i));
+                    map[cnt] = mapOriginal[i];
+                    cnt++;
+                }
+            }
+            /*for (String item : rOriginalTitle) {
                 if (item.toLowerCase().contains(constraint)) {
                     results.add(item);
                 }
-            }
+            }*/
             return results;
         }
     }
@@ -392,8 +415,9 @@ public class Search extends AppCompatActivity {
     private void reBuild() {
         items = sortItems(items);
         for (int i = 0; i < selectedPlaces.size(); i++) {
-            map[i] = items.get(i).id;
+            mapOriginal[i] = items.get(i).id;
         }
+        map = mapOriginal.clone();
         names = getNames(items);
         distances = getDistances(items);
         distancesString = getDistancesString(items);
