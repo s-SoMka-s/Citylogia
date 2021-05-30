@@ -10,6 +10,8 @@ namespace Core.Api.Places.Models.Output
         {
             this.Id = source.Id;
             this.Name = source.Name;
+            this.Mark = source.Mark;
+
             this.IsFavorite = isFavorite;
 
             this.MainPhoto = source.Photos
@@ -31,6 +33,9 @@ namespace Core.Api.Places.Models.Output
 
         [JsonProperty("name")]
         public string Name { get;}
+
+        [JsonProperty("mark")]
+        public long Mark { get; }
 
         [JsonProperty("is_favorite")]
         public bool IsFavorite { get; }
