@@ -19,21 +19,23 @@
         android:textStyle="bold" />
 
     <EditText
-        android:id="@+id/offerPlaceAddress"
+        android:id="@+id/offerPlaceComment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
-        android:hint="Адрес места"
+        android:hint="Название"
         android:textColor="@color/blackPrimary"
         android:textSize="16sp" />
 
+
+
     <EditText
-        android:id="@+id/offerPlaceComment"
+        android:id="@+id/offerPlaceAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:background="@android:color/transparent"
-        android:hint="Комментарий"
+        android:hint="Адрес места"
         android:textColor="@color/blackPrimary"
         android:textSize="16sp" />
 
