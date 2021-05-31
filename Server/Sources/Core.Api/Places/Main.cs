@@ -82,7 +82,7 @@ namespace Citylogia.Server.Core.Api
 
             var place = parameters.Build();
             place.UserId = userId;
-            place.IsApproved = true;
+            place.IsApproved = false;
 
             await places.AddAsync(place);
 
@@ -110,12 +110,12 @@ namespace Citylogia.Server.Core.Api
             return res;
         }
 
-        [HttpPut("{id}")]
+        /*[HttpPut("{id}")]
         public PlaceSummary UpdatePlace(long id, [FromBody] IEnumerable<UpdateContainer> updates)
         {
             return null;
         }
-
+        */
         [HttpDelete("{id}")]
         public async Task<bool> DeleteAsync(long id)
         {

@@ -2,10 +2,7 @@
 using Core.Api.Admin.Models.Output;
 using Libraries.Db.Reposiitory.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Core.Api.Admin
 {
