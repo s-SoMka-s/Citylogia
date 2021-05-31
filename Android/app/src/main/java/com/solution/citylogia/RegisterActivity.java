@@ -137,7 +137,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                  },
                          err -> {
                              progressBar.setVisibility(View.INVISIBLE);
-                             Toast.makeText(this, "Кажется такой пользователь уже зарегистрирован =(", Toast.LENGTH_LONG).show();
+                             Toast.makeText(this, "Кажется, такой пользователь уже зарегистрирован =(", Toast.LENGTH_LONG).show();
                          });
      }
  }

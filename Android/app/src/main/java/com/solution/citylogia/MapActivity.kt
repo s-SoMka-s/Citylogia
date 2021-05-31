@@ -411,6 +411,7 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
         val gson = GsonBuilder().setPrettyPrinting().create()
 
         bundle.putString("selected_types", gson.toJson(this.selectedTyped))
+        bundle.putString("all_types", gson.toJson(this.allTyped))
         bundle.putInt("selected_radius", this.selectedRadius)
 
         var filtersFragment = FiltersFragment.getNewInstance(bundle);
@@ -425,12 +426,11 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
         var jsonedTypes = bundle.getString("selected_types");
         val placeTypesType = object : TypeToken<java.util.ArrayList<PlaceType?>?>() {}.type
 
-        val selectedTypes = gson.fromJson<ArrayList<PlaceType>>(jsonedTypes, placeTypesType)
         val radius = bundle.getInt("selected_radius")
 
-        this.selectedTyped = selectedTyped
+        this.selectedTyped = gson.fromJson<ArrayList<PlaceType>>(jsonedTypes, placeTypesType)
         this.selectedRadius = radius
-        this.loadPlaces(types = selectedTypes, radius = radius.toDouble(), longitude = this.userLongitude, latitude = this.userLatitude)
+        this.loadPlaces(types = selectedTyped, radius = radius.toDouble(), longitude = this.userLongitude, latitude = this.userLatitude)
     }
 
     private fun filterByRadius(places: List<Place>, radius: Int ): List<Place> {
