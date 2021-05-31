@@ -389,7 +389,7 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
                         selectedPlaces = this.filterByRadius(allPlaces, this.selectedRadius)
                         this.markers = this.mapService.drawMarkers(this.mMap, selectedPlaces as ArrayList<Place>)
                     }
-                }, {})
+                }, {err -> println(err)})
     }
 
     @SuppressLint("CheckResult")
@@ -397,11 +397,13 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
         this.placeApi.getPlaceTypes()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { types: BaseCollectionResponse<PlaceType>? ->
+                .subscribe ({ types: BaseCollectionResponse<PlaceType>? ->
                     val a = types?.data?.elements as ArrayList<PlaceType>
                     this.selectedTyped = a
                     this.allTyped = a.clone() as ArrayList<PlaceType>
-                };
+                }, {
+                    err -> println(err)
+                });
     }
 
     private fun startFilters() {

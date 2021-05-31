@@ -118,10 +118,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     storage.putItem("STORAGE_TOKENS_KEY", jsonData);
 
                     // check data
-                    // Toast.makeText(this, "Возможно вы вели неправильные данные либо такого пользователя не существует", Toast.LENGTH_LONG).show();
+                    //
 
                     startActivity(new Intent(this, ProfileActivity.class));
                     finish();
+                },
+                        err -> {
+                            progressBar.setVisibility(View.INVISIBLE);
+                        Toast.makeText(this, "Возможно вы вели неправильные данные либо такого пользователя не существует", Toast.LENGTH_LONG).show();
                 });
     }
 
