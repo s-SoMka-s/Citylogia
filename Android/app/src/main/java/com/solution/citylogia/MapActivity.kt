@@ -39,7 +39,14 @@ import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
+import kotlin.collections.List
+import kotlin.collections.filter
+import kotlin.collections.forEach
+import kotlin.collections.map
+import kotlin.collections.set
 
 
 @AndroidEntryPoint
@@ -293,11 +300,13 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
         alertDialogBuilder.setView(view)
 
         val addressEditText = view.findViewById<EditText>(R.id.offerPlaceAddress)
+        val nameEditText = view.findViewById<EditText>(R.id.offerPlaceComment)
+
         alertDialogBuilder
                 .setCancelable(false)
                 .setPositiveButton("Отправить") { _: DialogInterface?, _: Int ->
-                    /*Send data to base*/
-                    Toast.makeText(this@MapActivity, "Спасибо! Ваш запрос отправлен!", Toast.LENGTH_LONG).show()
+
+
                 }
                 .setNegativeButton("Отмена") { _: DialogInterface?, _: Int -> }
 
@@ -305,6 +314,23 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
         alertDialog.show()
 
         alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            val address = addressEditText.text.toString().split(", ")
+
+            val body = HashMap<String, Any>()
+            body["name"] = nameEditText.text.toString().trim()
+            body["city"] = "Новосибирск"
+            body["street"] = address[0].trim()
+            body["house"] = address[1].trim().toInt()
+            body["type_id"] = 12
+
+            this.placeApi.addPlace(body)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread()).subscribe ({ _ ->
+                Toast.makeText(this@MapActivity, "Спасибо! Ваш запрос отправлен!", Toast.LENGTH_LONG).show()
+            }, {err -> println(err)})
+
+
+
             if (TextUtils.isEmpty(addressEditText.text)) {
                 Toast.makeText(this@MapActivity, "Напишите адрес", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
@@ -389,7 +415,7 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
                         selectedPlaces = this.filterByRadius(allPlaces, this.selectedRadius)
                         this.markers = this.mapService.drawMarkers(this.mMap, selectedPlaces as ArrayList<Place>)
                     }
-                }, {err -> println(err)})
+                }, { err -> println(err) })
     }
 
     @SuppressLint("CheckResult")
@@ -397,12 +423,12 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
         this.placeApi.getPlaceTypes()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe ({ types: BaseCollectionResponse<PlaceType>? ->
+                .subscribe({ types: BaseCollectionResponse<PlaceType>? ->
                     val a = types?.data?.elements as ArrayList<PlaceType>
                     this.selectedTyped = a
                     this.allTyped = a.clone() as ArrayList<PlaceType>
-                }, {
-                    err -> println(err)
+                }, { err ->
+                    println(err)
                 });
     }
 
@@ -433,7 +459,7 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
         this.loadPlaces(types = selectedTyped, radius = radius.toDouble(), longitude = this.userLongitude, latitude = this.userLatitude)
     }
 
-    private fun filterByRadius(places: List<Place>, radius: Int ): List<Place> {
+    private fun filterByRadius(places: List<Place>, radius: Int): List<Place> {
         if (userLatitude == null || userLongitude == null) {
             // if we don't known user location just display all places
             return places;
