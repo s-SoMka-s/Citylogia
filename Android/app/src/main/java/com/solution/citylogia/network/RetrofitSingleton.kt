@@ -22,7 +22,7 @@ class RetrofitSingleton @Inject constructor(
         val client = OkHttpClient.Builder()
                 .addInterceptor(interceptor)
                 .addInterceptor(authInterceptor)
-                .addInterceptor(responseInterceptor)
+                //.addInterceptor(responseInterceptor)
                 .build();
 
         return Retrofit.Builder()

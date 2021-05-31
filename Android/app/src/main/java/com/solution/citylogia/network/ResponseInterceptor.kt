@@ -12,8 +12,8 @@ class ResponseInterceptor @Inject constructor() : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalResponse = chain.proceed(chain.request())
         val gson = GsonBuilder().setPrettyPrinting().create()
-        //var body = originalResponse.body!!
-        //var r = gson.fromJson(body.string(), BaseObjectResponse::class.java);
+        var body = originalResponse.body!!
+        var r = gson.fromJson(body.string(), BaseObjectResponse::class.java);
         println(originalResponse)
 
         return originalResponse

@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.solution.citylogia.network.RetrofitSingleton;
@@ -133,6 +134,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
                      startActivity(new Intent(this, MapActivity.class));
                      finish();
-                 });
+                 },
+                         err -> {
+                             progressBar.setVisibility(View.INVISIBLE);
+                             Toast.makeText(this, "Кажется такой пользователь уже зарегистрирован =(", Toast.LENGTH_LONG).show();
+                         });
      }
  }
