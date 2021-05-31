@@ -27,6 +27,7 @@ import javax.inject.Inject
 class FiltersFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
     private var selectedTypes: ArrayList<PlaceType>? = ArrayList()
+    private var allTypes: ArrayList<PlaceType> = ArrayList()
     private var radius: Int = 10
 
     @Inject
@@ -51,10 +52,14 @@ class FiltersFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val gson = GsonBuilder().setPrettyPrinting().create()
-        var jsonedTypes = arguments?.getString("selected_types");
+        var jsonedTypes = arguments?.getString("selected_types")
+        var allJsonedTypes = arguments?.getString("all_types")
         val placeTypesType = object : TypeToken<java.util.ArrayList<PlaceType?>?>() {}.type
+
         this.selectedTypes = gson.fromJson<ArrayList<PlaceType>>(jsonedTypes, placeTypesType)
+        this.allTypes = gson.fromJson<ArrayList<PlaceType>>(allJsonedTypes, placeTypesType)
         this.radius = arguments?.getInt("selected_radius") as Int
+
         super.onViewCreated(view, savedInstanceState)
         this.setUpButtons(view)
         this.loadTypes(view)
@@ -62,32 +67,28 @@ class FiltersFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
     @SuppressLint("CheckResult")
     private fun loadTypes(view: View) {
-        val placeApi = retrofit.retrofit.create(IPlaceApi::class.java)
+        val typesLayout = view.findViewById<LinearLayout>(R.id.types_layout)
 
-        placeApi.getPlaceTypes().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe({ response ->
-            val types = response.data.elements;
-            val typesLayout = view.findViewById<LinearLayout>(R.id.types_layout)
+        this.allTypes.forEach { placeType ->
+            val cricketerView = layoutInflater.inflate(R.layout.type_select_layout, null, false)
+            val typeCheckBox = cricketerView.findViewById<CheckBox>(R.id.type_select_checkBox);
+            typeCheckBox.text = placeType.name;
 
-            types?.forEach { placeType ->
-                val cricketerView = layoutInflater.inflate(R.layout.type_select_layout, null, false)
-                val typeCheckBox = cricketerView.findViewById<CheckBox>(R.id.type_select_checkBox);
-                typeCheckBox.text = placeType.name;
-
-                if (this.selectedTypes?.contains(placeType) == true) {
-                    typeCheckBox.isChecked = true;
-                }
-
-                typeCheckBox.setOnClickListener {
-                    val checkBox = it as CheckBox;
-                    if (checkBox.isChecked) {
-                        this.selectedTypes?.add(placeType)
-                    } else {
-                        this.selectedTypes?.remove(placeType)
-                    }
-                }
-                typesLayout.addView(cricketerView);
+            if (this.selectedTypes?.contains(placeType) == true) {
+                typeCheckBox.isChecked = true;
             }
-        }, {})
+
+            typeCheckBox.setOnClickListener {
+                val checkBox = it as CheckBox;
+                if (checkBox.isChecked) {
+                    this.selectedTypes?.add(placeType)
+                } else {
+                    this.selectedTypes?.remove(placeType)
+                }
+            }
+            typesLayout.addView(cricketerView);
+        }
+
 
     }
 
