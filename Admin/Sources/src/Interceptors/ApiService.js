@@ -3,7 +3,8 @@ import axios from 'axios'
 export class ApiService {
     constructor() {
         this.client = axios.create({
-            baseURL: `http://35.209.124.144:8000/api`,
+            //baseURL: `http://35.209.124.144:8000/api`,
+            baseURL: `http://localhost:5000/api`,
             timeout: 10000,
         })
 
@@ -20,6 +21,10 @@ export class ApiService {
 
     login(data) {
         return this.client.post('/Auth/Email', data)
+    }
+
+    getSummary() {
+        return this.client.get('/Summary')
     }
 
     takePlaces(

@@ -1,17 +1,17 @@
 @mixin font-menu-item {
-    font-family: Lato;
+    font-family: LatoBold;
     font-style: normal;
     font-weight: bold;
-    font-size: 16px;
-    line-height: 19px;
+    font-size: 1.6rem;
+    line-height: 1.9rem;
     color: white;
 }
 
 @mixin font-menu-logo {
-    font-family: Montserrat;
+    font-family: MontserratBold;
     font-style: normal;
     font-weight: bold;
-    font-size: 20px;
+    font-size: 2rem;
     line-height: 139.2%;
     color: white;
 }
@@ -26,6 +26,8 @@
 
         &:first-child {
             margin-bottom: 4rem;
+            color: white;
+            @include font-menu-logo;
 
             img {
                 width: 4rem;
@@ -36,6 +38,7 @@
 
         &:not(:first-child) {
             margin-top: 3.5rem;
+            @include font-menu-item;
 
             img {
                 width: 3rem;
