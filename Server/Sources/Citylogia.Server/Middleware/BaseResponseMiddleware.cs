@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using System;
 
 namespace Citylogia.Server.Middleware
 {
@@ -25,16 +26,26 @@ namespace Citylogia.Server.Middleware
 
             context.Response.Body = stream;
 
-            await nextAsync(context);
+            try
+            {
+                await nextAsync(context);
 
-            reader.BaseStream.Seek(0, SeekOrigin.Begin);
-            // content - body от контроллера
-            var content = await reader.ReadToEndAsync();
-            var obj = JsonConvert.DeserializeObject(content);
-            var @new = new BaseApiResponse<object>(200, obj);
+                reader.BaseStream.Seek(0, SeekOrigin.Begin);
+                // content - body от контроллера
+                var content = await reader.ReadToEndAsync();
+                var obj = JsonConvert.DeserializeObject(content);
+                var @new = new BaseApiResponse<object>(200, obj);
 
-            var response = JsonConvert.SerializeObject(@new);
-            await CompleteResponseAsync(context, response, defaultBody);
+                var response = JsonConvert.SerializeObject(@new);
+                await CompleteResponseAsync(context, response, defaultBody);
+            }
+            catch(Exception e)
+            {
+                var @new = new BaseApiResponse<object>(400, e.Message);
+
+                var response = JsonConvert.SerializeObject(@new);
+                await CompleteResponseAsync(context, response, defaultBody);
+            }
         }
 
         private async Task CompleteResponseAsync(HttpContext context, string response, Stream defaultBody)

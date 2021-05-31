@@ -5,6 +5,7 @@ using Core.Api.Auth.Models.Output;
 using Core.Tools.Interfaces.Auth;
 using Libraries.Auth;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -30,7 +31,7 @@ namespace Core.Api.Auth
             var existed = this.context.Users.ToList().Any(u => u.Email == parameters.Email);
             if (existed)
             {
-                return null;
+                throw new Exception("User already exists!");
             }
 
             var @new = parameters.Build();
@@ -53,7 +54,7 @@ namespace Core.Api.Auth
 
             if (!res)
             {
-                return null;
+                throw new Exception("Invalid email or password!");
             }
 
             var tokenPair = await jwtManager.GeneratePairAsync(user.Id);
