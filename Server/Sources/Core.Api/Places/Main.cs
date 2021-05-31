@@ -83,6 +83,9 @@ namespace Citylogia.Server.Core.Api
             var place = parameters.Build();
             place.UserId = userId;
             place.IsApproved = false;
+            
+            // Другое
+            place.TypeId = 12;
 
             await places.AddAsync(place);
 
