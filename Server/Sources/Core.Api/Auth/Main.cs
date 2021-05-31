@@ -2,6 +2,7 @@
 using Citylogia.Server.Core.Entityes;
 using Core.Api.Auth.Models.Input;
 using Core.Api.Auth.Models.Output;
+using Core.Services;
 using Core.Tools.Interfaces.Auth;
 using Libraries.Auth;
 using Microsoft.AspNetCore.Mvc;
@@ -17,11 +18,13 @@ namespace Core.Api.Auth
     {
         private readonly SqlContext context;
         private readonly IJwtManager jwtManager;
+        private readonly IMailer mailer;
 
-        public Main(SqlContext context, IJwtManager jwtManager)
+        public Main(SqlContext context, IJwtManager jwtManager, IMailer mailer)
         {
             this.context = context;
             this.jwtManager = jwtManager;
+            this.mailer = mailer;
         }
 
 
@@ -39,6 +42,15 @@ namespace Core.Api.Auth
             var users = this.context.Users;
             var user = await users.AddAsync(@new);
             await this.context.SaveChangesAsync();
+
+            try
+            {
+                await this.mailer.SendAsync(parameters.Email, "Вы успешно зарегистрировались! Добро пожаловать в ситилогию!");
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e);
+            }
 
             var tokenPair = await jwtManager.GeneratePairAsync(user.Entity.Id);
 

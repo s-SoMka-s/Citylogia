@@ -23,6 +23,8 @@ namespace Citylogia.Server.Initializations
         public static void AddServices(ContainerBuilder builder,
             IAppSettings settings)
         {
+            builder.RegisterType<Mailer>().As<IMailer>();
+
             builder.AddTools(settings)
                    .AddRepositories();
         }
