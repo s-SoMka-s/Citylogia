@@ -9,7 +9,10 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class RetrofitSingleton @Inject constructor(private val authInterceptor: AuthInterceptor){
+class RetrofitSingleton @Inject constructor(
+        private val authInterceptor: AuthInterceptor,
+        private val responseInterceptor: ResponseInterceptor)
+{
     val retrofit = this.configure();
 
     private fun configure(): Retrofit {
@@ -19,6 +22,7 @@ class RetrofitSingleton @Inject constructor(private val authInterceptor: AuthInt
         val client = OkHttpClient.Builder()
                 .addInterceptor(interceptor)
                 .addInterceptor(authInterceptor)
+                //.addInterceptor(responseInterceptor)
                 .build();
 
         return Retrofit.Builder()

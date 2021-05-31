@@ -25,7 +25,7 @@
     <ProjectReference Include="..\Core.Entities\Core.Entities.csproj" />
     <ProjectReference Include="..\Core.Tools\Core.Tools.csproj" />
     <ProjectReference Include="..\Repositories\Repositories.csproj" />
-
+    <ProjectReference Include="..\Core.Services\Core.Services.csproj" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" properties_4launchsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>

@@ -1,0 +1,24 @@
+$menu-width: 15%;
+
+.pages {
+    display: flex;
+
+    &__sidebar {
+        width: $menu-width;
+        height: 100vh;
+        background: linear-gradient(to right bottom, #de4469, #b200f1);
+    }
+
+    &__wrapper {
+        width: 100%-$menu-width;
+        float: right;
+
+        background: #f8f8fb;
+    }
+
+    &__header {
+        position: sticky;
+        background: #fff;
+        padding: 1.8rem 6rem;
+    }
+}
