@@ -60,7 +60,7 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
     private var allTyped: ArrayList<PlaceType> = ArrayList()
     private var selectedRadius: Int = 10
     private var selectedPlaces: List<Place>? = null
-    private var allPlaces: List<Place>? = null
+    private var allPlaces: List<Place> = ArrayList()
     private var flag: Boolean = true
 
     private var zoomLevel = 17.0f //This goes up to 21
@@ -150,15 +150,24 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
                 //костыль
                 markerIds.add(markers!![i].snippet.toLong())
             }
-            for (i in 0 until selectedTyped.size) {
-                //костыль
-                selectedTypes[selectedTyped[i].id.toInt() - 7] = true
+
+            var selectedTypedX: ArrayList<PlaceType> = ArrayList()
+            for (i in 0 until selectedPlaces!!.size) {
+                var flag = true
+                for (j in 0 until selectedTypedX.size) {
+                    if (selectedTypedX[j].id == selectedPlaces!![i].type.id) {
+                        flag = false
+                    }
+                }
+                if (flag) {
+                    selectedTypedX.add(selectedPlaces!![i].type)
+                }
             }
 
             //this.selectedTyped.add(PlaceType())
             i.putExtra("all places", gson.toJson(this.selectedPlaces))
             i.putExtra("all types", gson.toJson(this.allTyped))
-            i.putExtra("selected types", gson.toJson(this.selectedTyped))
+            i.putExtra("selected types", gson.toJson(selectedTypedX))
             i.putExtra("markers", gson.toJson(markerIds))
             /*val args = Bundle()
             args.putSerializable("selected_types", this.mar)
@@ -376,26 +385,9 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
                             flag = false
                         }
                         this.clearMarkers()
-                        /*for (String item : rOriginalTitle) {
-                if (item.toLowerCase().contains(constraint)) {
-                    results.add(item);
-                }
-              }*/
-                        /*for (String item : rOriginalTitle) {
-                if (item.toLowerCase().contains(constraint)) {
-                    results.add(item);
-                }
-            }*/
-                        val xx = java.util.ArrayList<Place>()
-                        for (i in 0 until places.size) {
-                            var count = 0
-                            if (distanceBetweenTwoMarkers(places[i]) <= selectedRadius*1000) {
-                                xx.add(places[i])
-                                count++
-                            }
-                        }
-                        selectedPlaces = xx.toList()
-                        this.markers = this.mapService.drawMarkers(this.mMap, xx)
+
+                        selectedPlaces = this.filterByRadius(allPlaces, this.selectedRadius)
+                        this.markers = this.mapService.drawMarkers(this.mMap, selectedPlaces as ArrayList<Place>)
                     }
                 }, {})
     }
@@ -437,6 +429,19 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
         this.selectedTyped = selectedTyped
         this.selectedRadius = radius
         this.loadPlaces(types = selectedTypes, radius = radius.toDouble(), longitude = this.userLongitude, latitude = this.userLatitude)
+    }
+
+    private fun filterByRadius(places: List<Place>, radius: Int ): List<Place> {
+        if (userLatitude == null || userLongitude == null) {
+            // if we don't known user location just display all places
+            return places;
+        }
+
+        return places.filter { isInRadius(it, radius) }
+    }
+
+    private fun isInRadius(place: Place, radius: Int): Boolean {
+        return distanceBetweenTwoMarkers(place) <= radius*1000
     }
 
     private fun distanceBetweenTwoMarkers(place: Place): Float {
