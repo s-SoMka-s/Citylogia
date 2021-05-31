@@ -88,4 +88,15 @@
             }
         }
     }
+
+    &__place-controls {
+        display: flex;
+        justify-content: space-between;
+
+        img {
+            cursor: pointer;
+            height: 2rem;
+            width: 2rem;
+        }
+    }
 }

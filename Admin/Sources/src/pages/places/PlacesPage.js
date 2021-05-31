@@ -15,6 +15,11 @@ import DeleteIcon from '@material-ui/icons/AddOutlined'
 
 import LeftArrow from '../../assets/pagination/arrow-left.svg'
 import RightArrow from '../../assets/pagination/arrow-right.svg'
+
+import EditIcon from '../../assets/Edit.svg'
+import ApproveIcon from '../../assets/Approve.svg'
+import RemoveIcon from '../../assets/Remove.svg'
+
 import { ApiService } from '../../Interceptors/ApiService'
 
 const PLACES_PER_PAGE = 7
@@ -122,7 +127,7 @@ export default function PlacesPage() {
                                     {place.street}
                                 </TableCell>
                                 <TableCell align="left">
-                                    {place.status == statuses.APPROVED ? (
+                                    {value === 0 ? (
                                         <div className="places-page__table-mark places-page__table-mark-approved">
                                             Подтвержден
                                         </div>
@@ -131,6 +136,13 @@ export default function PlacesPage() {
                                             Запрос
                                         </div>
                                     )}
+                                </TableCell>
+                                <TableCell align="left">
+                                    <div className="places-page__place-controls">
+                                        <img src={EditIcon}></img>
+                                        <img src={ApproveIcon}></img>
+                                        <img src={RemoveIcon}></img>
+                                    </div>
                                 </TableCell>
                             </TableRow>
                         ))}
