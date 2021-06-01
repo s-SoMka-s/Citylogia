@@ -152,11 +152,11 @@ export default function PlacesPage() {
             <div className="places-page__pagination">
                 <img src={LeftArrow}></img>
                 <div className="places-page__pagination-number">
-                    <span>4</span>
+                    <span>1</span>
                 </div>
                 <span>из</span>
                 <div className="places-page__pagination-number">
-                    <span>4</span>
+                    <span>1</span>
                 </div>
                 <img src={RightArrow}></img>
             </div>
