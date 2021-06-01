@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
 import './AuthPage.scss'
-import Input from '@bit/reactstrap.reactstrap.input'
-import Checkbox from '@bit/ans.base-ui.checkbox'
 import Button from '@material-ui/core/Button'
 import { ApiService } from '../../Interceptors/ApiService'
 
@@ -42,33 +40,6 @@ export class AuthPage extends Component {
                 <div className="auth-page__form">
                     <h1>Авторизация</h1>
                     <p>Для получения аккаунта свяжитесь с администратором</p>
-                    <Input
-                        id="login-input"
-                        name="email"
-                        placeholder="Логин"
-                        autoComplete="off"
-                        autoCorrect="off"
-                        autoCapitalize="off"
-                        spellCheck="false"
-                        onChange={this.onInputchange}
-                        value={this.state.email}
-                    ></Input>
-
-                    <Input
-                        id="password-input"
-                        name="password"
-                        placeholder="Пароль"
-                        autoComplete="off"
-                        autoCorrect="off"
-                        autoCapitalize="off"
-                        spellCheck="false"
-                        onChange={this.onInputchange}
-                        value={this.state.password}
-                    ></Input>
-
-                    <Checkbox>
-                        Я ознакомился с политикой конфиденциальности
-                    </Checkbox>
 
                     <Button onClick={this.login} variant="outlined">
                         Авторизоваться
