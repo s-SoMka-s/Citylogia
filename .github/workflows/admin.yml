@@ -3,13 +3,28 @@ name: admin
 on:
   pull_request:
     branches: [dev]
-    types: [opened]
 
 defaults:
   run:
     working-directory: ./Admin/Sources
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Install Packages
+      run: npm install
+    - name: Build page
+      run: npm run build
+
   docker:
     runs-on: ubuntu-latest
     steps:
