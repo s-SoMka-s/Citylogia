@@ -1,51 +1,65 @@
 ﻿using Citylogia.Server.Core.Entityes;
 using Newtonsoft.Json;
+using System.Linq;
 
 namespace Core.Api.Places.Models.Output
 {
     public class ShortPlaceSummary
     {
-        public ShortPlaceSummary(Place source)
+        public ShortPlaceSummary(Place source, bool isFavorite = false)
         {
             this.Id = source.Id;
-            this.Mark = source.Mark;
             this.Name = source.Name;
+            this.Mark = source.Mark;
+
+            this.IsFavorite = isFavorite;
+
+            this.MainPhoto = source.Photos
+                                   .Where(p => p.IsMain)
+                                   .Select(p => new FileSummary(p.Photo))
+                                   .FirstOrDefault();
+
             this.Type = new PlaceTypeSummary(source.Type);
+
             this.Latitude = source.Latitude;
             this.Longtitude = source.Longitude;
-            this.Address = source.Address;
-            this.DistanceTo = null;
+            this.City = source.City;
+            this.Street = source.Street;
+            this.House = source.House;
         }
-
-        public ShortPlaceSummary(Place source, double distanceTo) : this(source)
-        {
-            this.DistanceTo = distanceTo;
-        }
-
 
         [JsonProperty("id")]
-        public long Id { get; set; }
-
-        [JsonProperty("mark")]
-        public long Mark { get; set; }
+        public long Id { get;}
 
         [JsonProperty("name")]
-        public string Name { get; set; }
+        public string Name { get;}
+
+        [JsonProperty("mark")]
+        public long Mark { get; }
+
+        [JsonProperty("is_favorite")]
+        public bool IsFavorite { get; }
+
+        [JsonProperty("main_photo")]
+        public FileSummary MainPhoto { get; }
 
         [JsonProperty("type")]
-        public PlaceTypeSummary Type { get; set; }
+        public PlaceTypeSummary Type { get;}
 
         [JsonProperty("latitude")]
-        public double Latitude { get; set; }
+        public double Latitude { get; }
 
         [JsonProperty("longitude")]
-        public double Longtitude { get; set; }
+        public double Longtitude { get; }
 
-        [JsonProperty("address")]
-        public string Address { get; set; }
+        [JsonProperty("city")]
+        public string City { get; }
 
-        [JsonProperty("distance_to")]
-        public double? DistanceTo { get; set; }
+        [JsonProperty("street")]
+        public string Street { get; }
+
+        [JsonProperty("house")]
+        public long House { get; }
     }
 
 }

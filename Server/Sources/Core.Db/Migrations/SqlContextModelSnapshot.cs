@@ -30,15 +30,13 @@ namespace Core.Db.Migrations
                     b.Property<bool>("Deleted")
                         .HasColumnType("boolean");
 
-                    b.Property<long>("PlaceId")
-                        .HasColumnType("bigint");
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
 
                     b.Property<string>("PublicUrl")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PlaceId");
 
                     b.ToTable("Photos");
                 });
@@ -50,7 +48,7 @@ namespace Core.Db.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<string>("Address")
+                    b.Property<string>("City")
                         .HasColumnType("text");
 
                     b.Property<bool>("Deleted")
@@ -58,6 +56,12 @@ namespace Core.Db.Migrations
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
+
+                    b.Property<long>("House")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsApproved")
+                        .HasColumnType("boolean");
 
                     b.Property<double>("Latitude")
                         .HasColumnType("double precision");
@@ -74,12 +78,20 @@ namespace Core.Db.Migrations
                     b.Property<string>("ShortDescription")
                         .HasColumnType("text");
 
+                    b.Property<string>("Street")
+                        .HasColumnType("text");
+
                     b.Property<long>("TypeId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("UserId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
                     b.HasIndex("TypeId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Places");
                 });
@@ -113,6 +125,9 @@ namespace Core.Db.Migrations
                         .HasColumnType("text");
 
                     b.Property<bool>("Deleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsApproved")
                         .HasColumnType("boolean");
 
                     b.Property<long>("Mark")
@@ -194,15 +209,33 @@ namespace Core.Db.Migrations
                     b.ToTable("Favorite-Place-Links");
                 });
 
-            modelBuilder.Entity("Citylogia.Server.Core.Entityes.Photo", b =>
+            modelBuilder.Entity("Core.Entities.PlacePhoto", b =>
                 {
-                    b.HasOne("Citylogia.Server.Core.Entityes.Place", "Place")
-                        .WithMany("Photos")
-                        .HasForeignKey("PlaceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Navigation("Place");
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsMain")
+                        .HasColumnType("boolean");
+
+                    b.Property<long>("PhotoId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("PlaceId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PhotoId")
+                        .IsUnique();
+
+                    b.HasIndex("PlaceId");
+
+                    b.ToTable("Place-Photo");
                 });
 
             modelBuilder.Entity("Citylogia.Server.Core.Entityes.Place", b =>
@@ -212,6 +245,14 @@ namespace Core.Db.Migrations
                         .HasForeignKey("TypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Citylogia.Server.Core.Entityes.User", "Author")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Author");
 
                     b.Navigation("Type");
                 });
@@ -262,6 +303,25 @@ namespace Core.Db.Migrations
                     b.Navigation("Place");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Core.Entities.PlacePhoto", b =>
+                {
+                    b.HasOne("Citylogia.Server.Core.Entityes.Photo", "Photo")
+                        .WithOne()
+                        .HasForeignKey("Core.Entities.PlacePhoto", "PhotoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Citylogia.Server.Core.Entityes.Place", "Place")
+                        .WithMany("Photos")
+                        .HasForeignKey("PlaceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Photo");
+
+                    b.Navigation("Place");
                 });
 
             modelBuilder.Entity("Citylogia.Server.Core.Entityes.Place", b =>

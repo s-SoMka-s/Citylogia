@@ -1,4 +1,5 @@
-﻿using Libraries.Db.Base;
+﻿using Core.Entities;
+using Libraries.Db.Base;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -10,6 +11,8 @@ namespace Citylogia.Server.Core.Entityes
     {
         public Place() : base()
         {
+            this.IsApproved = false;
+            this.Author = default;
             this.Mark = 0;
             this.Name = string.Empty;
             this.ShortDescription = string.Empty;
@@ -17,17 +20,22 @@ namespace Citylogia.Server.Core.Entityes
             this.Type = default;
             this.Longitude = default;
             this.Latitude = default;
-            this.Address = default;
+            this.City = "Новосибирск";
+            this.Street = default;
+            this.House = 0;
             this.Photos = default;
         }
 
+        public bool IsApproved { get; set; }
+
+        // тот кто предложил место
+        [ForeignKey(nameof(User))]
+        public long UserId { get; set; }
+        public User Author { get; set; }
 
         public long Mark { get; set; }
-
         public string Name { get; set; }
-
         public string ShortDescription { get; set; }
-        
         public string Description { get; set; }
 
         [ForeignKey(nameof(PlaceType))]
@@ -39,9 +47,11 @@ namespace Citylogia.Server.Core.Entityes
 
         public double Longitude { get; set; }
 
-        public string Address { get; set; }
+        public string City { get; set; }
+        public string Street { get; set; }
+        public long House { get; set; }
 
-        public virtual ICollection<Photo> Photos { get; set; }
+        public virtual ICollection<PlacePhoto> Photos { get; set; }
 
         public virtual ICollection<Review> Reviews { get; set; }
     }

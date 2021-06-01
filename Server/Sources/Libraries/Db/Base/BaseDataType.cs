@@ -2,7 +2,7 @@
 
 namespace Libraries.Db.Base
 {
-    public class BaseDataType
+    public class BaseDataType : IDataType
     {
         public BaseDataType()
         {

@@ -13,14 +13,20 @@ import android.widget.RatingBar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
+import androidx.fragment.app.Fragment;
 
 import com.solution.citylogia.network.RetrofitSingleton;
 import com.solution.citylogia.network.api.IReviewsApi;
 
 import java.util.HashMap;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.AndroidEntryPoint;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+
+@AndroidEntryPoint
 public class ReviewPopUp extends AppCompatDialogFragment {
 
 
@@ -29,11 +35,14 @@ public class ReviewPopUp extends AppCompatDialogFragment {
     private float rateValue;
     private String textReview;
     private Long placeId;
-    private IReviewsApi reviewsApi = RetrofitSingleton.INSTANCE.getRetrofit().create(IReviewsApi.class);
+    @Inject
+    RetrofitSingleton retrofit;
+    private IReviewsApi reviewsApi;
 
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        this.reviewsApi = retrofit.getRetrofit().create(IReviewsApi.class);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         this.placeId = (Long)requireActivity().getIntent().getExtras().get("id");
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -55,7 +64,6 @@ public class ReviewPopUp extends AppCompatDialogFragment {
                         HashMap<String, Object> body = new HashMap<>();
                         body.put("mark", rateValue);
                         body.put("body", textReview);
-                        body.put("user_id", 4);
 
                         reviewsApi.addReview(placeId, body).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(res ->{
                                 System.out.println("Add review result " + res);

@@ -10,17 +10,37 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
- public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
+import com.google.gson.Gson;
+import com.solution.citylogia.network.RetrofitSingleton;
+import com.solution.citylogia.network.StorageService;
+import com.solution.citylogia.network.api.IAuthorizationApi;
+import com.solution.citylogia.network.models.input.TokenResponse;
+import com.solution.citylogia.network.models.output.RegistrationParameters;
+import com.solution.citylogia.services.ClientAuthData;
+import com.solution.citylogia.services.Token;
+import com.solution.citylogia.services.Tokens;
 
-     EditText reg_name;
-     EditText reg_email;
-     EditText reg_password;
+import javax.inject.Inject;
 
-     Button reg_sign_in;
-     Button reg_create;
+import dagger.hilt.android.AndroidEntryPoint;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
-     ProgressBar progressBar;
+@AndroidEntryPoint
+public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
+
+     private EditText reg_name;
+     private EditText reg_email;
+     private EditText reg_password;
+
+     private ProgressBar progressBar;
+
+     @Inject
+     RetrofitSingleton retrofit;
+     @Inject
+        StorageService storage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,9 +51,9 @@ import android.widget.ProgressBar;
         reg_email = findViewById(R.id.reg_email);
         reg_password = findViewById(R.id.reg_password);
 
-        reg_sign_in = findViewById(R.id.reg_sign_in);
+        Button reg_sign_in = findViewById(R.id.reg_sign_in);
         reg_sign_in.setOnClickListener(this);
-        reg_create = findViewById(R.id.reg_create);
+        Button reg_create = findViewById(R.id.reg_create);
         reg_create.setOnClickListener(this);
 
         progressBar = findViewById(R.id.reg_pbar);
@@ -89,9 +109,35 @@ import android.widget.ProgressBar;
 
          // здесь метод, который отправит данные в базу данных
          // далее перенаправление на Activity log-in или Profile
-
+         this.register(name, email, password);
          progressBar.setVisibility(View.VISIBLE);
+     }
 
+     @SuppressLint("CheckResult")
+     private void register(String name, String email, String password) {
+         RegistrationParameters registerParameter = new RegistrationParameters(name, email, password);
+         IAuthorizationApi api = retrofit.getRetrofit().create(IAuthorizationApi.class);
+         api.register(registerParameter)
+                 .subscribeOn(Schedulers.io())
+                 .observeOn(AndroidSchedulers.mainThread())
+                 .subscribe(res -> {
+                     System.out.println(res);
+                     TokenResponse access = res.getData().getAccess();
+                     TokenResponse refresh = res.getData().getRefresh();
+                     Token a = new Token(access.getToken(), access.getExpiry());
+                     Token r = new Token(refresh.getToken(), refresh.getExpiry());
+                     Tokens tokens = new Tokens(a, r);
+                     ClientAuthData data = new ClientAuthData(false, tokens);
+                     Gson gson = new Gson();
+                     String jsonData = gson.toJson(data);
+                     storage.putItem("STORAGE_TOKENS_KEY", jsonData);
 
+                     startActivity(new Intent(this, MapActivity.class));
+                     finish();
+                 },
+                         err -> {
+                             progressBar.setVisibility(View.INVISIBLE);
+                             Toast.makeText(this, "Кажется, такой пользователь уже зарегистрирован =(", Toast.LENGTH_LONG).show();
+                         });
      }
  }

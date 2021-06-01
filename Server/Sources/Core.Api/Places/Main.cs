@@ -1,11 +1,14 @@
 ﻿using Citylogia.Server.Core.Db.Implementations;
 using Citylogia.Server.Core.Entityes;
+using Core.Api;
 using Core.Api.Models;
 using Core.Api.Places.Models.Input;
 using Core.Api.Places.Models.Output;
 using Core.Entities;
 using GeoCoordinatePortable;
+using Libraries.Db.Reposiitory.Interfaces;
 using Libraries.Updates;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -16,75 +19,106 @@ using System.Threading.Tasks;
 namespace Citylogia.Server.Core.Api
 {
     [ApiController]
-    [Route("/api/Map/Places")]
-    public class Main : Controller
+    [Route("api/Places")]
+    public class Main : ApiController
     {
         private readonly SqlContext context;
-        public Main(SqlContext context)
+        private readonly ICrudRepository<Place> places;
+        private readonly ICrudRepository<PlaceType> placeTypes;
+        private readonly ICrudRepository<FavoritePlaceLink> links;
+        private readonly ICrudRepository<User> users;
+
+        public Main(SqlContext context, ICrudFactory factory)
         {
             this.context = context;
+            this.places = factory.Get<Place>();
+            this.placeTypes = factory.Get<PlaceType>();
+            this.links = factory.Get<FavoritePlaceLink>();
+            this.users = factory.Get<User>();
         }
 
         [HttpGet("")]
-        public async Task<BaseCollectionResponse<ShortPlaceSummary>> GetAsync([FromQuery] PlaceSelectParameters parameters)
+        public BaseCollectionResponse<ShortPlaceSummary> Select([FromQuery] PlaceSelectParameters parameters)
         {
             var query = this.Query();
+
+            if (parameters.OnlyApproved)
+            {
+                query = query.Where(p => p.IsApproved);
+            }
+
+            if (parameters.OnlyNotReviewed)
+            {
+                query = query.Where(p => !p.IsApproved);
+            }
 
             if (parameters.TypeIds.Any())
             {
                 query = query.Where(p => parameters.TypeIds.Contains(p.TypeId));
             }
 
-            var places = query.ToList();
-            var needDistances = false;
-            if (parameters.Longtitude != default && parameters.Latitude != default && parameters.RadiusInKm != default)
+            if (parameters.Skip != null)
             {
-                needDistances = true;
-                places = places.Where(p => this.IsPlaceInRange(p, parameters.Longtitude, parameters.Latitude, parameters.RadiusInKm)).ToList();
+                query = query.Skip((int)parameters.Skip.Value);
             }
 
-            var summaries = new List<ShortPlaceSummary>();
-            if (needDistances)
+            if (parameters.Take != null)
             {
-                summaries = places.Select(p => new ShortPlaceSummary(p, this.countDistanceTo(p, parameters.Longtitude, parameters.Latitude))).ToList();
+                query = query.Take((int)parameters.Take.Value);
             }
-            else
-            {
-                summaries = places.Select(p => new ShortPlaceSummary(p)).ToList();
-            }
+
+            var summaries = query.Select(p => new ShortPlaceSummary(p, false)).ToList();
+
             var baseCollectionResponse = new BaseCollectionResponse<ShortPlaceSummary>(summaries);
 
             return baseCollectionResponse;
         }
 
         [HttpPost("")]
-        public bool AddPlace([FromBody] NewPlaceParameters parameters)
+        [Authorize]
+        public async Task<bool> AddPlaceAsync([FromBody] NewPlaceParameters parameters)
         {
-            var place = parameters.Build();
+            var userId = GetUserId();
 
-            this.context.Places.Add(place);
-            this.context.SaveChanges();
+            var place = parameters.Build();
+            place.UserId = userId;
+            place.IsApproved = false;
+            
+            // Другое
+            place.TypeId = 12;
+
+            await places.AddAsync(place);
 
             return true;
         }
 
         [HttpGet("{id}")]
+        [Authorize]
+        [AllowAnonymous]
         public PlaceSummary GetPlace(long id)
         {
+            var userId = GetUserId();
+
             var place = this.Query().FirstOrDefault(p => p.Id == id);
 
-            var favorites = this.FavoritesQuery().Where(l => l.UserId == 4).Select(l => l.PlaceId).ToHashSet<long>();
+            var favorites = new HashSet<long>();
+
+            if (userId != default)
+            {
+                favorites = this.FavoritesQuery().Where(l => l.UserId == userId).Select(l => l.PlaceId).ToHashSet<long>();
+            }
+
             var res = new PlaceSummary(place, favorites);
 
             return res;
         }
 
-        [HttpPut("{id}")]
+        /*[HttpPut("{id}")]
         public PlaceSummary UpdatePlace(long id, [FromBody] IEnumerable<UpdateContainer> updates)
         {
             return null;
         }
-
+        */
         [HttpDelete("{id}")]
         public async Task<bool> DeleteAsync(long id)
         {
@@ -119,15 +153,14 @@ namespace Citylogia.Server.Core.Api
         }
 
         [HttpPost("Types")]
-        public bool AddPlaceType([FromBody] NewPlaceTypeParameters parameters)
+        public async Task<bool> AddPlaceTypeAsync([FromBody] NewPlaceTypeParameters parameters)
         {
             var type = new PlaceType()
             {
                 Name = parameters.Name
             };
 
-            this.context.PlaceTypes.Add(type);
-            this.context.SaveChanges();
+            await placeTypes.AddAsync(type);
 
             return true;
         }
@@ -135,7 +168,7 @@ namespace Citylogia.Server.Core.Api
         [HttpDelete("Types/{id}")]
         public async Task<bool> DeleteTypeAsync(long id)
         {
-            var type = await this.context.PlaceTypes.FirstOrDefaultAsync(t => t.Id == id);
+            var type = await placeTypes.FindAsync(t => t.Id == id);
             if (type == default)
             {
                 return false;
@@ -165,14 +198,15 @@ namespace Citylogia.Server.Core.Api
 
         private IQueryable<Place> Query()
         {
-            return this.context
-                       .Places
+            return this.context.Places
 
                        .Include(p => p.Reviews)
                        .ThenInclude(r => r.Author)
 
                        .Include(p => p.Type)
-                       .Include(p => p.Photos);
+
+                       .Include(p => p.Photos)
+                       .ThenInclude(p => p.Photo);
         }
 
         private IQueryable<FavoritePlaceLink> FavoritesQuery()

@@ -1,0 +1,81 @@
+.pages-header {
+    position: sticky;
+    background: #fff;
+    padding: 0rem 6rem;
+    max-height: 10rem;
+}
+
+.main-page {
+    padding: 4rem;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    //grid-template-rows: repeat(5, 14rem);
+    grid-auto-rows: 2;
+    gap: 4rem;
+
+    &__map {
+        background-color: yellow;
+        grid-column-start: 1;
+        grid-column-end: 4;
+        height: 39.9rem;
+    }
+
+    &__form {
+        border-radius: 10px;
+        background-color: white;
+        padding: 2.5rem;
+        max-height: 55rem;
+        grid-column: 4;
+        overflow-x: hidden;
+        overflow-y: scroll;
+
+        &-divider {
+            border: 1px solid #eef0f7;
+            margin-top: 1.4rem;
+            margin-bottom: 2rem;
+        }
+    }
+
+    input,
+    label {
+        display: block;
+        width: 100%;
+        border: none;
+        font-family: GilroyMedium;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 24px;
+        color: #a6acbe;
+    }
+
+    input:focus {
+        border: none;
+    }
+
+    label {
+        margin-bottom: 0.4rem;
+        font-weight: 600;
+        color: black;
+    }
+
+    span {
+        font-family: GilroyMedium;
+        font-size: 14px;
+        line-height: 24px;
+        font-weight: 600;
+        color: black;
+    }
+}
+
+.main-page__form-photos-controls {
+    display: flex;
+    align-items: center;
+
+    span {
+        margin-right: 1rem;
+    }
+
+    img {
+        cursor: pointer;
+    }
+}

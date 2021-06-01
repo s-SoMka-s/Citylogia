@@ -1,23 +1,28 @@
 package com.solution.citylogia;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.widget.Button;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mancj.materialsearchbar.MaterialSearchBar;
+import com.solution.citylogia.network.StorageService;
+import com.solution.citylogia.services.AuthorizationService;
 
 import java.util.List;
 import java.util.Locale;
 
+import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
-public class MainActivity extends Activity {
+
+public class MainActivity extends AppCompatActivity{
     Button filter;
 
     private MaterialSearchBar materialSearchBar;
@@ -38,8 +43,7 @@ public class MainActivity extends Activity {
 
         setContentView(R.layout.activity_maps);
 
-
-        filter = findViewById(R.id.bt_filter);
+        /*filter = findViewById(R.id.bt_filter);
         materialSearchBar = findViewById(R.id.searchBar);
         materialSearchBar.setOnClickListener(v -> {
             Intent i = new Intent(MainActivity.this, Search.class);
@@ -50,11 +54,8 @@ public class MainActivity extends Activity {
             //i.putExtra("user position", position);
             startActivityForResult(i, 2404);
 
-        });
+        });*/
     }
-
-
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

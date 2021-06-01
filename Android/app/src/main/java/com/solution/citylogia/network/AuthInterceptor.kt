@@ -5,16 +5,19 @@ import io.reactivex.Single
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlin.math.log
 
-class AuthInterceptor(private val authorizationService: AuthorizationService) : Interceptor {
+@Singleton
+class AuthInterceptor @Inject constructor(private val authorizationService: AuthorizationService) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
-        if (canSkip(request)){
+        if (canSkip(request)) {
             return chain.proceed(request)
         }
 
-        if (requiresFullyAuthorization(request)){
+        if (requiresFullyAuthorization(request)) {
             if (this.authorizationService.isLoggedIn()) {
                 return this.authorizeFully(request, chain);
             }
@@ -23,7 +26,7 @@ class AuthInterceptor(private val authorizationService: AuthorizationService) : 
             throw Exception("Calling this service requires full user authorization");
         }
 
-        if (authorizationService.isLoggedIn()){
+        if (authorizationService.isLoggedIn()) {
             return this.authorizeFully(request, chain)
         }
 

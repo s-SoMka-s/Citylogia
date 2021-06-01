@@ -6,13 +6,13 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.solution.citylogia.R
-import com.solution.citylogia.models.ShortPlace
+import com.solution.citylogia.models.Place
 
 class MapService {
-    fun drawMarkers(mMap: GoogleMap? = null, placesToDraw: Iterable<ShortPlace>): List<Marker> {
-        return placesToDraw.map { (id, _, latitude, longitude) ->
-           val latLng = LatLng(latitude, longitude)
-           val markerOptions = createMarker(latLng, id)
+    fun drawMarkers(mMap: GoogleMap? = null, placesToDraw: ArrayList<Place>): List<Marker> {
+        return placesToDraw.map {
+           val latLng = LatLng(it.latitude, it.longitude)
+           val markerOptions = createMarker(latLng, it.id)
            mMap!!.addMarker(markerOptions)
        }
     }

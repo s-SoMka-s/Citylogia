@@ -11,10 +11,12 @@ data class Place(
         val description: String? = null,
         val short_description: String? = null,
         val type: PlaceType = PlaceType(),
-        val address: String? = null,
+        var city: String = "",
+        var street: String = "",
+        var house: Long = 0,
         val latitude: Double = 0.0,
         val longitude: Double = 0.0,
-        val photo: BaseCollectionClass<Photo> = BaseCollectionClass(),
+        val photos: BaseCollectionClass<Photo> = BaseCollectionClass(),
         val reviews: BaseCollectionClass<Review> = BaseCollectionClass(),
 ) {
     companion object Factory {

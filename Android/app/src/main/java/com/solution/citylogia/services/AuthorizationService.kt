@@ -3,14 +3,21 @@ package com.solution.citylogia.services
 import com.google.gson.Gson
 import com.solution.citylogia.network.StorageService
 import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class AuthorizationService(private val storage: StorageService) {
+@Singleton
+class AuthorizationService @Inject constructor(private val storage: StorageService) {
     private val storageTokenKey: String = "STORAGE_TOKENS_KEY"
 
     fun isLoggedIn(): Boolean {
         val data = getTokens();
 
         return data != null && !data.isTemporary && !this.isRefreshTokenExpired();
+    }
+
+    fun logOut() {
+        storage.removeItem(storageTokenKey);
     }
 
     fun getAccessToken(): String? {

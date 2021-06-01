@@ -1,0 +1,102 @@
+.places-page {
+    & *,
+    table th,
+    table td {
+        font-family: GilroyMedium;
+        font-weight: 600;
+        font-size: 1.4rem;
+        line-height: 2.4rem;
+    }
+
+    tbody td,
+    tbody th {
+        font-weight: 500;
+        font-size: 1.4rem;
+        line-height: 1.6rem;
+        color: #a6acbe;
+    }
+
+    h1 {
+        font-weight: 600;
+        font-size: 3rem;
+        line-height: 3.6rem;
+    }
+
+    padding: 6rem;
+
+    &__controls {
+        max-height: 6rem;
+        margin-bottom: 4rem;
+        margin-top: 3rem;
+        display: flex;
+        justify-content: flex-start;
+        span {
+            font-weight: 600;
+            font-size: 1.4rem;
+            line-height: 1.7rem;
+        }
+        button {
+            width: 13rem;
+            margin-left: 4rem;
+        }
+    }
+
+    &__table-mark {
+        width: 12rem;
+        height: 4rem;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+
+        &-approved {
+            background: #21b8c7;
+        }
+
+        &-not-reviwed {
+            background: #de4369;
+        }
+    }
+
+    &__pagination {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        width: 20rem;
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        img {
+            cursor: pointer;
+        }
+
+        &-number {
+            background: #eef0f6;
+            height: 3.3rem;
+            width: 3.3rem;
+            border-radius: 5px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            span {
+                display: block;
+            }
+        }
+    }
+
+    &__place-controls {
+        display: flex;
+        justify-content: space-between;
+
+        img {
+            cursor: pointer;
+            height: 2rem;
+            width: 2rem;
+        }
+    }
+}

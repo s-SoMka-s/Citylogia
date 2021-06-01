@@ -18,13 +18,16 @@ namespace Core.Api.Places.Models.Output
 
             this.Description = source.Description;
             this.Type = new PlaceTypeSummary(source.Type);
-            this.Address = source.Address;
+
+            this.City = source.City;
+            this.Street = source.Street;
+            this.House = source.House;
             this.Latitude = source.Latitude;
             this.Longtitude = source.Longitude;
 
             if (source.Photos != default)
             {
-                var photos = source.Photos.Select(p => new FileSummary(p)).ToList();
+                var photos = source.Photos.Select(p => new FileSummary(p.Photo)).ToList();
                 this.Photos = new BaseCollectionResponse<FileSummary>(photos);
             }
 
@@ -56,9 +59,15 @@ namespace Core.Api.Places.Models.Output
 
         [JsonProperty("type")]
         public PlaceTypeSummary Type { get; set; }
+        
+        [JsonProperty("city")]
+        public string City { get; }
 
-        [JsonProperty("address")]
-        public string Address { get; set; }
+        [JsonProperty("street")]
+        public string Street { get; }
+
+        [JsonProperty("house")]
+        public long House { get; }
 
         [JsonProperty("latitude")]
         public double Latitude { get; set; }
@@ -66,7 +75,7 @@ namespace Core.Api.Places.Models.Output
         [JsonProperty("longitude")]
         public double Longtitude { get; set; }
 
-        [JsonProperty("photo")]
+        [JsonProperty("photos")]
         public BaseCollectionResponse<FileSummary> Photos { get; set; }
 
         [JsonProperty("reviews")]

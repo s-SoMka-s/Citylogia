@@ -1,0 +1,55 @@
+@mixin font-menu-item {
+    font-family: LatoBold;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 1.6rem;
+    line-height: 1.9rem;
+    color: white;
+}
+
+@mixin font-menu-logo {
+    font-family: MontserratBold;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 2rem;
+    line-height: 139.2%;
+    color: white;
+}
+
+.menu {
+    padding: 4rem 3.5rem;
+
+    &-item {
+        &__delimeter {
+            width: 90%;
+        }
+
+        &:first-child {
+            margin-bottom: 4rem;
+            color: white;
+            @include font-menu-logo;
+
+            img {
+                width: 4rem;
+                height: 4rem;
+                padding-right: 2rem;
+            }
+        }
+
+        &:not(:first-child) {
+            margin-top: 3.5rem;
+            @include font-menu-item;
+
+            img {
+                width: 3rem;
+                height: 3rem;
+                padding-right: 2rem;
+            }
+        }
+
+        a {
+            display: flex;
+            align-items: center;
+        }
+    }
+}

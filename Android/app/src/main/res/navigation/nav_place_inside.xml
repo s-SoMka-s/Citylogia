@@ -12,7 +12,9 @@
         tools:layout="@layout/fragment_place_inside" >
         <action
             android:id="@+id/action_activity_place_inside_to_place_info"
-            app:destination="@id/place_info" />
+            app:destination="@id/place_info"
+            app:popUpTo="@id/activity_place_inside"
+            app:popUpToInclusive="true"/>
     </fragment>
     <fragment
         android:id="@+id/place_info"
@@ -21,10 +23,14 @@
         tools:layout="@layout/fragment_place_info" >
         <action
             android:id="@+id/action_place_info_to_place_reviews"
-            app:destination="@id/place_reviews" />
+            app:destination="@id/place_reviews"
+            app:popUpTo="@id/place_info"
+            app:popUpToInclusive="true"/>
         <action
             android:id="@+id/action_place_info_to_activity_place_inside"
-            app:destination="@id/activity_place_inside" />
+            app:destination="@id/activity_place_inside"
+            app:popUpTo="@id/place_info"
+            app:popUpToInclusive="true"/>
     </fragment>
     <fragment
         android:id="@+id/place_reviews"
@@ -33,9 +39,13 @@
         tools:layout="@layout/fragment_place_reviews" >
         <action
             android:id="@+id/action_place_reviews_to_place_info"
-            app:destination="@id/place_info" />
+            app:destination="@id/place_info"
+            app:popUpTo="@id/place_reviews"
+            app:popUpToInclusive="true"/>
         <action
             android:id="@+id/action_place_reviews_to_activity_place_inside"
-            app:destination="@id/activity_place_inside" />
+            app:destination="@id/activity_place_inside"
+            app:popUpTo="@id/place_reviews"
+            app:popUpToInclusive="true"/>
     </fragment>
 </navigation>

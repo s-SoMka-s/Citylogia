@@ -1,15 +1,20 @@
-﻿using Newtonsoft.Json;
+﻿using Core.Tools.Interfaces.Auth;
+using Newtonsoft.Json;
 
 namespace Core.Api.Auth.Models.Output
 {
     public class AuthenticateResponse
     {
-        public AuthenticateResponse(string token)
+        public AuthenticateResponse(TokenPair pair)
         {
-            Token = token;
+            this.Access = new Token(pair.Access, pair.AccessExpiryDate);
+            this.Refresh = new Token(pair.Refresh, pair.RefreshExpiryDate);
         }
 
-        [JsonProperty("Token")]
-        public string Token { get; set; }
+        [JsonProperty("access")]
+        public Token Access { get; set; }
+
+        [JsonProperty("refresh")]
+        public Token Refresh { get; set; }
     }
 }

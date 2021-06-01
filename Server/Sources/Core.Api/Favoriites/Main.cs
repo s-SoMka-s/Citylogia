@@ -1,9 +1,10 @@
 ﻿using Citylogia.Server.Core.Db.Implementations;
+using Citylogia.Server.Core.Entityes;
 using Core.Api.Favoriites.Models.Input;
 using Core.Api.Favoriites.Models.Output;
 using Core.Api.Models;
-using Core.Api.Places.Models.Output;
 using Core.Entities;
+using Libraries.Db.Reposiitory.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,13 +15,17 @@ namespace Core.Api.Favoriites
 {
     [ApiController]
     [Route("/api/Favorites")]
-    public class Main : Controller
+    public class Main : ApiController
     {
-        private readonly SqlContext context;
+        private readonly ICrudRepository<FavoritePlaceLink> links;
+        private readonly ICrudRepository<User> users;
+        private readonly ICrudRepository<Place> places;
 
-        public Main(SqlContext context)
+        public Main(ICrudFactory factory)
         {
-            this.context = context;
+            this.links = factory.Get<FavoritePlaceLink>();
+            this.users = factory.Get<User>();
+            this.places = factory.Get<Place>();
         }
 
 
@@ -28,7 +33,11 @@ namespace Core.Api.Favoriites
         [Authorize]
         public async Task<BaseCollectionResponse<FavoriteSummary>> GetFavoritesAsync()
         {
-            var summaries = await this.Query().Select(l => new FavoriteSummary(l)).ToListAsync();
+            var userId = GetUserId();
+
+            var summaries = await Query().Where(l => l.UserId == userId)
+                                         .Select(l => new FavoriteSummary(l))
+                                         .ToListAsync();
 
             return new BaseCollectionResponse<FavoriteSummary>(summaries);
         }
@@ -37,30 +46,34 @@ namespace Core.Api.Favoriites
         [Authorize]
         public async Task<bool> AddAsync([FromBody] NewFavoritePlaceLinkParameters parameters)
         {
+            var userId = GetUserId();
+
             var @new = parameters.Build();
-            var place = await this.context.Places.FirstOrDefaultAsync(p => p.Id == parameters.PlaceId);
+            var place = await places.FindAsync(p => p.Id == parameters.PlaceId);
+
             if (default == place)
             {
                 return false;
             }
 
-            var user = await this.context.Users.FirstOrDefaultAsync(u => u.Id == parameters.UserId);
+            var user = await users.FindAsync(u => u.Id == userId);
+
             if (default == user)
             {
                 return false;
             }
 
-            @new.User = user;
-            @new.Place = place;
+            @new.UserId = userId;
+            @new.PlaceId = parameters.PlaceId;
 
-            var existed = await this.context.FavoritePlaceLinks.FirstOrDefaultAsync(l => l.PlaceId == place.Id && l.UserId == user.Id);
+            var existed = await links.FindAsync(l => l.PlaceId == place.Id && l.UserId == user.Id);
+
             if (existed != default)
             {
                 return false;
             }
 
-            await this.context.AddAsync(@new);
-            await this.context.SaveChangesAsync();
+            await links.AddAsync(@new);
 
             return true;
         }
@@ -70,31 +83,44 @@ namespace Core.Api.Favoriites
         [Authorize]
         public async Task<bool> DeleteAsync(long id)
         {
-            var link = await this.context.FavoritePlaceLinks.FirstOrDefaultAsync(l => l.Id == id);
+            var link = await links.FindAsync(l => l.Id == id);
+
             if (link == default)
             {
                 return false;
             }
 
-            this.context.Remove(link);
-            await this.context.SaveChangesAsync();
+            return await links.DeleteAsync(link);
+        }
 
-            return true;    
+        [HttpDelete("")]
+        [Authorize]
+        public async Task<bool> DeleteAsync([FromBody] NewFavoritePlaceLinkParameters parameters)
+        {
+            var link = await links.FindAsync(l => l.PlaceId == parameters.PlaceId);
+
+            if (link == default)
+            {
+                return false;
+            }
+
+            return await links.DeleteAsync(link);
         }
 
 
         private IQueryable<FavoritePlaceLink> Query()
         {
-            return this.context.FavoritePlaceLinks
-                               .Include(l => l.Place)
-                               .ThenInclude(p => p.Type)
-                               .Include(l => l.User)
+            return this.links.Query()
+                             .Include(l => l.Place)
+                             .ThenInclude(p => p.Type)
+                             .Include(l => l.User)
 
-                               .Include(l => l.Place)
-                               .ThenInclude(p => p.Photos)
+                             .Include(l => l.Place)
+                             .ThenInclude(p => p.Photos)
+                             .ThenInclude(p => p.Photo)
 
-                               .Include(l => l.Place)
-                               .ThenInclude(p => p.Reviews);
-        } 
+                             .Include(l => l.Place)
+                             .ThenInclude(p => p.Reviews);
+        }
     }
 }

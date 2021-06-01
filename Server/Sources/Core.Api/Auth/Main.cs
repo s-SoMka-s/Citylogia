@@ -2,14 +2,12 @@
 using Citylogia.Server.Core.Entityes;
 using Core.Api.Auth.Models.Input;
 using Core.Api.Auth.Models.Output;
+using Core.Services;
 using Core.Tools.Interfaces.Auth;
 using Libraries.Auth;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace Core.Api.Auth
@@ -20,21 +18,23 @@ namespace Core.Api.Auth
     {
         private readonly SqlContext context;
         private readonly IJwtManager jwtManager;
+        private readonly IMailer mailer;
 
-        public Main(SqlContext context, IJwtManager jwtManager)
+        public Main(SqlContext context, IJwtManager jwtManager, IMailer mailer)
         {
             this.context = context;
             this.jwtManager = jwtManager;
+            this.mailer = mailer;
         }
 
 
         [HttpPost("Register")]
-        public async Task<TokenPair> RegisterAsync([FromBody] RegisterParameters parameters)
+        public async Task<AuthenticateResponse> RegisterAsync([FromBody] RegisterParameters parameters)
         {
             var existed = this.context.Users.ToList().Any(u => u.Email == parameters.Email);
             if (existed)
             {
-                return null;
+                throw new Exception("User already exists!");
             }
 
             var @new = parameters.Build();
@@ -43,13 +43,22 @@ namespace Core.Api.Auth
             var user = await users.AddAsync(@new);
             await this.context.SaveChangesAsync();
 
+            try
+            {
+                await this.mailer.SendAsync(parameters.Email, "Вы успешно зарегистрировались! Добро пожаловать в ситилогию!");
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
             var tokenPair = await jwtManager.GeneratePairAsync(user.Entity.Id);
 
-            return tokenPair;
+            return new AuthenticateResponse(tokenPair);
         }
 
         [HttpPost("Email")]
-        public async Task<TokenPair> AuthenticateAsync([FromBody] LoginParameters parameters)
+        public async Task<AuthenticateResponse> LoginAsync([FromBody] LoginParameters parameters)
         {
             var user = this.context.Users.FirstOrDefault(u => u.Email == parameters.Email);
 
@@ -57,12 +66,12 @@ namespace Core.Api.Auth
 
             if (!res)
             {
-                return null;
+                throw new Exception("Invalid email or password!");
             }
 
             var tokenPair = await jwtManager.GeneratePairAsync(user.Id);
 
-            return tokenPair;
+            return new AuthenticateResponse(tokenPair);
         }
 
         private bool CheckUser(User user, string password)

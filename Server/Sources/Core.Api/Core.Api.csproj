@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Core.Db\Core.Db.csproj" />
     <ProjectReference Include="..\Core.Tools\Core.Tools.csproj" />
+    <ProjectReference Include="..\Core.Services\Core.Services.csproj" />
   </ItemGroup>
 
 </Project>

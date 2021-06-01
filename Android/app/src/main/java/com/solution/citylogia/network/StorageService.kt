@@ -3,9 +3,12 @@ package com.solution.citylogia.network
 import android.content.Context
 import android.content.SharedPreferences
 import com.solution.citylogia.R
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class StorageService constructor(val context: Context) {
-
+@Singleton
+class StorageService @Inject constructor(@ApplicationContext private val context: Context) {
     private var prefs: SharedPreferences = context.getSharedPreferences(context.getString(R.string.app_name), Context.MODE_PRIVATE)
 
     fun putItem(key: String, value: String) {
