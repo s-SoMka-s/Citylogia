@@ -9,8 +9,8 @@ https://citylogiaclientapi.docs.apiary.io/
 https://citylogiaadminapi.docs.apiary.io/
 
 
-## QA админки
+## QA админки(временно не работает)
 https://admin.d5yem5mfpkx54.amplifyapp.com/
 
-## Miro с задачами по проекту
+## Miro с задачами по проекту(сюда лучше не смотреть)
 https://miro.com/app/board/o9J_lJsrrmc=/
